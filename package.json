@@ -41,7 +41,7 @@
     "vite": "^7.0.4"
   },
   "lint-staged": {
-    "*.ts": [
+    "*.ts?(x)": [
       "npm run format:fix",
       "npm run lint"
     ],
