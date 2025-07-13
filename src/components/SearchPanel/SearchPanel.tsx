@@ -2,7 +2,7 @@ import React from 'react';
 import SearchControls from './Search/SearchControls';
 import SearchError from './Error/SearchError';
 import CardList from './CardList/CardList';
-import type { AppsState, SearchResult } from '../../types/interfaces';
+import type { AppsState, MyPokemon } from '../../types/interfaces';
 
 class SearchPanel extends React.Component<Record<string, never>, AppsState> {
   state: AppsState;
@@ -20,7 +20,7 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
   public componentDidMount(): void {
     const data = window.localStorage.getItem('tg-last-search');
 
-    if (data) {
+    if (data && data !== undefined) {
       const parse: AppsState = JSON.parse(data);
       this.setState(parse);
     }
@@ -32,26 +32,32 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
         <SearchControls
           query={this.state.query}
           isLoading={this.state.isLoading}
-          setLocalStorage={this.setLocalStorage}
           onSearch={this.handleSearch}
           onChange={this.handleQueryChange}
         />
-        <CardList results={this.state.results} />
+        <CardList results={this.state.results} error={this.state.error} />
         <SearchError error={this.state.error} />
       </div>
     );
   }
 
-  private setLocalStorage(): void {
-    //window.localStorage.setItem('tg-last-search', JSON.stringify(this.state));
-  }
+  private setLocalStorage = (): void => {
+    const json = JSON.stringify(this.state);
+    window.localStorage.setItem('tg-last-search', json);
+  };
 
-  private handleSearch = (results: SearchResult[] | Error): void => {
-    if (results instanceof Error) {
-      this.setState({ results: [], error: results.message, isLoading: false });
-    } else {
-      this.setState({ results, error: null, isLoading: false });
-    }
+  private handleSearch = (results: MyPokemon[] | Error): void => {
+    this.setState(
+      () => {
+        if (results instanceof Error) {
+          return { results: [], error: results.message, isLoading: false };
+        }
+        return { results, error: null, isLoading: false };
+      },
+      () => {
+        this.setLocalStorage();
+      }
+    );
   };
 
   private handleQueryChange = (query: string): void => {

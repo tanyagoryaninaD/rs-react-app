@@ -1,7 +1,8 @@
 import React from 'react';
 import Loader from '../../../server/Loader';
-import type { SearchControlsProps } from '../../../types/interfaces';
+import type { MyPokemon, SearchControlsProps } from '../../../types/interfaces';
 import { parsePokemonData } from '../../../utils/helpers';
+import type { NamedApiResource, Pokemon } from 'pokeapi-typescript';
 
 class SearchControls extends React.Component<SearchControlsProps> {
   private readonly server: Loader;
@@ -30,21 +31,36 @@ class SearchControls extends React.Component<SearchControlsProps> {
     );
   }
 
-  private handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  private handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    this.props.setLocalStorage();
+    this.requestToServer();
+  };
 
+  private requestToServer = async (): Promise<void> => {
     try {
-      const response = await this.server.getResult(this.props.query);
+      const response = await this.server.getPokemon(this.props.query);
+      const data = await response.json();
+      let results: MyPokemon[] = [];
 
-      response.json().then((data) => {
-        console.log(parsePokemonData(data.results));
-        this.props.onSearch(data);
-      });
-    } catch {
-      console.error('Ooops. Not found');
+      if (data.results) {
+        const pokemons: Pokemon[] = await Promise.all(
+          data.results.map(async (item: NamedApiResource<Pokemon>) => {
+            const response = await this.server.getPokemon(item.name);
+            return await response.json();
+          })
+        );
+
+        results = pokemons.map((item) => parsePokemonData(item));
+      } else {
+        results = [parsePokemonData(data)];
+      }
+
+      this.props.onSearch(results);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('🚀 ~ SearchControls ~ error:', error);
+        this.props.onSearch(error);
+      }
     }
   };
 

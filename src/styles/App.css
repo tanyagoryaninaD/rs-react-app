@@ -39,7 +39,9 @@
 
 form {
   display: flex;
+  justify-content: center;
   gap: 1em;
+  margin-bottom: 1em;
 }
 
 .search__input {
@@ -56,4 +58,30 @@ form {
 
 .read-the-docs {
   color: #888;
+}
+
+table {
+  min-width: 100%;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+}
+
+table img {
+  width: 4em;
+}
+
+tr {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(100px, 1fr);
+  padding: 0.3em;
+}
+
+th,
+td {
+  padding: 0.3em;
+  min-width: 5em;
+  border: 1px solid #dbdbdb;
+  text-align: center;
+  align-content: center;
 }

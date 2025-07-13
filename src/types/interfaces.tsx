@@ -1,6 +1,14 @@
-export interface SearchResult {
+export interface CardProps {
+  key: number;
+  data: MyPokemon;
+}
+
+export interface MyPokemon {
+  id: number;
   name: string;
-  image: string;
+  image?: string;
+  abilities?: string[];
+  moves?: string[];
 }
 
 interface SearchState {
@@ -10,12 +18,12 @@ interface SearchState {
 
 export interface SearchControlsProps extends SearchState {
   setLocalStorage: () => void;
-  onSearch: (data: SearchResult[] | Error) => void;
+  onSearch: (data: MyPokemon[] | Error) => void;
   onChange: (query: string) => void;
 }
 
-export interface CardListProps {
-  results: SearchResult[];
+export interface CardListProps extends SearchErrorProps {
+  results: MyPokemon[];
 }
 
 export interface SearchErrorProps {
@@ -26,3 +34,7 @@ export interface AppsState
   extends SearchState,
     CardListProps,
     SearchErrorProps {}
+
+export interface Table extends Omit<MyPokemon, 'id'> {
+  description?: string;
+}

@@ -18,13 +18,14 @@ class Loader {
     return this.instance;
   }
 
-  public async getResult(search: string): Promise<Response> {
+  public async getPokemon(pokemon: string): Promise<Response> {
     const response = await fetch(
-      `${this.server}${search.trim()}/?limit=${this.limit}&offset=${this.offset}}`
+      `${this.server}/pokemon/${pokemon.trim()}/?limit=${this.limit}&offset=${this.offset}}`
     );
 
+    console.log('🚀 ~ Loader ~ getPokemon ~ response:', response);
     if (!response.ok) {
-      throw new Error();
+      throw new Error('No results found');
     }
 
     return response;
