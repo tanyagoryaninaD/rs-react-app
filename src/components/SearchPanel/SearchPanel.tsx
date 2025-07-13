@@ -3,12 +3,17 @@ import SearchControls from './Search/SearchControls';
 import SearchError from './Error/SearchError';
 import CardList from './CardList/CardList';
 import type { AppsState, MyPokemon } from '../../types/interfaces';
+import Loader from '../../server/Loader';
+import type { NamedApiResource, Pokemon } from 'pokeapi-typescript';
+import { parsePokemonData } from '../../utils/helpers';
 
 class SearchPanel extends React.Component<Record<string, never>, AppsState> {
-  state: AppsState;
+  public readonly state: AppsState;
+  private readonly server: Loader;
 
   constructor(props: Record<string, never>) {
     super(props);
+    this.server = Loader.getInstance();
     this.state = {
       query: '',
       results: [],
@@ -23,6 +28,8 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
     if (data && data !== undefined) {
       const parse: AppsState = JSON.parse(data);
       this.setState(parse);
+    } else {
+      this.loadPokemon();
     }
   }
 
@@ -32,17 +39,45 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
         <SearchControls
           query={this.state.query}
           isLoading={this.state.isLoading}
-          onSearch={this.handleSearch}
+          onSearch={this.loadPokemon}
           onChange={this.handleQueryChange}
         />
         <CardList results={this.state.results} error={this.state.error} />
         <SearchError
-          onSearch={this.handleSearch}
+          onSearch={this.loadPokemon}
           onChange={this.handleQueryChange}
         />
       </div>
     );
   }
+
+  public loadPokemon = async (query?: string) => {
+    try {
+      const response = await this.server.getPokemon(query ?? this.state.query);
+      const data = await response.json();
+      let results: MyPokemon[] = [];
+
+      if (data.results) {
+        const pokemons: Pokemon[] = await Promise.all(
+          data.results.map(async (item: NamedApiResource<Pokemon>) => {
+            const response = await this.server.getPokemon(item.name);
+            return await response.json();
+          })
+        );
+
+        results = pokemons.map((item) => parsePokemonData(item));
+      } else {
+        results = [parsePokemonData(data)];
+      }
+
+      this.handleSearch(results);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error);
+        this.handleSearch(error);
+      }
+    }
+  };
 
   private setLocalStorage = (): void => {
     const json = JSON.stringify(this.state);

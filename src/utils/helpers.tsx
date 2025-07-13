@@ -2,7 +2,6 @@ import type { Pokemon } from 'pokeapi-typescript';
 import type { MyPokemon } from '../types/interfaces';
 
 export function parsePokemonData(data: Pokemon): MyPokemon {
-  console.log('🚀 ~ parsePokemonData ~ data:', data);
   return {
     name: data.name,
     id: data.id,

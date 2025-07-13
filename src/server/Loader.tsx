@@ -23,7 +23,6 @@ class Loader {
       `${this.server}/pokemon/${pokemon.trim()}/?limit=${this.limit}&offset=${this.offset}}`
     );
 
-    console.log('🚀 ~ Loader ~ getPokemon ~ response:', response);
     if (!response.ok) {
       if (response.status >= 500) {
         throw new Error('Problems on the server side');
