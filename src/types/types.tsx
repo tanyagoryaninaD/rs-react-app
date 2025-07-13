@@ -1,3 +1,4 @@
-export interface SearchState {
-  search: string;
-}
+export type ParsedPokemon = {
+  name: string;
+  id: string;
+};

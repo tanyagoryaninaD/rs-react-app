@@ -1,50 +1,55 @@
 import React from 'react';
-import type { SearchState } from '../../../types/types';
+import Loader from '../../../server/Loader';
+import type { SearchControlsProps } from '../../../types/interfaces';
+import { parsePokemonData } from '../../../utils/helpers';
 
-class SearchControls extends React.Component<
-  Record<string, never>,
-  SearchState
-> {
-  constructor(props: Record<string, never>) {
+class SearchControls extends React.Component<SearchControlsProps> {
+  private readonly server: Loader;
+
+  constructor(props: SearchControlsProps) {
     super(props);
-    this.state = { search: '' };
+    this.server = Loader.getInstance();
   }
 
   public render() {
     return (
       <form onSubmit={this.handleSubmit}>
         <input
+          className="search__input"
           type="text"
           name="search"
-          value={this.state.search}
+          value={this.props.query}
           onChange={this.handleChange}
           placeholder="Enter your search term"
+          disabled={this.props.isLoading}
         />
-        <button type="submit">Search</button>
+        <button type="submit" disabled={this.props.isLoading}>
+          {this.props.isLoading ? 'Searching...' : 'Search'}
+        </button>
       </form>
     );
   }
 
-  public componentDidMount(): void {
-    const data = window.localStorage.getItem('tg-last-search');
-
-    if (data) {
-      this.setState({ search: data });
-    }
-  }
-
-  private setLocalStorage(): void {
-    window.localStorage.setItem('tg-last-search', this.state.search);
-  }
-
-  private handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+  private handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
-    this.setLocalStorage();
-    console.log('Sent:', this.state.search);
+    this.props.setLocalStorage();
+
+    try {
+      const response = await this.server.getResult(this.props.query);
+
+      response.json().then((data) => {
+        console.log(parsePokemonData(data.results));
+        this.props.onSearch(data);
+      });
+    } catch {
+      console.error('Ooops. Not found');
+    }
   };
 
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ search: event.target.value });
+    this.props.onChange(event.target.value);
   };
 }
 

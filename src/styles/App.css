@@ -37,6 +37,19 @@
   }
 }
 
+form {
+  display: flex;
+  gap: 1em;
+}
+
+.search__input {
+  height: 2em;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  border: 1px solid #bababa;
+  padding: 0.6em 1.2em;
+}
+
 .card {
   padding: 2em;
 }
