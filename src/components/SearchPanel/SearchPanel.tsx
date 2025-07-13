@@ -36,7 +36,10 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
           onChange={this.handleQueryChange}
         />
         <CardList results={this.state.results} error={this.state.error} />
-        <SearchError error={this.state.error} />
+        <SearchError
+          onSearch={this.handleSearch}
+          onChange={this.handleQueryChange}
+        />
       </div>
     );
   }

@@ -11,7 +11,7 @@ class Header extends React.Component {
               <img src={pokeLogo} className="logo" alt="Poke logo" />
             </a>
           </div>
-          <h1 className="header__title">Search Pokémon</h1>
+          <h1 className="header-title">Search Pokémon</h1>
         </header>
       </>
     );

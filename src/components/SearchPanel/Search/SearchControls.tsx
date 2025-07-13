@@ -16,7 +16,7 @@ class SearchControls extends React.Component<SearchControlsProps> {
     return (
       <form onSubmit={this.handleSubmit}>
         <input
-          className="search__input"
+          className="search-input"
           type="text"
           name="search"
           value={this.props.query}
@@ -58,7 +58,7 @@ class SearchControls extends React.Component<SearchControlsProps> {
       this.props.onSearch(results);
     } catch (error) {
       if (error instanceof Error) {
-        console.log('🚀 ~ SearchControls ~ error:', error);
+        console.error(error);
         this.props.onSearch(error);
       }
     }

@@ -25,6 +25,10 @@ class Loader {
 
     console.log('🚀 ~ Loader ~ getPokemon ~ response:', response);
     if (!response.ok) {
+      if (response.status >= 500) {
+        throw new Error('Problems on the server side');
+      }
+
       throw new Error('No results found');
     }
 

@@ -16,24 +16,19 @@ interface SearchState {
   isLoading: boolean;
 }
 
-export interface SearchControlsProps extends SearchState {
-  setLocalStorage: () => void;
-  onSearch: (data: MyPokemon[] | Error) => void;
-  onChange: (query: string) => void;
-}
+export interface SearchControlsProps extends SearchState, EventsForm {}
 
-export interface CardListProps extends SearchErrorProps {
+export interface CardListProps {
   results: MyPokemon[];
-}
-
-export interface SearchErrorProps {
   error: string | null;
 }
 
-export interface AppsState
-  extends SearchState,
-    CardListProps,
-    SearchErrorProps {}
+export interface EventsForm {
+  onChange: (query: string) => void;
+  onSearch: (data: MyPokemon[] | Error) => void;
+}
+
+export interface AppsState extends SearchState, CardListProps {}
 
 export interface Table extends Omit<MyPokemon, 'id'> {
   description?: string;
