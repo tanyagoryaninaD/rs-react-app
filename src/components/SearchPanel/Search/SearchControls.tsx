@@ -25,12 +25,25 @@ class SearchControls extends React.Component<
     );
   }
 
-  private handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  public componentDidMount(): void {
+    const data = window.localStorage.getItem('tg-last-search');
+
+    if (data) {
+      this.setState({ search: data });
+    }
+  }
+
+  private setLocalStorage(): void {
+    window.localStorage.setItem('tg-last-search', this.state.search);
+  }
+
+  private handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    this.setLocalStorage();
     console.log('Sent:', this.state.search);
   };
 
-  private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ search: event.target.value });
   };
 }
