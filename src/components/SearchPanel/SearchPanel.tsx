@@ -42,7 +42,11 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
           onSearch={this.loadPokemon}
           onChange={this.handleQueryChange}
         />
-        <CardList results={this.state.results} error={this.state.error} />
+        <CardList
+          results={this.state.results}
+          isLoading={this.state.isLoading}
+          error={this.state.error}
+        />
         <SearchError
           onSearch={this.loadPokemon}
           onChange={this.handleQueryChange}
@@ -53,6 +57,8 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
 
   public loadPokemon = async (query?: string) => {
     try {
+      this.setState({ isLoading: true });
+
       const response = await this.server.getPokemon(query ?? this.state.query);
       const data = await response.json();
       let results: MyPokemon[] = [];

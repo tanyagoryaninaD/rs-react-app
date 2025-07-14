@@ -18,18 +18,22 @@ interface SearchState {
 
 export interface SearchControlsProps extends SearchState, EventsForm {}
 
-export interface CardListProps {
+export interface CardListProps extends NoResultsProps {
   results: MyPokemon[];
-  error: string | null;
+  isLoading: boolean;
 }
 
 export interface EventsForm {
   onChange: (query: string) => void;
-  onSearch: (data: MyPokemon[] | Error) => void;
+  onSearch: (query?: string) => void;
 }
 
 export interface AppsState extends SearchState, CardListProps {}
 
 export interface Table extends Omit<MyPokemon, 'id'> {
   description?: string;
+}
+
+export interface NoResultsProps {
+  error: string | null;
 }
