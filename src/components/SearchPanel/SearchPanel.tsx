@@ -1,0 +1,109 @@
+import React from 'react';
+import SearchControls from './Search/SearchControls';
+import CardList from './CardList/CardList';
+import type { MyPokemon, SearchPanelState } from '../../types/interfaces';
+import Loader from '../../server/Loader';
+import type { NamedApiResource, Pokemon } from 'pokeapi-typescript';
+import { parsePokemonData } from '../../utils/helpers';
+import GenerateError from './Error/GenerateError';
+
+class SearchPanel extends React.Component<object, SearchPanelState> {
+  public readonly state: SearchPanelState;
+  private readonly server: Loader;
+
+  constructor(props: object) {
+    super(props);
+    this.server = Loader.getInstance();
+    this.state = {
+      query: '',
+      results: [],
+      error: null,
+      isLoading: false,
+    };
+  }
+
+  public componentDidMount(): void {
+    const data = window.localStorage.getItem('tg-last-search');
+
+    if (data && data !== undefined) {
+      const parse: SearchPanelState = JSON.parse(data);
+      this.setState(parse);
+    } else {
+      this.loadPokemon();
+    }
+  }
+
+  public render() {
+    return (
+      <div>
+        <SearchControls
+          query={this.state.query}
+          isLoading={this.state.isLoading}
+          onSearch={this.loadPokemon}
+          onChange={this.handleQueryChange}
+        />
+        <CardList
+          results={this.state.results}
+          isLoading={this.state.isLoading}
+          error={this.state.error}
+        />
+        <GenerateError />
+      </div>
+    );
+  }
+
+  public loadPokemon = async (query?: string) => {
+    try {
+      this.setState({ isLoading: true });
+
+      const response = await this.server.getPokemon(query ?? this.state.query);
+      const data = await response.json();
+      let results: MyPokemon[] = [];
+
+      if (data.results) {
+        const pokemons: Pokemon[] = await Promise.all(
+          data.results.map(async (item: NamedApiResource<Pokemon>) => {
+            const response = await this.server.getPokemon(item.name);
+            return await response.json();
+          })
+        );
+
+        results = pokemons.map((item) => parsePokemonData(item));
+      } else {
+        results = [parsePokemonData(data)];
+      }
+
+      this.handleSearch(results);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error);
+        this.handleSearch(error);
+      }
+    }
+  };
+
+  private setLocalStorage = (): void => {
+    const json = JSON.stringify(this.state);
+    window.localStorage.setItem('tg-last-search', json);
+  };
+
+  private handleSearch = (results: MyPokemon[] | Error): void => {
+    this.setState(
+      () => {
+        if (results instanceof Error) {
+          return { results: [], error: results.message, isLoading: false };
+        }
+        return { results, error: null, isLoading: false };
+      },
+      () => {
+        this.setLocalStorage();
+      }
+    );
+  };
+
+  private handleQueryChange = (query: string): void => {
+    this.setState({ query });
+  };
+}
+
+export default SearchPanel;
