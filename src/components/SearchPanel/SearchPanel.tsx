@@ -1,17 +1,17 @@
 import React from 'react';
 import SearchControls from './Search/SearchControls';
-import SearchError from './Error/SearchError';
 import CardList from './CardList/CardList';
-import type { AppsState, MyPokemon } from '../../types/interfaces';
+import type { MyPokemon, SearchPanelState } from '../../types/interfaces';
 import Loader from '../../server/Loader';
 import type { NamedApiResource, Pokemon } from 'pokeapi-typescript';
 import { parsePokemonData } from '../../utils/helpers';
+import GenerateError from './Error/GenerateError';
 
-class SearchPanel extends React.Component<Record<string, never>, AppsState> {
-  public readonly state: AppsState;
+class SearchPanel extends React.Component<object, SearchPanelState> {
+  public readonly state: SearchPanelState;
   private readonly server: Loader;
 
-  constructor(props: Record<string, never>) {
+  constructor(props: object) {
     super(props);
     this.server = Loader.getInstance();
     this.state = {
@@ -26,7 +26,7 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
     const data = window.localStorage.getItem('tg-last-search');
 
     if (data && data !== undefined) {
-      const parse: AppsState = JSON.parse(data);
+      const parse: SearchPanelState = JSON.parse(data);
       this.setState(parse);
     } else {
       this.loadPokemon();
@@ -47,10 +47,7 @@ class SearchPanel extends React.Component<Record<string, never>, AppsState> {
           isLoading={this.state.isLoading}
           error={this.state.error}
         />
-        <SearchError
-          onSearch={this.loadPokemon}
-          onChange={this.handleQueryChange}
-        />
+        <GenerateError />
       </div>
     );
   }

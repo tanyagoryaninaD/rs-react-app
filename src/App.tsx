@@ -1,4 +1,5 @@
 import Header from './components/Header';
+import ErrorBoundary from './components/SearchPanel/Error/ErrorBoundary';
 import SearchPanel from './components/SearchPanel/SearchPanel';
 import './styles/App.css';
 import React from 'react';
@@ -7,8 +8,10 @@ class App extends React.Component {
   public render() {
     return (
       <>
-        <Header></Header>
-        <SearchPanel></SearchPanel>
+        <ErrorBoundary>
+          <Header />
+          <SearchPanel />
+        </ErrorBoundary>
       </>
     );
   }

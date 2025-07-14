@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export interface CardProps {
   key: number;
   data: MyPokemon;
@@ -28,7 +30,11 @@ export interface EventsForm {
   onSearch: (query?: string) => void;
 }
 
-export interface AppsState extends SearchState, CardListProps {}
+export type ErrorState = {
+  isError: boolean;
+};
+
+export interface SearchPanelState extends SearchState, CardListProps {}
 
 export interface Table extends Omit<MyPokemon, 'id'> {
   description?: string;
@@ -36,4 +42,21 @@ export interface Table extends Omit<MyPokemon, 'id'> {
 
 export interface NoResultsProps {
   error: string | null;
+}
+
+export interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+export interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+export interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+export interface ErrorBoundaryState {
+  hasError: boolean;
+  errorMessage: string;
 }
