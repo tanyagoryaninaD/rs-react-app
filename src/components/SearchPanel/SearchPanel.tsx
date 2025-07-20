@@ -73,7 +73,12 @@ class SearchPanel extends React.Component<object, SearchPanelState> {
         results = [parsePokemonData(data)];
       }
 
-      this.handleSearch(results);
+      const uniqueResults = results.filter(
+        (item, index, array) =>
+          index === array.findIndex((i) => i.id === item.id)
+      );
+
+      this.handleSearch(uniqueResults);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
