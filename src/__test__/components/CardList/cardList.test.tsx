@@ -23,14 +23,7 @@ describe('CardList component', () => {
   });
 
   it('renders with loading state', () => {
-    const mockResults = [
-      {
-        name: 'Pokemon',
-        id: 1,
-      },
-    ];
-
-    render(<CardList results={mockResults} isLoading={true} error={null} />);
+    render(<CardList results={[]} isLoading={true} error={null} />);
 
     expect(screen.getByText(/Loading data.../)).toBeInTheDocument();
     expect(
