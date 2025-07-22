@@ -20,7 +20,7 @@ class Loader {
 
   public async getPokemon(pokemon: string): Promise<Response> {
     const response = await fetch(
-      `${this.server}/pokemon/${pokemon.trim()}/?limit=${this.limit}&offset=${this.offset}}`
+      `${this.server}pokemon${pokemon ? '/' + pokemon.trim() : ''}/?limit=${this.limit}&offset=${this.offset}}`
     );
 
     if (!response.ok) {

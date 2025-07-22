@@ -23,7 +23,7 @@ describe('Loader', () => {
     loader.getPokemon('test');
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://pokeapi.co/api/v2//pokemon/test/?limit=10&offset=0}'
+      'https://pokeapi.co/api/v2/pokemon/test/?limit=10&offset=0}'
     );
   });
 
