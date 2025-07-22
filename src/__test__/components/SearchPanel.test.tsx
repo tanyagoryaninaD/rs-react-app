@@ -1,8 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import SearchPanel from '../../components/SearchPanel/SearchPanel';
 import userEvent from '@testing-library/user-event';
-import Loader from '../../server/Loader';
 
 const mockPokemon = {
   name: 'pokemon',
@@ -20,11 +19,6 @@ const mockPokemon = {
 };
 
 describe('SearchPanel component', () => {
-  beforeEach(() => {
-    Loader.getInstance();
-    window.localStorage.clear();
-  });
-
   it('componentDidMount: loads data from localStorage', () => {
     const mockState = {
       query: 'test',
@@ -33,25 +27,26 @@ describe('SearchPanel component', () => {
       isLoading: false,
     };
 
-    window.localStorage.setItem('tg-last-search', JSON.stringify(mockState));
+    const getItemSpy = vi
+      .spyOn(Storage.prototype, 'getItem')
+      .mockReturnValue(JSON.stringify(mockState));
 
     render(<SearchPanel />);
 
+    expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
     expect(screen.getByDisplayValue('test')).toBeInTheDocument();
+
+    getItemSpy.mockRestore();
   });
 
   it('loadPokemon: loads data with query', async () => {
     render(<SearchPanel />);
 
-    const mockFetch = () => {
-      return vi.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        json: async () => mockPokemon,
-      });
-    };
-
-    globalThis.fetch = mockFetch();
+    const mockFetch = vi.spyOn(window, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => mockPokemon,
+    } as Response);
 
     await userEvent.type(screen.getByRole('textbox'), 'pokemon');
     await userEvent.click(screen.getByRole('button', { name: /Search/ }));
@@ -59,7 +54,10 @@ describe('SearchPanel component', () => {
     await waitFor(() => {
       const cells = screen.getAllByRole('cell', { name: /pokemon/i });
       expect(cells.length).toBeGreaterThan(0);
+      expect(mockFetch).toBeCalled();
     });
+
+    mockFetch.mockRestore();
   });
 
   it('loadPokemon: loads data with error', async () => {
@@ -67,27 +65,25 @@ describe('SearchPanel component', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 
+    const mockFetch = vi.spyOn(window, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => {
+        throw new Error('fetch error');
+      },
+    } as unknown as Response);
+
     render(<SearchPanel />);
-
-    const mockFetch = () => {
-      return vi.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        json: async () => {
-          throw new Error('fetch error');
-        },
-      });
-    };
-
-    globalThis.fetch = mockFetch();
 
     await userEvent.type(screen.getByRole('textbox'), 'pokemon');
     await userEvent.click(screen.getByRole('button', { name: /Search/ }));
 
     await waitFor(() => {
       expect(screen.getByText('fetch error')).toBeInTheDocument();
-
-      consoleError.mockRestore();
+      expect(mockFetch).toBeCalled();
     });
+
+    mockFetch.mockRestore();
+    consoleError.mockRestore();
   });
 });
