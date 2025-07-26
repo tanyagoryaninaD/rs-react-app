@@ -38,6 +38,7 @@ describe('GenerateError component', () => {
 
     await userEvent.click(button);
 
+    expect(consoleError).toBeCalled();
     expect(
       screen.getByText(/You have successfully generated an error./)
     ).toBeInTheDocument();
