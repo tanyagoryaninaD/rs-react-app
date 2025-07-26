@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import NoResults from '../../../components/SearchPanel/CardList/NoResults';
+import { NoResults } from '../../../components/SearchPanel/CardList/NoResults';
 
 describe('NoResults component', () => {
   it('renders with error message', () => {

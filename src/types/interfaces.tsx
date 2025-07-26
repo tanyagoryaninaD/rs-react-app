@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 
 export interface CardProps {
-  key: number;
   data: MyPokemon;
 }
 
@@ -59,4 +58,10 @@ export interface ErrorBoundaryProps {
 export interface ErrorBoundaryState {
   hasError: boolean;
   errorMessage: string;
+}
+
+export interface GetPokemon {
+  query?: string;
+  limit?: number;
+  offset?: number;
 }

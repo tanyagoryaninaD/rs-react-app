@@ -6,8 +6,8 @@ export function parsePokemonData(data: Pokemon): MyPokemon {
     name: data.name,
     id: data.id,
     image:
-      data.sprites.other.dream_world.front_default ||
-      data.sprites.front_default,
+      data.sprites?.other?.dream_world?.front_default ||
+      data.sprites?.front_default,
     abilities: Array.isArray(data.abilities)
       ? data.abilities.map((item) => item.ability.name).slice(0, 5)
       : [],

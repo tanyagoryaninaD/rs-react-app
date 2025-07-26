@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import SearchControls from '../../../components/SearchPanel/Search/SearchControls';
+import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
 
 const mockOnSearch = vi.fn();

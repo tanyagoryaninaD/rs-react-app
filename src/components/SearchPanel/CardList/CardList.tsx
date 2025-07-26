@@ -1,22 +1,13 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 import type { CardListProps } from '../../../types/interfaces';
-import Card from './Card';
-import LoadingIndicator from './LoadingIndicator';
-import NoResults from './NoResults';
+import { Card } from './Card';
+import { LoadingIndicator } from './LoadingIndicator';
+import { NoResults } from './NoResults';
 import { upperFirstLetter } from '../../../utils/helpers';
 
-class CardList extends React.Component<CardListProps> {
-  public render() {
-    return (
-      <table>
-        {this.renderTableHeader()}
-        {this.renderTableBody()}
-      </table>
-    );
-  }
-
-  private renderTableHeader() {
-    const { results } = this.props;
+export function CardList(props: CardListProps): ReactNode {
+  const renderTableHeader = (): ReactNode => {
+    const { results } = props;
 
     if (!Array.isArray(results) || results.length === 0) {
       return null;
@@ -34,10 +25,10 @@ class CardList extends React.Component<CardListProps> {
         </tr>
       </thead>
     );
-  }
+  };
 
-  private renderTableBody() {
-    const { results, isLoading, error } = this.props;
+  const renderTableBody = (): ReactNode => {
+    const { results, isLoading, error } = props;
 
     if (isLoading) {
       return (
@@ -70,7 +61,12 @@ class CardList extends React.Component<CardListProps> {
         ))}
       </tbody>
     );
-  }
-}
+  };
 
-export default CardList;
+  return (
+    <table>
+      {renderTableHeader()}
+      {renderTableBody()}
+    </table>
+  );
+}

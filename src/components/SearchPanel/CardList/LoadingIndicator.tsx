@@ -1,13 +1,10 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
-class LoadingIndicator extends React.Component {
-  render() {
-    return (
-      <div className="table-loader">
-        <div className="loader-spinner"></div>
-        Loading data...
-      </div>
-    );
-  }
+export function LoadingIndicator(): ReactNode {
+  return (
+    <div className="table-loader">
+      <div className="loader-spinner"></div>
+      Loading data...
+    </div>
+  );
 }
-export default LoadingIndicator;

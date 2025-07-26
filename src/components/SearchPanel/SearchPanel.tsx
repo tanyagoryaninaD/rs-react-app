@@ -1,114 +1,105 @@
-import React from 'react';
-import SearchControls from './Search/SearchControls';
-import CardList from './CardList/CardList';
-import type { MyPokemon, SearchPanelState } from '../../types/interfaces';
-import Loader from '../../server/Loader';
-import type { NamedApiResource, Pokemon } from 'pokeapi-typescript';
-import { parsePokemonData } from '../../utils/helpers';
-import GenerateError from './Error/GenerateError';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { SearchControls } from './Search/SearchControls';
+import { CardList } from './CardList/CardList';
+import type { SearchPanelState } from '../../types/interfaces';
+import { GenerateError } from './Error/GenerateError';
+import { getPokemon } from '../../server/Loader';
 
-class SearchPanel extends React.Component<object, SearchPanelState> {
-  public readonly state: SearchPanelState;
-  private readonly server: Loader;
-
-  constructor(props: object) {
-    super(props);
-    this.server = Loader.getInstance();
-    this.state = {
-      query: '',
-      results: [],
-      error: null,
-      isLoading: false,
-    };
-  }
-
-  public componentDidMount(): void {
+export function SearchPanel() {
+  const getLocalStorage = useCallback((): SearchPanelState => {
     const data = window.localStorage.getItem('tg-last-search');
 
-    if (data && data !== undefined) {
-      const parse: SearchPanelState = JSON.parse(data);
-      this.setState(parse);
-    } else {
-      this.loadPokemon();
+    if (data) {
+      const parsed: SearchPanelState = JSON.parse(data);
+      return parsed;
     }
-  }
 
-  public render() {
-    return (
-      <div>
-        <SearchControls
-          query={this.state.query}
-          isLoading={this.state.isLoading}
-          onSearch={this.loadPokemon}
-          onChange={this.handleQueryChange}
-        />
-        <CardList
-          results={this.state.results}
-          isLoading={this.state.isLoading}
-          error={this.state.error}
-        />
-        <GenerateError />
-      </div>
-    );
-  }
+    return {
+      query: '',
+      results: [],
+      isLoading: false,
+      error: '',
+    };
+  }, []);
 
-  public loadPokemon = async (query?: string) => {
+  const [state, setState] = useState<SearchPanelState>(getLocalStorage());
+
+  const loadPokemon = useCallback(async () => {
     try {
-      this.setState({ results: [], isLoading: true, error: null });
+      setState((prevState) => ({
+        ...prevState,
+        isLoading: true,
+      }));
 
-      const response = await this.server.getPokemon(query ?? this.state.query);
-      const data = await response.json();
-      let results: MyPokemon[] = [];
+      const data = await getPokemon({ query: state.query });
 
-      if (data.results) {
-        const pokemons: Pokemon[] = await Promise.all(
-          data.results.map(async (item: NamedApiResource<Pokemon>) => {
-            const response = await this.server.getPokemon(item.name);
-            return await response.json();
-          })
-        );
-
-        results = pokemons.map((item) => parsePokemonData(item));
-      } else {
-        results = [parsePokemonData(data)];
-      }
-
-      const uniqueResults = results.filter(
-        (item, index, array) =>
-          index === array.findIndex((i) => i.id === item.id)
-      );
-
-      this.handleSearch(uniqueResults);
+      setState((prevState) => ({
+        ...prevState,
+        results: data,
+        error: null,
+        isLoading: false,
+      }));
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
-        this.handleSearch(error);
+
+        setState((prevState) => ({
+          ...prevState,
+          results: [],
+          error: error.message,
+          isLoading: false,
+        }));
       }
     }
+  }, [state.query]);
+
+  const handleQueryChange = (query: string): void => {
+    setState((prevState) => ({
+      ...prevState,
+      query,
+    }));
   };
 
-  private setLocalStorage = (): void => {
-    const json = JSON.stringify(this.state);
+  const setLocalStorage = useCallback((): void => {
+    const json = JSON.stringify(state);
     window.localStorage.setItem('tg-last-search', json);
-  };
+  }, [state]);
 
-  private handleSearch = (results: MyPokemon[] | Error): void => {
-    this.setState(
-      () => {
-        if (results instanceof Error) {
-          return { results: [], error: results.message, isLoading: false };
-        }
-        return { results, error: null, isLoading: false };
-      },
-      () => {
-        this.setLocalStorage();
-      }
-    );
-  };
+  const firstRender = useRef(false);
 
-  private handleQueryChange = (query: string): void => {
-    this.setState({ query });
-  };
+  useEffect(() => {
+    if (!firstRender.current) {
+      const data = getLocalStorage();
+
+      setState((prevState) => ({
+        ...prevState,
+        ...data,
+      }));
+
+      loadPokemon();
+
+      firstRender.current = true;
+    }
+  }, [getLocalStorage, loadPokemon]);
+
+  useEffect(() => {
+    setLocalStorage();
+  }, [state, setLocalStorage]);
+
+  return (
+    <div>
+      <SearchControls
+        query={state.query}
+        isLoading={state.isLoading}
+        onSearch={loadPokemon}
+        onChange={handleQueryChange}
+      />
+      <CardList
+        results={state.results}
+        isLoading={state.isLoading}
+        error={state.error}
+      />
+      <GenerateError />
+    </div>
+  );
 }
-
-export default SearchPanel;

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import CardList from '../../../components/SearchPanel/CardList/CardList';
+import { CardList } from '../../../components/SearchPanel/CardList/CardList';
 
 describe('CardList component', () => {
   it('renders without results', () => {
