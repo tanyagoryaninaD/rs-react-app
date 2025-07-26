@@ -4,25 +4,20 @@ import { CardList } from './CardList/CardList';
 import type { SearchPanelState } from '../../types/interfaces';
 import { GenerateError } from './Error/GenerateError';
 import { getPokemon } from '../../server/Loader';
+import { useLocalStorage } from '../../utils/localStorage';
 
 export function SearchPanel() {
-  const getLocalStorage = useCallback((): SearchPanelState => {
-    const data = window.localStorage.getItem('tg-last-search');
-
-    if (data) {
-      const parsed: SearchPanelState = JSON.parse(data);
-      return parsed;
-    }
-
-    return {
+  const [stateStorage, setStateStorage] = useLocalStorage<SearchPanelState>(
+    'tg-last-search',
+    {
       query: '',
       results: [],
+      error: null,
       isLoading: false,
-      error: '',
-    };
-  }, []);
+    }
+  );
 
-  const [state, setState] = useState<SearchPanelState>(getLocalStorage());
+  const [state, setState] = useState<SearchPanelState>(stateStorage);
 
   const loadPokemon = useCallback(async () => {
     try {
@@ -39,6 +34,8 @@ export function SearchPanel() {
         error: null,
         isLoading: false,
       }));
+
+      setStateStorage(state);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
@@ -49,9 +46,11 @@ export function SearchPanel() {
           error: error.message,
           isLoading: false,
         }));
+
+        setStateStorage(state);
       }
     }
-  }, [state.query]);
+  }, [setStateStorage, state]);
 
   const handleQueryChange = (query: string): void => {
     setState((prevState) => ({
@@ -60,31 +59,20 @@ export function SearchPanel() {
     }));
   };
 
-  const setLocalStorage = useCallback((): void => {
-    const json = JSON.stringify(state);
-    window.localStorage.setItem('tg-last-search', json);
-  }, [state]);
-
   const firstRender = useRef(false);
 
   useEffect(() => {
     if (!firstRender.current) {
-      const data = getLocalStorage();
-
       setState((prevState) => ({
         ...prevState,
-        ...data,
+        ...stateStorage,
       }));
 
       loadPokemon();
 
       firstRender.current = true;
     }
-  }, [getLocalStorage, loadPokemon]);
-
-  useEffect(() => {
-    setLocalStorage();
-  }, [state, setLocalStorage]);
+  }, [loadPokemon, stateStorage]);
 
   return (
     <div>
