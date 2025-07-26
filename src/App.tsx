@@ -6,6 +6,7 @@ import './styles/App.css';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { About } from './components/About/About';
 import { NotFound } from './components/NotFound/NotFound';
+import { CardDetails } from './components/SearchPanel/CardList/CardDetails';
 
 export function App(): ReactNode {
   return (
@@ -15,6 +16,12 @@ export function App(): ReactNode {
           <Header />
           <Routes>
             <Route path="/" element={<SearchPanel />} />
+            <Route path="/pokemon" element={<SearchPanel />} />
+            <Route
+              path="/pokemon/:name"
+              element={<CardDetails />}
+              errorElement={<NotFound />}
+            />
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

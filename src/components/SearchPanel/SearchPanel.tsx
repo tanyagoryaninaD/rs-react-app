@@ -5,6 +5,7 @@ import type { SearchPanelState } from '../../types/interfaces';
 import { GenerateError } from './Error/GenerateError';
 import { getPokemon } from '../../server/Loader';
 import { useLocalStorage } from '../../utils/localStorage';
+import { useNavigate } from 'react-router-dom';
 
 export function SearchPanel() {
   const [stateStorage, setStateStorage] = useLocalStorage<SearchPanelState>(
@@ -18,6 +19,7 @@ export function SearchPanel() {
   );
 
   const [state, setState] = useState<SearchPanelState>(stateStorage);
+  const navigator = useNavigate();
 
   const loadPokemon = useCallback(async () => {
     try {
@@ -36,6 +38,7 @@ export function SearchPanel() {
       }));
 
       setStateStorage(state);
+      navigator(`/pokemon`, { replace: true });
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
@@ -50,7 +53,7 @@ export function SearchPanel() {
         setStateStorage(state);
       }
     }
-  }, [setStateStorage, state]);
+  }, [navigator, setStateStorage, state]);
 
   const handleQueryChange = (query: string): void => {
     setState((prevState) => ({
@@ -82,11 +85,7 @@ export function SearchPanel() {
         onSearch={loadPokemon}
         onChange={handleQueryChange}
       />
-      <CardList
-        results={state.results}
-        isLoading={state.isLoading}
-        error={state.error}
-      />
+      <CardList data={state} />
       <GenerateError />
     </div>
   );

@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
 import userEvent from '@testing-library/user-event';
 import * as pokemonApi from '../../server/Loader';
+import { MemoryRouter } from 'react-router-dom';
 
 const mockResults = [
   {
@@ -27,7 +28,11 @@ describe('SearchPanel component', () => {
       .spyOn(Storage.prototype, 'getItem')
       .mockReturnValue(JSON.stringify(mockState));
 
-    render(<SearchPanel />);
+    render(
+      <MemoryRouter>
+        <SearchPanel />
+      </MemoryRouter>
+    );
 
     expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
     expect(screen.getByDisplayValue('ivysaur')).toBeInTheDocument();
@@ -40,7 +45,11 @@ describe('SearchPanel component', () => {
       .spyOn(pokemonApi, 'getPokemon')
       .mockImplementation(async () => mockResults);
 
-    render(<SearchPanel />);
+    render(
+      <MemoryRouter>
+        <SearchPanel />
+      </MemoryRouter>
+    );
 
     await userEvent.type(screen.getByRole('textbox'), 'ivysaur');
     await userEvent.click(screen.getByRole('button', { name: /Search/ }));
@@ -65,7 +74,11 @@ describe('SearchPanel component', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 
-    render(<SearchPanel />);
+    render(
+      <MemoryRouter>
+        <SearchPanel />
+      </MemoryRouter>
+    );
 
     await userEvent.type(screen.getByRole('textbox'), 'ivysaur');
     await userEvent.click(screen.getByRole('button', { name: /Search/ }));

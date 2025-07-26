@@ -1,23 +1,16 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import type { CardListProps } from '../../../types/interfaces';
 import { Card } from './Card';
 import { LoadingIndicator } from './LoadingIndicator';
 import { NoResults } from './NoResults';
 
 export function CardList(props: CardListProps): ReactNode {
-  const { isLoading } = props;
-  const [showLoadingIndicator, setShowLoadingIndicator] = useState(isLoading);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setShowLoadingIndicator(isLoading);
-    }, 100);
-  }, [isLoading]);
+  const { isLoading } = props.data;
 
   const renderList = (): ReactNode => {
-    const { results, isLoading, error } = props;
+    const { results, error } = props.data;
 
-    if (isLoading && showLoadingIndicator) {
+    if (isLoading) {
       return <LoadingIndicator />;
     }
 

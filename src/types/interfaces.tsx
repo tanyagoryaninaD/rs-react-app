@@ -4,6 +4,11 @@ export interface CardProps {
   data: MyPokemon;
 }
 
+export interface CardDetailsProps {
+  data: MyPokemon | null;
+  isLoading: boolean;
+}
+
 export interface MyPokemon {
   id: number;
   name: string;
@@ -19,11 +24,6 @@ interface SearchState {
 
 export interface SearchControlsProps extends SearchState, EventsForm {}
 
-export interface CardListProps extends NoResultsProps {
-  results: MyPokemon[];
-  isLoading: boolean;
-}
-
 export interface EventsForm {
   onChange: (query: string) => void;
   onSearch: (query?: string) => void;
@@ -33,7 +33,14 @@ export type ErrorState = {
   isError: boolean;
 };
 
-export interface SearchPanelState extends SearchState, CardListProps {}
+export interface SearchPanelState extends SearchState {
+  results: MyPokemon[];
+  error: string | null;
+}
+
+export interface CardListProps {
+  data: SearchPanelState;
+}
 
 export interface Table extends Omit<MyPokemon, 'id'> {
   description?: string;

@@ -79,9 +79,7 @@ form {
 }
 
 .list {
-  list-style-type: none;
   margin: 0 0 1em;
-  padding: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -89,6 +87,7 @@ form {
 }
 
 .item {
+  position: relative;
   width: 10em;
   min-height: 10em;
   border: 1px solid #bababa;
@@ -106,6 +105,14 @@ form {
 .item img {
   width: 80%;
   height: 80%;
+}
+
+.item-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .no-results {
@@ -137,4 +144,43 @@ form {
   align-items: center;
   flex-direction: column;
   gap: 12px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wrapper-image {
+  margin-bottom: 1rem;
+}
+
+.wrapper-image img {
+  max-width: 10rem;
+}
+
+.wrapper-lists {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.wrapper-list {
+  border: 1px solid #cacaca;
+  border-radius: 10px;
+  padding-bottom: 1rem;
+  width: 100%;
+  min-width: 9rem;
+}
+
+.list-title {
+  margin: 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid #cacaca;
+}
+
+.wrapper-list ul {
+  padding: 1rem;
+  text-align: left;
 }
