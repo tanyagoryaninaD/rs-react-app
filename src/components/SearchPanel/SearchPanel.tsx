@@ -54,7 +54,7 @@ class SearchPanel extends React.Component<object, SearchPanelState> {
 
   public loadPokemon = async (query?: string) => {
     try {
-      this.setState({ isLoading: true });
+      this.setState({ results: [], isLoading: true, error: null });
 
       const response = await this.server.getPokemon(query ?? this.state.query);
       const data = await response.json();
@@ -73,7 +73,12 @@ class SearchPanel extends React.Component<object, SearchPanelState> {
         results = [parsePokemonData(data)];
       }
 
-      this.handleSearch(results);
+      const uniqueResults = results.filter(
+        (item, index, array) =>
+          index === array.findIndex((i) => i.id === item.id)
+      );
+
+      this.handleSearch(uniqueResults);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
