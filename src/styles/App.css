@@ -34,6 +34,15 @@
   font-size: 2.5em;
 }
 
+.header-link {
+  color: #535bf2;
+}
+
+.header-link.active {
+  font-weight: bold;
+  text-shadow: 0 0 10px #646cff59;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
