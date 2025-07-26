@@ -1,15 +1,21 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem;
   text-align: center;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  width: 6em;
   will-change: filter;
   transition: filter 300ms;
+}
+
+.header-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 }
 
 .logo:hover {
@@ -72,67 +78,57 @@ form {
   color: #888;
 }
 
-table {
-  width: 100%;
-  min-width: 100%;
-  border: 1px solid #dbdbdb;
-  border-radius: 8px;
-  border-collapse: collapse;
-  margin-bottom: 1em;
+.list {
+  list-style-type: none;
+  margin: 0 0 1em;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em;
 }
 
-table img {
-  width: 4em;
+.item {
+  width: 10em;
+  min-height: 10em;
+  border: 1px solid #bababa;
+  border-radius: 10px;
+  padding: 0 1em 1em;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-tr {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(100px, 1fr);
-  padding: 0.3em;
+.item:hover {
+  transition: box-shadow 0.4s ease-in-out;
+  box-shadow: 0 0 5px 8px #646cff10;
 }
 
-th,
-td {
-  padding: 0.3em;
-  min-width: 5em;
-  border: 1px solid #dbdbdb;
-  text-align: center;
-  align-content: center;
+.item img {
+  width: 80%;
+  height: 80%;
 }
 
-.loading-row td {
-  text-align: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-}
-
-.table-loader {
+.no-results {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: #666;
-  font-size: 14px;
+  gap: 1rem;
+  padding: 1rem;
+  font-weight: bold;
+  font-size: 1.6rem;
 }
 
-.loader-spinner {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #3498db;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 1s linear infinite;
+.no-results img {
+  border-radius: 10px;
+  max-width: 20rem;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
+.loader {
+  width: 15rem;
+  font-weight: bold;
+}
 
-  100% {
-    transform: rotate(360deg);
-  }
+.loader img {
+  width: 100%;
 }
 
 .error-container {

@@ -26,9 +26,6 @@ describe('CardList component', () => {
     render(<CardList results={[]} isLoading={true} error={null} />);
 
     expect(screen.getByText(/Loading data.../)).toBeInTheDocument();
-    expect(
-      screen.getByText(/Loading data.../).querySelector('.loader-spinner')
-    ).toBeInTheDocument();
     expect(screen.queryByText(/Pokemon/)).toBeNull();
   });
 });
