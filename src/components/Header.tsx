@@ -16,7 +16,12 @@ export function Header(): ReactNode {
           </NavLink>
         </nav>
         <div>
-          <a href="https://pokeapi.co/about" target="_blank" rel="noreferrer">
+          <a
+            href="https://pokeapi.co/about"
+            data-testid="header-logo"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img src={pokeLogo} className="logo" alt="Poke logo" />
           </a>
         </div>
