@@ -34,6 +34,8 @@ export function SearchPanel() {
           isLoading: true,
         }));
 
+        navigate(`/pokemon/page/${currentPage}`);
+
         const data = await getPokemon(dataRequest);
 
         const newState = {

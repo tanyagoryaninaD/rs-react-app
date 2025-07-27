@@ -68,7 +68,7 @@ export function CardDetails(): ReactNode {
   };
 
   const handleClick = () => {
-    navigate(`/pokemon/page/${currentPage}`, { replace: true });
+    navigate(`/pokemon/page/${currentPage}`);
   };
 
   return (
