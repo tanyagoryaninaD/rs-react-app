@@ -16,12 +16,9 @@ export function App(): ReactNode {
           <Header />
           <Routes>
             <Route path="/" element={<SearchPanel />} />
-            <Route path="/pokemon" element={<SearchPanel />} />
-            <Route
-              path="/pokemon/:name"
-              element={<CardDetails />}
-              errorElement={<NotFound />}
-            />
+            <Route path="/pokemon/page/:page" element={<SearchPanel />}>
+              <Route path="details/:details" element={<CardDetails />} />
+            </Route>
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

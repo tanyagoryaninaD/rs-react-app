@@ -72,12 +72,10 @@ form {
   padding: 0.6em 1.2em;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.wrapper-panel {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .list {
@@ -153,6 +151,10 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid #cacaca;
+  height: min-content;
+  padding: 1rem;
+  border-radius: 10px;
 }
 
 .wrapper-image {
@@ -166,7 +168,9 @@ form {
 .wrapper-lists {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .wrapper-list {

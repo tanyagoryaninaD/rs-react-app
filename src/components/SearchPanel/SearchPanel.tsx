@@ -5,12 +5,12 @@ import type { GetPokemon, SearchPanelState } from '../../types/interfaces';
 import { GenerateError } from './Error/GenerateError';
 import { getPokemon } from '../../server/Loader';
 import { useLocalStorage } from '../../utils/localStorage';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Pagination } from './CardList/Pagination';
 
 export function SearchPanel() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
+  const { page } = useParams();
+  const currentPage = Number(page) || 1;
 
   const [stateStorage, setStateStorage] = useLocalStorage<SearchPanelState>(
     'tg-last-search',
@@ -19,12 +19,12 @@ export function SearchPanel() {
       results: [],
       error: null,
       isLoading: false,
-      page,
+      page: currentPage,
     }
   );
 
   const [state, setState] = useState<SearchPanelState>(stateStorage);
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   const loadPokemon = useCallback(
     async (dataRequest: GetPokemon): Promise<void> => {
@@ -53,8 +53,7 @@ export function SearchPanel() {
           ...newState,
         }));
 
-        setSearchParams({ page: String(newState.page) });
-        navigator(`/pokemon/?page=${newState.page}`, { replace: true });
+        navigate(`/pokemon/page/${newState.page}`, { replace: true });
       } catch (error) {
         if (error instanceof Error) {
           console.error(error);
@@ -78,7 +77,7 @@ export function SearchPanel() {
         }
       }
     },
-    [navigator, setSearchParams, setStateStorage, state.page]
+    [navigate, setStateStorage, state.page]
   );
 
   const handleQueryChange = (query: string): void => {
@@ -104,11 +103,11 @@ export function SearchPanel() {
         ...stateStorage,
       }));
 
-      loadPokemon({ query: state.query, page: page });
+      loadPokemon({ query: state.query, page: currentPage });
 
       firstRender.current = true;
     }
-  }, [loadPokemon, page, state.page, state.query, stateStorage]);
+  }, [currentPage, loadPokemon, state.page, state.query, stateStorage]);
 
   return (
     <div>
@@ -118,12 +117,17 @@ export function SearchPanel() {
         onSearch={loadPokemon}
         onChange={handleQueryChange}
       />
-      <CardList data={state} />
-      <Pagination
-        page={state.page}
-        onUpdateState={updateSearchPanelState}
-        onSearch={loadPokemon}
-      />
+      <div className="wrapper-panel">
+        <div>
+          <CardList data={state} />
+          <Pagination
+            page={state.page}
+            onUpdateState={updateSearchPanelState}
+            onSearch={loadPokemon}
+          />
+        </div>
+        <Outlet />
+      </div>
       <GenerateError />
     </div>
   );

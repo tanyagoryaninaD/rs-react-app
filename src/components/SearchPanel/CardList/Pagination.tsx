@@ -1,14 +1,14 @@
 import { useState, type ReactNode } from 'react';
 import type { PaginationProps } from '../../../types/interfaces';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export function Pagination(props: PaginationProps): ReactNode {
-  const [searchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
+  const { page } = useParams();
+  const currentPage = Number(page) || 1;
 
   const [pagination, setPageCount] = useState({
     isLoading: true,
-    prevDisabled: page === 1 ? true : false,
+    prevDisabled: currentPage === 1 ? true : false,
     nextDisabled: false,
   });
 
@@ -42,16 +42,16 @@ export function Pagination(props: PaginationProps): ReactNode {
   };
 
   const handlePaginationClickPrev = (): void => {
-    if (page === 1) {
+    if (currentPage === 1) {
       return;
     }
 
-    const newPage = page - 1;
+    const newPage = currentPage - 1;
     updateStates(newPage);
   };
 
   const handlePaginationClickNext = (): void => {
-    const newPage = page + 1;
+    const newPage = currentPage + 1;
     updateStates(newPage);
   };
 
@@ -64,7 +64,7 @@ export function Pagination(props: PaginationProps): ReactNode {
       >
         Prev
       </button>
-      <p>{page}</p>
+      <p>{currentPage}</p>
       <button
         className="next"
         onClick={handlePaginationClickNext}

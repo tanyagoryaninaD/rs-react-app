@@ -1,12 +1,16 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { getPokemon } from '../../../server/Loader';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { CardDetailsProps } from '../../../types/interfaces';
 import { upperFirstLetter } from '../../../utils/helpers';
 import { LoadingIndicator } from './LoadingIndicator';
 
 export function CardDetails(): ReactNode {
-  const location = useLocation();
+  const { details } = useParams();
+  const { page } = useParams();
+  const currentPage = Number(page) || 1;
+
+  const navigate = useNavigate();
 
   const [state, setState] = useState<CardDetailsProps>({
     data: null,
@@ -16,13 +20,11 @@ export function CardDetails(): ReactNode {
   useEffect(() => {
     const fetchPokemon = async () => {
       try {
-        const pathname = location.pathname.split('/').pop();
-
-        if (!pathname) {
-          throw new Error(`Not found ${pathname}`);
+        if (!details) {
+          throw new Error(`Not found ${details}`);
         }
 
-        const results = await getPokemon({ query: pathname });
+        const results = await getPokemon({ query: details });
 
         setState({ data: results[0], isLoading: false });
       } catch (error) {
@@ -37,7 +39,7 @@ export function CardDetails(): ReactNode {
     };
 
     fetchPokemon();
-  }, [location.pathname]);
+  }, [details]);
 
   const abilities = (): ReactNode | null => {
     return state.data?.abilities ? (
@@ -65,6 +67,10 @@ export function CardDetails(): ReactNode {
     ) : null;
   };
 
+  const handleClick = () => {
+    navigate(`/pokemon/page/${currentPage}`, { replace: true });
+  };
+
   return (
     <>
       <div className="card-details">
@@ -84,6 +90,7 @@ export function CardDetails(): ReactNode {
               {abilities()}
               {moves()}
             </div>
+            <button onClick={handleClick}>Close</button>
           </>
         )}
       </div>
