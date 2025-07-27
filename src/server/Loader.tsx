@@ -3,9 +3,17 @@ import type { GetPokemon, MyPokemon } from '../types/interfaces';
 import { parsePokemonData } from '../utils/helpers';
 
 export async function getPokemon(data: GetPokemon): Promise<MyPokemon[]> {
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon${data.query ? '/' + data.query.trim() : ''}/?limit=${data.limit ?? 10}&offset=${data.offset ?? 0}`
-  );
+  let response: Response;
+
+  if (data.query) {
+    response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${data.query.trim()}`
+    );
+  } else {
+    response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/?limit=10&offset=${data.page ? Math.max(0, (data.page - 1) * 10) : 0}`
+    );
+  }
 
   if (!response.ok) {
     if (response.status >= 500) {

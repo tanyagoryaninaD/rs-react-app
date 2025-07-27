@@ -26,7 +26,7 @@ export interface SearchControlsProps extends SearchState, EventsForm {}
 
 export interface EventsForm {
   onChange: (query: string) => void;
-  onSearch: (query?: string) => void;
+  onSearch: (data: GetPokemon) => Promise<void>;
 }
 
 export type ErrorState = {
@@ -36,10 +36,17 @@ export type ErrorState = {
 export interface SearchPanelState extends SearchState {
   results: MyPokemon[];
   error: string | null;
+  page: number;
 }
 
 export interface CardListProps {
   data: SearchPanelState;
+}
+
+export interface PaginationProps {
+  page: number;
+  onUpdateState: (newState: Partial<SearchPanelState>) => void;
+  onSearch: (data: GetPokemon) => Promise<void>;
 }
 
 export interface Table extends Omit<MyPokemon, 'id'> {
@@ -69,6 +76,5 @@ export interface ErrorBoundaryState {
 
 export interface GetPokemon {
   query?: string;
-  limit?: number;
-  offset?: number;
+  page?: number;
 }

@@ -16,7 +16,7 @@ const mockResults = [
 ];
 
 describe('SearchPanel component', () => {
-  it('componentDidMount: loads data from localStorage', () => {
+  it('componentDidMount: loads data from localStorage', async () => {
     const mockState = {
       query: 'ivysaur',
       results: mockResults,
@@ -34,8 +34,10 @@ describe('SearchPanel component', () => {
       </MemoryRouter>
     );
 
-    expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
-    expect(screen.getByDisplayValue('ivysaur')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
+      expect(screen.getByDisplayValue('ivysaur')).toBeInTheDocument();
+    });
 
     getItemSpy.mockRestore();
   });

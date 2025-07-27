@@ -4,7 +4,7 @@ import type { SearchControlsProps } from '../../../types/interfaces';
 export function SearchControls(props: SearchControlsProps): ReactNode {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    props.onSearch();
+    props.onSearch({ query: props.query });
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
