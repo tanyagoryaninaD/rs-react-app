@@ -5,7 +5,7 @@ export function NoResults(props: NoResultsProps): ReactNode {
   return (
     <div className="no-results">
       {props.error || 'No results found'}
-      <img src={'public/not-results.gif'} alt="Pikachu" />
+      <img src={'/public/not-results.gif'} alt="Pikachu" />
     </div>
   );
 }
