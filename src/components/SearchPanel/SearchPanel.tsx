@@ -79,7 +79,7 @@ export function SearchPanel() {
         }
       }
     },
-    [navigate, setStateStorage, state.page]
+    [currentPage, navigate, setStateStorage, state.page]
   );
 
   const handleQueryChange = (query: string): void => {
