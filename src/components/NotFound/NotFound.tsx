@@ -5,7 +5,7 @@ export function NotFound(): ReactNode {
   const navigate = useNavigate();
 
   const handlerClick = () => {
-    navigate('/pokemon');
+    navigate('/');
   };
 
   return (

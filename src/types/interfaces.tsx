@@ -44,7 +44,6 @@ export interface CardListProps {
 }
 
 export interface PaginationProps {
-  page: number;
   onUpdateState: (newState: Partial<SearchPanelState>) => void;
   onSearch: (data: GetPokemon) => Promise<void>;
 }

@@ -42,10 +42,6 @@ export function Pagination(props: PaginationProps): ReactNode {
   };
 
   const handlePaginationClickPrev = (): void => {
-    if (currentPage === 1) {
-      return;
-    }
-
     const newPage = currentPage - 1;
     updateStates(newPage);
   };

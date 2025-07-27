@@ -8,7 +8,13 @@ describe('CardList component', () => {
     render(
       <MemoryRouter>
         <CardList
-          data={{ query: '', results: [], isLoading: false, error: null }}
+          data={{
+            query: '',
+            results: [],
+            isLoading: false,
+            error: null,
+            page: 1,
+          }}
         />
       </MemoryRouter>
     );
@@ -32,6 +38,7 @@ describe('CardList component', () => {
             results: mockResults,
             isLoading: false,
             error: null,
+            page: 1,
           }}
         />
       </MemoryRouter>
@@ -49,6 +56,7 @@ describe('CardList component', () => {
             results: [],
             isLoading: true,
             error: null,
+            page: 1,
           }}
         />
       </MemoryRouter>

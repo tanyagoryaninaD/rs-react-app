@@ -123,7 +123,6 @@ export function SearchPanel() {
         <div>
           <CardList data={state} />
           <Pagination
-            page={state.page}
             onUpdateState={updateSearchPanelState}
             onSearch={loadPokemon}
           />
