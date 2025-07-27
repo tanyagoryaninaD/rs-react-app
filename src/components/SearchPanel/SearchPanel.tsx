@@ -19,7 +19,7 @@ export function SearchPanel() {
       results: [],
       error: null,
       isLoading: false,
-      page: page,
+      page,
     }
   );
 
@@ -36,47 +36,49 @@ export function SearchPanel() {
 
         const data = await getPokemon(dataRequest);
 
-        setState((prevState) => ({
-          ...prevState,
+        const newState = {
           results: data,
           error: null,
           isLoading: false,
-          page: dataRequest.page ?? prevState.page,
+          page: dataRequest.page ?? state.page,
+        };
+
+        setState((prevState) => ({
+          ...prevState,
+          ...newState,
         }));
 
         setStateStorage((prevState) => ({
           ...prevState,
-          results: data,
-          error: null,
-          isLoading: false,
-          page: dataRequest.page ?? prevState.page,
+          ...newState,
         }));
 
-        setSearchParams(`?page=${state.page}`);
-        navigator(`/pokemon/`, { replace: true });
+        setSearchParams({ page: String(newState.page) });
+        navigator(`/pokemon/?page=${newState.page}`, { replace: true });
       } catch (error) {
         if (error instanceof Error) {
           console.error(error);
 
-          setState((prevState) => ({
-            ...prevState,
+          const newState = {
             results: [],
             error: error.message,
             isLoading: false,
             page: 1,
+          };
+
+          setState((prevState) => ({
+            ...prevState,
+            ...newState,
           }));
 
           setStateStorage((prevState) => ({
             ...prevState,
-            results: [],
-            error: error.message,
-            isLoading: false,
-            page: 1,
+            ...newState,
           }));
         }
       }
     },
-    [navigator, setSearchParams, setStateStorage, state]
+    [navigator, setSearchParams, setStateStorage, state.page]
   );
 
   const handleQueryChange = (query: string): void => {
@@ -102,7 +104,7 @@ export function SearchPanel() {
         ...stateStorage,
       }));
 
-      loadPokemon({ query: state.query, page: state.page });
+      loadPokemon({ query: state.query, page: page });
 
       firstRender.current = true;
     }

@@ -1,8 +1,11 @@
 import { useState, type ReactNode } from 'react';
 import type { PaginationProps } from '../../../types/interfaces';
+import { useSearchParams } from 'react-router-dom';
 
 export function Pagination(props: PaginationProps): ReactNode {
-  const { page } = props;
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
+
   const [pagination, setPageCount] = useState({
     isLoading: true,
     prevDisabled: page === 1 ? true : false,
