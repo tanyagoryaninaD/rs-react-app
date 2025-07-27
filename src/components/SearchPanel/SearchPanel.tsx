@@ -108,7 +108,7 @@ export function SearchPanel() {
 
       firstRender.current = true;
     }
-  }, [loadPokemon, state.page, state.query, stateStorage]);
+  }, [loadPokemon, page, state.page, state.query, stateStorage]);
 
   return (
     <div>
