@@ -9,6 +9,7 @@ describe('NoResults component', () => {
     const noResults = screen
       .getByText(/test error message/)
       .closest('.no-results');
+
     expect(noResults).toBeInTheDocument();
   });
 
@@ -18,6 +19,7 @@ describe('NoResults component', () => {
     const noResults = screen
       .getByText(/No results found/)
       .closest('.no-results');
+
     expect(noResults).toBeInTheDocument();
   });
 
@@ -27,6 +29,7 @@ describe('NoResults component', () => {
     const noResults = screen
       .getByText(/No results found/)
       .closest('.no-results');
+
     expect(noResults).toBeInTheDocument();
   });
 });

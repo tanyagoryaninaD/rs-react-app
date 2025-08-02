@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import pokeLogo from '../../public/pokeapi.png';
+import pokeLogo from '../assets/pokeapi.png';
 import { NavLink } from 'react-router-dom';
 
 export function Header(): ReactNode {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import * as pokemonApi from '../server/Loader';
+import { getPokemon } from '../server/Loader';
 
 const mockPokemon1 = {
   name: 'ivysaur',
@@ -31,22 +31,6 @@ const mockPokemon2 = {
   moves: [{ move: { name: 'move-1' } }],
 };
 
-const mockResults1 = {
-  name: 'ivysaur',
-  id: 2,
-  abilities: ['ability-1'],
-  image: 'https://example.com/dream_world.png',
-  moves: ['move-1'],
-};
-
-const mockResults2 = {
-  name: 'venusaur',
-  id: 3,
-  abilities: ['ability-1'],
-  image: 'https://example.com/dream_world.png',
-  moves: ['move-1'],
-};
-
 describe('getPokemon', () => {
   it('should call fetch with query', async () => {
     const mockFetch = vi.spyOn(window, 'fetch').mockResolvedValue({
@@ -55,12 +39,11 @@ describe('getPokemon', () => {
       json: async () => mockPokemon1,
     } as Response);
 
-    const result = await pokemonApi.getPokemon({ query: 'ivysaur' });
+    await getPokemon({ query: 'ivysaur' });
 
     expect(fetch).toHaveBeenCalledWith(
       'https://pokeapi.co/api/v2/pokemon/ivysaur'
     );
-    expect(result).toEqual([mockResults1]);
 
     mockFetch.mockRestore();
   });
@@ -86,13 +69,20 @@ describe('getPokemon', () => {
         json: async () => mockPokemon2,
       } as Response);
 
-    const result = await pokemonApi.getPokemon({ query: '' });
+    await getPokemon({ query: '' });
 
-    expect(fetch).toHaveBeenCalledWith(
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
       'https://pokeapi.co/api/v2/pokemon/?limit=10&offset=0'
     );
-    expect(result).toEqual(expect.arrayContaining([mockResults1]));
-    expect(result).toEqual(expect.arrayContaining([mockResults2]));
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      'https://pokeapi.co/api/v2/pokemon/ivysaur'
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      3,
+      'https://pokeapi.co/api/v2/pokemon/venusaur'
+    );
 
     mockFetch.mockRestore();
   });
@@ -104,7 +94,7 @@ describe('getPokemon', () => {
       json: async () => ({}),
     } as Response);
 
-    await expect(pokemonApi.getPokemon({ query: '' })).rejects.toThrow(
+    await expect(getPokemon({ query: '' })).rejects.toThrow(
       'Problems on the server side'
     );
 
@@ -118,9 +108,7 @@ describe('getPokemon', () => {
       json: async () => ({}),
     } as Response);
 
-    await expect(pokemonApi.getPokemon({ query: '' })).rejects.toThrow(
-      'No results found'
-    );
+    await expect(getPokemon({ query: '' })).rejects.toThrow('No results found');
 
     mockFetch.mockRestore();
   });
