@@ -128,6 +128,14 @@ form {
   height: 100%;
 }
 
+.item-checkbox {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
 .no-results {
   display: flex;
   flex-direction: column;

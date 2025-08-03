@@ -85,3 +85,7 @@ export interface GetPokemon {
   query?: string;
   page?: number;
 }
+
+export interface StateSelectedItems {
+  [key: string]: MyPokemon;
+}

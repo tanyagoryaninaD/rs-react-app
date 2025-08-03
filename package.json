@@ -17,9 +17,12 @@
     "test:changed": "vitest --changed"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "pokeapi-typescript": "^3.0.3",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.7.1"
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.7.1",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
