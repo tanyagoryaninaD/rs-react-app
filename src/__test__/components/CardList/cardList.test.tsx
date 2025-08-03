@@ -106,22 +106,4 @@ describe('CardList component', () => {
 
     expect(mockOnUpdateState).toBeCalledWith({ details: 'pikachu' });
   });
-
-  it('', async () => {
-    mockDataState.results = mockResults;
-
-    render(
-      <Provider store={mockStore}>
-        <CardList
-          data={mockDataState}
-          onSearch={mockOnSearch}
-          onUpdateState={mockOnUpdateState}
-        />
-      </Provider>
-    );
-
-    await userEvent.click(screen.getByTestId('card'));
-
-    expect(mockOnUpdateState).toBeCalledWith({ details: 'pikachu' });
-  });
 });

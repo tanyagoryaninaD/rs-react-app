@@ -33,7 +33,7 @@ export function CardList(props: CardListProps): ReactNode {
   return (
     <div className={details ? 'wrapper-panel' : 'wrapper-panel full'}>
       <div className="wrapper-panel-list">
-        {!error || results.length > 0 ? (
+        {!error || results.length ? (
           <>
             <ul className="list">{renderList()}</ul>
             {page ? (
