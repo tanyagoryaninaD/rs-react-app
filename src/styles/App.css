@@ -267,6 +267,11 @@ form {
   animation: flyout 0.5s ease-in alternate;
 }
 
+body.dark .flyout {
+  color: #f9f9f9;
+  background-color: #242424;
+}
+
 @keyframes flyout {
   from {
     transform: translateY(200px);
@@ -301,4 +306,25 @@ form {
 
 .flyout-link.download:hover {
   box-shadow: 0 0 5px 8px #646cff10;
+}
+
+body.dark .flyout-link.download {
+  background-color: #393939;
+}
+
+.theme {
+  width: 2rem;
+  height: 2rem;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 1rem;
+}
+
+.theme.light {
+  background-image: url('/src/assets/sun.svg');
+}
+
+.theme.dark {
+  background-image: url('/src/assets/moon.svg');
 }
