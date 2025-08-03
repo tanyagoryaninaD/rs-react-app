@@ -32,6 +32,7 @@ export function Card(props: CardProps): ReactNode {
       <h3 data-testid="card-title">{upperFirstLetter(name)}</h3>
       <div>{image ? <img src={image} alt={name} /> : ''}</div>
       <input
+        data-testid="card-checkbox"
         type="checkbox"
         className="item-checkbox"
         checked={Object.keys(stateSelectedItems).includes(name)}

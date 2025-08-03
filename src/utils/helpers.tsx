@@ -26,6 +26,10 @@ export function upperFirstLetter(value: string): string {
 }
 
 export function parseToСsvUrl(data: { [key: string]: MyPokemon }): string {
+  if (!data) {
+    return '';
+  }
+
   const firstKey = Object.keys(data)[0];
   const headers = Object.keys(data[firstKey]).join(',');
 

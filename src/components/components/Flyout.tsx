@@ -19,6 +19,7 @@ export function Flyout(): ReactNode {
     <div className="flyout">
       <p className="flyout-text">{stateSize} items are selected</p>
       <button
+        data-testid="flyout-unselect"
         className="flyout-button unselect"
         type="button"
         onClick={handlerUnselect}
@@ -26,8 +27,8 @@ export function Flyout(): ReactNode {
         Unselect all
       </button>
       <a
+        data-testid="flyout-download"
         className="flyout-link download"
-        type="button"
         download={`${stateSize}_items.csv`}
         href={parseToСsvUrl(stateSelectedItems)}
       >

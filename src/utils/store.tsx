@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import type { MyPokemon, StateSelectedItems } from '../types/interfaces';
 
-const selectedItemsSlice = createSlice({
+export const selectedItemsSlice = createSlice({
   name: 'selectedItems',
   initialState: { items: {}, size: 0 },
   reducers: {

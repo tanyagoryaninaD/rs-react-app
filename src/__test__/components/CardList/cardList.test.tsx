@@ -3,6 +3,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
 import userEvent from '@testing-library/user-event';
 import type { SearchPanelState } from '../../../types/interfaces';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import { selectedItemsSlice } from '../../../utils/store';
 
 const mockResults = [
   {
@@ -15,6 +18,12 @@ const mockResults = [
 ];
 const mockOnUpdateState = vi.fn();
 const mockOnSearch = vi.fn();
+
+const mockStore = configureStore({
+  reducer: {
+    selectedItems: selectedItemsSlice.reducer,
+  },
+});
 
 describe('CardList component', () => {
   let mockDataState: SearchPanelState;
@@ -34,11 +43,13 @@ describe('CardList component', () => {
     mockDataState.error = 'No results found';
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      <Provider store={mockStore}>
+        <CardList
+          data={mockDataState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      </Provider>
     );
 
     const result = screen.getByText(/No results found/i);
@@ -49,11 +60,13 @@ describe('CardList component', () => {
     mockDataState.results = mockResults;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      <Provider store={mockStore}>
+        <CardList
+          data={mockDataState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      </Provider>
     );
 
     expect(screen.getByText('Pikachu')).toBeInTheDocument();
@@ -63,11 +76,13 @@ describe('CardList component', () => {
     mockDataState.isLoading = true;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      <Provider store={mockStore}>
+        <CardList
+          data={mockDataState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      </Provider>
     );
 
     expect(screen.getByText(/Loading data.../)).toBeInTheDocument();
@@ -78,11 +93,13 @@ describe('CardList component', () => {
     mockDataState.results = mockResults;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      <Provider store={mockStore}>
+        <CardList
+          data={mockDataState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      </Provider>
     );
 
     await userEvent.click(screen.getByTestId('card'));
@@ -94,11 +111,13 @@ describe('CardList component', () => {
     mockDataState.results = mockResults;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      <Provider store={mockStore}>
+        <CardList
+          data={mockDataState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      </Provider>
     );
 
     await userEvent.click(screen.getByTestId('card'));

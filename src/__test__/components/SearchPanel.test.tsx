@@ -12,6 +12,9 @@ import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
 import * as pokemonApi from '../../server/Loader';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import type { GetPokemon, MyPokemon } from '../../types/interfaces';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import { selectedItemsSlice } from '../../utils/store';
 
 const mockResults = [
   {
@@ -30,6 +33,12 @@ const mockState = {
   isLoading: false,
   details: '',
 };
+
+const mockStore = configureStore({
+  reducer: {
+    selectedItems: selectedItemsSlice.reducer,
+  },
+});
 
 describe('SearchPanel component', () => {
   let getItemSpy: MockInstance<(key: string) => string | null>;
@@ -54,11 +63,13 @@ describe('SearchPanel component', () => {
       .mockImplementation(() => {});
 
     render(
-      <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
-        <Routes>
-          <Route index element={<SearchPanel />} />
-        </Routes>
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
+          <Routes>
+            <Route index element={<SearchPanel />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => {
@@ -89,11 +100,13 @@ describe('SearchPanel component', () => {
       .mockImplementation(() => {});
 
     render(
-      <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
-        <Routes>
-          <Route index element={<SearchPanel />} />
-        </Routes>
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
+          <Routes>
+            <Route index element={<SearchPanel />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => {
@@ -113,9 +126,11 @@ describe('SearchPanel component', () => {
       .mockResolvedValueOnce(mockResults);
 
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <SearchPanel />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter initialEntries={['/']}>
+          <SearchPanel />
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => {
@@ -141,9 +156,11 @@ describe('SearchPanel component', () => {
       .mockImplementation(() => {});
 
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <SearchPanel />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter initialEntries={['/']}>
+          <SearchPanel />
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => {
