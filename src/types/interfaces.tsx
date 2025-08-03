@@ -86,6 +86,11 @@ export interface GetPokemon {
   page?: number;
 }
 
+export interface MyStore {
+  selectedItems: StateSelectedItems;
+}
+
 export interface StateSelectedItems {
-  [key: string]: MyPokemon;
+  items: { [key: string]: MyPokemon };
+  size: number;
 }
