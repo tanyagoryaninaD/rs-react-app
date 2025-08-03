@@ -1,10 +1,18 @@
 import type { ReactNode } from 'react';
 
-export interface CardProps {
+interface OnUpdateState {
+  onUpdateState: (newState: Partial<SearchPanelState>) => void;
+}
+
+export interface CardDetailsProps extends OnUpdateState {
+  details: string | null;
+}
+
+export interface CardProps extends OnUpdateState {
   data: MyPokemon;
 }
 
-export interface CardDetailsProps {
+export interface CardDetailsState {
   data: MyPokemon | null;
   isLoading: boolean;
 }
@@ -22,11 +30,10 @@ interface SearchState {
   isLoading: boolean;
 }
 
-export interface SearchControlsProps extends SearchState, EventsForm {}
-
-export interface EventsForm {
+export interface SearchControlsProps
+  extends SearchState,
+    Pick<CardListProps, 'onSearch'> {
   onChange: (query: string) => void;
-  onSearch: (data: GetPokemon) => Promise<void>;
 }
 
 export type ErrorState = {
@@ -36,16 +43,17 @@ export type ErrorState = {
 export interface SearchPanelState extends SearchState {
   results: MyPokemon[];
   error: string | null;
-  page: number;
+  page: number | null;
+  details: string | null;
 }
-
-export interface CardListProps {
-  data: SearchPanelState;
-}
-
-export interface PaginationProps {
-  onUpdateState: (newState: Partial<SearchPanelState>) => void;
+export interface PaginationProps
+  extends OnUpdateState,
+    Pick<SearchPanelState, 'page'> {
   onSearch: (data: GetPokemon) => Promise<void>;
+}
+
+export interface CardListProps extends Omit<PaginationProps, 'page'> {
+  data: SearchPanelState;
 }
 
 export interface Table extends Omit<MyPokemon, 'id'> {

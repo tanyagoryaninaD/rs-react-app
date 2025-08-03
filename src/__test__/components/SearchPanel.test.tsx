@@ -1,13 +1,21 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  type MockInstance,
+  beforeEach,
+  afterEach,
+} from 'vitest';
 import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
-import userEvent from '@testing-library/user-event';
 import * as pokemonApi from '../../server/Loader';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import type { GetPokemon, MyPokemon } from '../../types/interfaces';
 
 const mockResults = [
   {
-    name: 'ivysaur',
+    name: 'pikachu',
     id: 1,
     abilities: [''],
     image: '',
@@ -15,60 +23,116 @@ const mockResults = [
   },
 ];
 
-describe('SearchPanel component', () => {
-  it('componentDidMount: loads data from localStorage', async () => {
-    const mockState = {
-      query: 'ivysaur',
-      results: mockResults,
-      error: null,
-      isLoading: false,
-    };
+const mockState = {
+  query: 'pikachu',
+  results: mockResults,
+  error: null,
+  isLoading: false,
+  details: '',
+};
 
-    const getItemSpy = vi
+describe('SearchPanel component', () => {
+  let getItemSpy: MockInstance<(key: string) => string | null>;
+  let mockGetPokemon: MockInstance<(data: GetPokemon) => Promise<MyPokemon[]>>;
+
+  beforeEach(() => {
+    getItemSpy = vi
       .spyOn(Storage.prototype, 'getItem')
       .mockReturnValue(JSON.stringify(mockState));
+  });
+
+  afterEach(() => {
+    getItemSpy.mockRestore();
+    mockGetPokemon.mockRestore();
+  });
+
+  it('should upload data to the SearchPanel for search queries from the url and get an error for the rejected request', async () => {
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockRejectedValue('');
+    mockGetPokemon = vi.spyOn(pokemonApi, 'getPokemon').mockResolvedValue([]);
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
 
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
+        <Routes>
+          <Route index element={<SearchPanel />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(mockGetPokemon).toBeCalledTimes(3);
+      expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
+        query: 'pikachu',
+        page: undefined,
+      });
+      expect(mockGetPokemon).toHaveBeenNthCalledWith(2, {
+        page: 2,
+        query: '',
+      });
+      expect(mockGetPokemon).toHaveBeenNthCalledWith(3, { query: 'pikachu' });
+
+      expect(consoleError).toBeCalled();
+    });
+
+    consoleError.mockRestore();
+  });
+
+  it('if there is an error in loading СardDetails, an error should be displayed in the console', async () => {
+    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockRejectedValue('');
+    mockGetPokemon = vi
+      .spyOn(pokemonApi, 'getPokemon')
+      .mockRejectedValue(new Error('test error'));
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    render(
+      <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
+        <Routes>
+          <Route index element={<SearchPanel />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
+        query: 'pikachu',
+        page: undefined,
+      });
+      expect(consoleError).toBeCalled();
+    });
+
+    consoleError.mockRestore();
+  });
+
+  it('during rendering data should be loaded from localStorage', async () => {
+    mockGetPokemon = vi
+      .spyOn(pokemonApi, 'getPokemon')
+      .mockResolvedValueOnce(mockResults);
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
         <SearchPanel />
       </MemoryRouter>
     );
 
     await waitFor(() => {
       expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
-      expect(screen.getByDisplayValue('ivysaur')).toBeInTheDocument();
-    });
 
-    getItemSpy.mockRestore();
+      expect(mockGetPokemon).toHaveBeenCalledTimes(1);
+      expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
+        page: undefined,
+        query: 'pikachu',
+      });
+
+      expect(screen.getByText('Pikachu')).toBeInTheDocument();
+    });
   });
 
-  it('loadPokemon: loads data with query', async () => {
-    const mockGetPokemon = vi
-      .spyOn(pokemonApi, 'getPokemon')
-      .mockImplementation(async () => mockResults);
-
-    render(
-      <MemoryRouter>
-        <SearchPanel />
-      </MemoryRouter>
-    );
-
-    await userEvent.type(screen.getByRole('textbox'), 'ivysaur');
-    await userEvent.click(screen.getByRole('button', { name: /Search/ }));
-
-    await waitFor(() => {
-      const pokemon = screen.getByText(/ivysaur/i);
-      expect(pokemon).toBeInTheDocument();
-      expect(mockGetPokemon).toBeCalledWith(
-        expect.objectContaining({ query: 'ivysaur' })
-      );
-    });
-
-    mockGetPokemon.mockRestore();
-  });
-
-  it('loadPokemon: loads data with error', async () => {
-    const mockGetPokemon = vi
+  it('loads data with error', async () => {
+    mockGetPokemon = vi
       .spyOn(pokemonApi, 'getPokemon')
       .mockRejectedValue(new Error('test error'));
 
@@ -77,20 +141,16 @@ describe('SearchPanel component', () => {
       .mockImplementation(() => {});
 
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={['/']}>
         <SearchPanel />
       </MemoryRouter>
     );
-
-    await userEvent.type(screen.getByRole('textbox'), 'ivysaur');
-    await userEvent.click(screen.getByRole('button', { name: /Search/ }));
 
     await waitFor(() => {
       expect(screen.getByText('test error')).toBeInTheDocument();
       expect(mockGetPokemon).toBeCalled();
     });
 
-    mockGetPokemon.mockRestore();
     consoleError.mockRestore();
   });
 });

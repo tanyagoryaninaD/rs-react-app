@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import gif from '../../../public/not-found.gif';
+import gif from '../../assets/not-found.gif';
 
 export function NotFound(): ReactNode {
   const navigate = useNavigate();

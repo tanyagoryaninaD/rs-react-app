@@ -21,6 +21,7 @@ export function SearchControls(props: SearchControlsProps): ReactNode {
         onChange={handleChange}
         placeholder="Enter your search term"
         disabled={props.isLoading}
+        data-testid="search-input"
       />
       <button type="submit" disabled={props.isLoading}>
         {props.isLoading ? 'Searching...' : 'Search'}

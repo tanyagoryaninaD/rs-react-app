@@ -1,31 +1,37 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { CardDetails } from '../../../components/SearchPanel/CardList/CardDetails';
+import * as pokemonApi from '../../../server/Loader';
+
+const mockResults = [
+  {
+    name: 'pikachu',
+    id: 1,
+    abilities: [''],
+    image: '',
+    moves: [''],
+  },
+];
+
+const mockOnUpdateState = vi.fn();
+const mockGetPokemon = vi
+  .spyOn(pokemonApi, 'getPokemon')
+  .mockResolvedValueOnce(mockResults);
 
 describe('CardDetails component', () => {
-  it('close card when clicked on button "Close"', async () => {
+  it('clicking on the "close" button should update the details status', async () => {
     render(
-      <MemoryRouter initialEntries={[`/pokemon/page/1/details/test`]}>
-        <Routes>
-          <Route
-            path="/pokemon/page/:page/details/:details"
-            element={<CardDetails />}
-          />
-        </Routes>
-      </MemoryRouter>
+      <CardDetails details={'pikachu'} onUpdateState={mockOnUpdateState} />
     );
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /Close/i })
-      ).toBeInTheDocument();
-    });
+    const button = await screen.findByRole('button', { name: /Close/i });
 
-    const button = screen.getByRole('button', { name: /Close/i });
     await userEvent.click(button);
 
-    expect(window.location.pathname).toBe('/');
+    expect(mockGetPokemon).toBeCalledWith({ query: 'pikachu' });
+    expect(mockOnUpdateState).toBeCalledWith({ details: null });
+
+    mockGetPokemon.mockRestore();
   });
 });

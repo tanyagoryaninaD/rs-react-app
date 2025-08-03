@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { NoResultsProps } from '../../../types/interfaces';
-import gif from '../../../../public/not-results.gif';
+import gif from '../../../assets/not-results.gif';
 
 export function NoResults(props: NoResultsProps): ReactNode {
   return (

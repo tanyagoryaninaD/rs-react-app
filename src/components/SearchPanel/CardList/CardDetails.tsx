@@ -1,45 +1,40 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { getPokemon } from '../../../server/Loader';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { CardDetailsProps } from '../../../types/interfaces';
+import type {
+  CardDetailsProps,
+  CardDetailsState,
+} from '../../../types/interfaces';
 import { upperFirstLetter } from '../../../utils/helpers';
 import { LoadingIndicator } from './LoadingIndicator';
 
-export function CardDetails(): ReactNode {
-  const { details } = useParams();
-  const { page } = useParams();
-  const currentPage = Number(page) || 1;
-
-  const navigate = useNavigate();
-
-  const [state, setState] = useState<CardDetailsProps>({
+export function CardDetails(props: CardDetailsProps): ReactNode {
+  const [state, setState] = useState<CardDetailsState>({
     data: null,
-    isLoading: true,
+    isLoading: false,
   });
+  const updateState = props.onUpdateState;
 
   useEffect(() => {
     const fetchPokemon = async () => {
       try {
-        if (!details) {
-          throw new Error(`Not found ${details}`);
+        if (props.details) {
+          setState({ data: null, isLoading: true });
+          const results = await getPokemon({ query: props.details });
+          setState({ data: results[0], isLoading: false });
         }
-
-        const results = await getPokemon({ query: details });
-
-        setState({ data: results[0], isLoading: false });
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.message);
-          setState({ data: null, isLoading: false });
         } else {
           console.error('Not found');
-          setState({ data: null, isLoading: false });
         }
+
+        updateState({ details: null });
       }
     };
 
     fetchPokemon();
-  }, [details]);
+  }, [props.details, updateState]);
 
   const abilities = (): ReactNode | null => {
     return state.data?.abilities ? (
@@ -68,7 +63,7 @@ export function CardDetails(): ReactNode {
   };
 
   const handleClick = () => {
-    navigate(`/pokemon/page/${currentPage}`);
+    props.onUpdateState({ details: null });
   };
 
   return (
@@ -78,7 +73,9 @@ export function CardDetails(): ReactNode {
           <LoadingIndicator />
         ) : (
           <>
-            <h2>{upperFirstLetter(state.data?.name || '')}</h2>
+            <h2 data-testid="card-details-title">
+              {upperFirstLetter(state.data?.name || '')}
+            </h2>
             <div className="wrapper-image">
               {state.data?.image ? (
                 <img src={state.data?.image} alt={state.data?.name} />
