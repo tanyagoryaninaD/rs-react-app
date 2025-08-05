@@ -1,21 +1,34 @@
-import pokeLogo from '../../public/pokeapi.png';
-import React from 'react';
+import type { ReactNode } from 'react';
+import pokeLogo from '../assets/pokeapi.png';
+import { NavLink } from 'react-router-dom';
 
-class Header extends React.Component {
-  public render() {
-    return (
-      <>
-        <header>
+export function Header(): ReactNode {
+  return (
+    <>
+      <header>
+        <div className="header-top">
           <div>
-            <a href="https://pokeapi.co/about" target="_blank" rel="noreferrer">
+            <a
+              href="https://pokeapi.co/about"
+              data-testid="header-logo"
+              target="_blank"
+              rel="noreferrer"
+            >
               <img src={pokeLogo} className="logo" alt="Poke logo" />
             </a>
           </div>
-          <h1 className="header-title">Search Pokémon</h1>
-        </header>
-      </>
-    );
-  }
+          <nav>
+            <NavLink to="/" className="header-link">
+              Home
+            </NavLink>{' '}
+            |{' '}
+            <NavLink to="/about" className="header-link">
+              About us
+            </NavLink>
+          </nav>
+        </div>
+        <h1 className="header-title">Search Pokémon</h1>
+      </header>
+    </>
+  );
 }
-
-export default Header;

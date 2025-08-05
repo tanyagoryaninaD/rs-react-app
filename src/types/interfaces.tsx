@@ -1,8 +1,20 @@
 import type { ReactNode } from 'react';
 
-export interface CardProps {
-  key: number;
+interface OnUpdateState {
+  onUpdateState: (newState: Partial<SearchPanelState>) => void;
+}
+
+export interface CardDetailsProps extends OnUpdateState {
+  details: string | null;
+}
+
+export interface CardProps extends OnUpdateState {
   data: MyPokemon;
+}
+
+export interface CardDetailsState {
+  data: MyPokemon | null;
+  isLoading: boolean;
 }
 
 export interface MyPokemon {
@@ -18,23 +30,31 @@ interface SearchState {
   isLoading: boolean;
 }
 
-export interface SearchControlsProps extends SearchState, EventsForm {}
-
-export interface CardListProps extends NoResultsProps {
-  results: MyPokemon[];
-  isLoading: boolean;
-}
-
-export interface EventsForm {
+export interface SearchControlsProps
+  extends SearchState,
+    Pick<CardListProps, 'onSearch'> {
   onChange: (query: string) => void;
-  onSearch: (query?: string) => void;
 }
 
 export type ErrorState = {
   isError: boolean;
 };
 
-export interface SearchPanelState extends SearchState, CardListProps {}
+export interface SearchPanelState extends SearchState {
+  results: MyPokemon[];
+  error: string | null;
+  page: number | null;
+  details: string | null;
+}
+export interface PaginationProps
+  extends OnUpdateState,
+    Pick<SearchPanelState, 'page'> {
+  onSearch: (data: GetPokemon) => Promise<void>;
+}
+
+export interface CardListProps extends Omit<PaginationProps, 'page'> {
+  data: SearchPanelState;
+}
 
 export interface Table extends Omit<MyPokemon, 'id'> {
   description?: string;
@@ -59,4 +79,9 @@ export interface ErrorBoundaryProps {
 export interface ErrorBoundaryState {
   hasError: boolean;
   errorMessage: string;
+}
+
+export interface GetPokemon {
+  query?: string;
+  page?: number;
 }

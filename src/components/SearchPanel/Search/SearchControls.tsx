@@ -1,34 +1,31 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import type { SearchControlsProps } from '../../../types/interfaces';
 
-class SearchControls extends React.Component<SearchControlsProps> {
-  public render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          className="search-input"
-          type="text"
-          name="search"
-          value={this.props.query}
-          onChange={this.handleChange}
-          placeholder="Enter your search term"
-          disabled={this.props.isLoading}
-        />
-        <button type="submit" disabled={this.props.isLoading}>
-          {this.props.isLoading ? 'Searching...' : 'Search'}
-        </button>
-      </form>
-    );
-  }
-
-  private handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+export function SearchControls(props: SearchControlsProps): ReactNode {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    this.props.onSearch();
+    props.onSearch({ query: props.query });
   };
 
-  private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.props.onChange(event.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    props.onChange(event.target.value);
   };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        className="search-input"
+        type="text"
+        name="search"
+        value={props.query}
+        onChange={handleChange}
+        placeholder="Enter your search term"
+        disabled={props.isLoading}
+        data-testid="search-input"
+      />
+      <button type="submit" disabled={props.isLoading}>
+        {props.isLoading ? 'Searching...' : 'Search'}
+      </button>
+    </form>
+  );
 }
-
-export default SearchControls;

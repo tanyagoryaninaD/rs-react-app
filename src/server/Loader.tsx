@@ -1,38 +1,50 @@
-class Loader {
-  private static instance: Loader | null = null;
-  private readonly server: string;
-  private limit: number;
-  private offset: number;
+import type { NamedApiResource, Pokemon } from 'pokeapi-typescript';
+import type { GetPokemon, MyPokemon } from '../types/interfaces';
+import { parsePokemonData } from '../utils/helpers';
 
-  constructor() {
-    this.server = 'https://pokeapi.co/api/v2/';
-    this.limit = 10;
-    this.offset = 0;
-  }
+export async function getPokemon(data: GetPokemon): Promise<MyPokemon[]> {
+  let response: Response;
 
-  public static getInstance(): Loader {
-    if (!this.instance) {
-      this.instance = new Loader();
-    }
-
-    return this.instance;
-  }
-
-  public async getPokemon(pokemon: string): Promise<Response> {
-    const response = await fetch(
-      `${this.server}pokemon${pokemon ? '/' + pokemon.trim() : ''}/?limit=${this.limit}&offset=${this.offset}}`
+  if (data.query) {
+    response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${data.query.trim()}`
     );
+  } else {
+    response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/?limit=10&offset=${data.page ? Math.max(0, (data.page - 1) * 10) : 0}`
+    );
+  }
 
-    if (!response.ok) {
-      if (response.status >= 500) {
-        throw new Error('Problems on the server side');
-      }
-
-      throw new Error('No results found');
+  if (!response.ok) {
+    if (response.status >= 500) {
+      throw new Error('Problems on the server side');
     }
 
-    return response;
+    throw new Error('No results found');
   }
+
+  return parseResponse(response);
 }
 
-export default Loader;
+async function parseResponse(response: Response): Promise<MyPokemon[]> {
+  const json = await response.json();
+
+  let results: MyPokemon[] = [];
+
+  if (json.results) {
+    results = await Promise.all(
+      json.results.map(async (item: NamedApiResource<Pokemon>) => {
+        const result = await getPokemon({ query: item.name });
+        return result[0];
+      })
+    );
+  } else {
+    results = [parsePokemonData(json)];
+  }
+
+  const uniqueResults = results.filter(
+    (item, index, array) => index === array.findIndex((i) => i.id === item.id)
+  );
+
+  return uniqueResults;
+}

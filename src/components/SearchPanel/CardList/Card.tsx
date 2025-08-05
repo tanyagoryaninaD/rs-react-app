@@ -1,19 +1,18 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import type { CardProps } from '../../../types/interfaces';
+import { upperFirstLetter } from '../../../utils/helpers';
 
-class Card extends React.Component<CardProps> {
-  public render() {
-    const { name, image, abilities, moves } = this.props.data;
+export function Card(props: CardProps): ReactNode {
+  const { name, image } = props.data;
 
-    return (
-      <tr>
-        <td>{name}</td>
-        <td>{image ? <img src={image} alt={name} /> : ''}</td>
-        <td>{abilities?.join(',')}</td>
-        <td>{moves?.join(',')}</td>
-      </tr>
-    );
-  }
+  const handleClick = () => {
+    props.onUpdateState({ details: name });
+  };
+
+  return (
+    <li onClick={handleClick} className="item" data-testid="card">
+      <h3 data-testid="card-title">{upperFirstLetter(name)}</h3>
+      <div>{image ? <img src={image} alt={name} /> : ''}</div>
+    </li>
+  );
 }
-
-export default Card;

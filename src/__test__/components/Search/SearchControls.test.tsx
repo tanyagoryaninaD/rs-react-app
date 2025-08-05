@@ -1,16 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import SearchControls from '../../../components/SearchPanel/Search/SearchControls';
+import { describe, it, expect, vi } from 'vitest';
+import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
 
 const mockOnSearch = vi.fn();
 const mockOnChange = vi.fn();
 
 describe('SearchControls component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('renders with form elements', () => {
     render(
       <SearchControls
@@ -21,7 +17,7 @@ describe('SearchControls component', () => {
       />
     );
 
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByTestId('search-input')).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
         name: /Search/,
@@ -59,10 +55,28 @@ describe('SearchControls component', () => {
     expect(screen.getByDisplayValue('test')).toBeInTheDocument();
   });
 
-  it('clicks on button should call onSearch', async () => {
+  it('change input value should call onChange', async () => {
     render(
       <SearchControls
         query={''}
+        isLoading={false}
+        onSearch={mockOnSearch}
+        onChange={mockOnChange}
+      />
+    );
+
+    const input = screen.getByTestId('search-input');
+
+    await userEvent.type(input, 'query');
+
+    expect(mockOnChange).toHaveBeenCalledTimes(5);
+    expect(mockOnChange).toHaveBeenLastCalledWith('y');
+  });
+
+  it('clicks on button should call onSearch', async () => {
+    render(
+      <SearchControls
+        query={'test-2'}
         isLoading={false}
         onSearch={mockOnSearch}
         onChange={mockOnChange}
@@ -75,24 +89,6 @@ describe('SearchControls component', () => {
 
     await userEvent.click(button);
 
-    expect(mockOnSearch).toBeCalled();
-  });
-
-  it('change input value should call onChange', async () => {
-    render(
-      <SearchControls
-        query={''}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
-    );
-
-    const input = screen.getByRole('textbox');
-
-    await userEvent.type(input, 'query');
-
-    expect(mockOnChange).toHaveBeenCalledTimes(5);
-    expect(mockOnChange).toHaveBeenLastCalledWith('y');
+    expect(mockOnSearch).toBeCalledWith({ query: 'test-2' });
   });
 });

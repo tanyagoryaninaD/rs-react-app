@@ -1,29 +1,20 @@
-import React from 'react';
+import { useState, type ReactNode } from 'react';
 import type { ErrorState } from '../../../types/interfaces';
 
-class GenerateError extends React.Component<object, ErrorState> {
-  constructor(props: object) {
-    super(props);
-    this.state = {
-      isError: false,
-    };
-  }
+export function GenerateError(): ReactNode {
+  const [state, setState] = useState<ErrorState>({ isError: false });
 
-  public render() {
-    if (this.state.isError) {
-      throw new Error('You have successfully generated an error.');
-    }
-
-    return (
-      <>
-        <button onClick={this.handlerClick}>Generate an error</button>
-      </>
-    );
-  }
-
-  private handlerClick = (): void => {
-    this.setState({ isError: true });
+  const handlerClick = (): void => {
+    setState({ isError: true });
   };
-}
 
-export default GenerateError;
+  if (state.isError) {
+    throw new Error('You have successfully generated an error.');
+  }
+
+  return (
+    <>
+      <button onClick={handlerClick}>Generate an error</button>
+    </>
+  );
+}

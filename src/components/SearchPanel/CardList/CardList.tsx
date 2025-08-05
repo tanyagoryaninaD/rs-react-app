@@ -1,76 +1,62 @@
-import React from 'react';
+import { useEffect, type ReactNode } from 'react';
 import type { CardListProps } from '../../../types/interfaces';
-import Card from './Card';
-import LoadingIndicator from './LoadingIndicator';
-import NoResults from './NoResults';
-import { upperFirstLetter } from '../../../utils/helpers';
+import { Card } from './Card';
+import { LoadingIndicator } from './LoadingIndicator';
+import { NoResults } from './NoResults';
+import { Pagination } from './Pagination';
+import { CardDetails } from './CardDetails';
 
-class CardList extends React.Component<CardListProps> {
-  public render() {
-    return (
-      <table>
-        {this.renderTableHeader()}
-        {this.renderTableBody()}
-      </table>
-    );
-  }
+export function CardList(props: CardListProps): ReactNode {
+  const { page, results, isLoading, details, error } = props.data;
+  const updateState = props.onUpdateState;
 
-  private renderTableHeader() {
-    const { results } = this.props;
-
-    if (!Array.isArray(results) || results.length === 0) {
-      return null;
+  useEffect(() => {
+    if (error) {
+      updateState({ page: null });
     }
+  }, [error, updateState]);
 
-    return (
-      <thead>
-        <tr>
-          {Object.keys(results[0]).map((key) => {
-            if (key !== 'id') {
-              return <th key={key}>{upperFirstLetter(key)}</th>;
-            }
-            return null;
-          })}
-        </tr>
-      </thead>
-    );
-  }
-
-  private renderTableBody() {
-    const { results, isLoading, error } = this.props;
-
+  const renderList = (): ReactNode => {
     if (isLoading) {
-      return (
-        <tbody>
-          <tr className="loading-row">
-            <td colSpan={results[0] ? Object.keys(results[0]).length : 1}>
-              <LoadingIndicator />
-            </td>
-          </tr>
-        </tbody>
-      );
-    }
-
-    if (results.length === 0) {
-      return (
-        <tbody>
-          <tr>
-            <td colSpan={results[0] ? Object.keys(results[0]).length : 1}>
-              <NoResults error={error} />
-            </td>
-          </tr>
-        </tbody>
-      );
+      return <LoadingIndicator />;
     }
 
     return (
-      <tbody>
+      <>
         {results.map((item) => (
-          <Card key={item.id} data={item} />
+          <Card key={item.id} data={item} onUpdateState={props.onUpdateState} />
         ))}
-      </tbody>
+      </>
     );
-  }
-}
+  };
 
-export default CardList;
+  return (
+    <div className={details ? 'wrapper-panel' : 'wrapper-panel full'}>
+      <div className="wrapper-panel-list">
+        {!error || results.length ? (
+          <>
+            <ul className="list">{renderList()}</ul>
+            {page ? (
+              <Pagination
+                page={page}
+                onUpdateState={props.onUpdateState}
+                onSearch={props.onSearch}
+              />
+            ) : (
+              ''
+            )}
+          </>
+        ) : (
+          <div>
+            <NoResults error={error} />
+          </div>
+        )}
+      </div>
+      {details ? (
+        <CardDetails details={details} onUpdateState={props.onUpdateState} />
+      ) : (
+        ''
+      )}
+    </div>
+  );
+}

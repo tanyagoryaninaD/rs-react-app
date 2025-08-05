@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import GenerateError from '../../../components/SearchPanel/Error/GenerateError';
+import { GenerateError } from '../../../components/SearchPanel/Error/GenerateError';
 import ErrorBoundary from '../../../components/SearchPanel/Error/ErrorBoundary';
 
 describe('GenerateError component', () => {

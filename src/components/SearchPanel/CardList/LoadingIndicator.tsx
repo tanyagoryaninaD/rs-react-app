@@ -1,13 +1,13 @@
-import React from 'react';
+import type { ReactNode } from 'react';
+import gif from '../../../assets/load.gif';
 
-class LoadingIndicator extends React.Component {
-  render() {
-    return (
-      <div className="table-loader">
-        <div className="loader-spinner"></div>
-        Loading data...
+export function LoadingIndicator(): ReactNode {
+  return (
+    <div className="loader-wrapper">
+      <div className="loader">
+        <img src={gif} alt="Pikachu" />
+        <p>Loading data...</p>
       </div>
-    );
-  }
+    </div>
+  );
 }
-export default LoadingIndicator;
