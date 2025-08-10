@@ -25,6 +25,10 @@ export interface Table extends Omit<MyPokemon, 'id'> {
   description?: string;
 }
 
+export type ErrorState = {
+  isError: boolean;
+};
+
 export interface ErrorBoundaryState {
   hasError: boolean;
 }
