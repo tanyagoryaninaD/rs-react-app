@@ -4,7 +4,7 @@ import { Header } from './Header';
 import { Flyout } from './components/Flyout';
 import { useDispatch, useSelector } from 'react-redux';
 import type { MyStore } from '../types/interfaces';
-import { getLocalStorage } from '../utils/store';
+import { getLocalStorage } from '../store/reducers/selectedItems';
 
 export function Main(): ReactNode {
   const dispatch = useDispatch();

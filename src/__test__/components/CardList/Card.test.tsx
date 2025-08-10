@@ -1,43 +1,51 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach, type Mock } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { add, remove, selectedItemsSlice } from '../../../utils/store';
+import { add, remove } from '../../../store/reducers/selectedItems';
 import { Card } from '../../../components/SearchPanel/CardList/Card';
+import { bulbasaur, bulbasaurFetch, contextMock } from '../../moks/data';
+import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
+import { PokemonListContext } from '../../../types/contexts';
+import store from '../../../store/store';
 
-const mockPokemon = {
-  name: 'pikachu',
-  id: 1,
-  abilities: [''],
-  image: '',
-  moves: [''],
-};
-const mockOnUpdateState = vi.fn();
-
-const mockStore = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
+vi.mock('../../../server/pokemonApi', async () => {
+  const originalModule = await vi.importActual('../../../server/pokemonApi');
+  return {
+    ...originalModule,
+    useGetPokemonByNameQuery: vi.fn(),
+  };
 });
 
-const dispatchSpy = vi.spyOn(mockStore, 'dispatch');
+const dispatchSpy = vi.spyOn(store, 'dispatch');
 
 describe('Card component', () => {
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
   it('clicks on the checkbox should update stateSelectedItems', async () => {
+    (useGetPokemonByNameQuery as Mock).mockReturnValue({
+      data: bulbasaurFetch,
+      isLoading: false,
+      error: null,
+    });
+
     render(
-      <Provider store={mockStore}>
-        <Card data={mockPokemon} onUpdateState={mockOnUpdateState} />
+      <Provider store={store}>
+        <PokemonListContext value={contextMock}>
+          <Card name={bulbasaur.name} />
+        </PokemonListContext>
       </Provider>
     );
 
     await userEvent.click(screen.getByTestId('card-checkbox'));
 
-    expect(mockOnUpdateState).not.toBeCalled();
-    expect(dispatchSpy).toBeCalledWith(add(mockPokemon));
+    expect(contextMock.updateContext).not.toHaveBeenCalled();
+    expect(dispatchSpy).toBeCalledWith(add(bulbasaur));
 
     await userEvent.click(screen.getByTestId('card-checkbox'));
-    expect(dispatchSpy).toBeCalledWith(remove({ key: mockPokemon.name }));
+    expect(dispatchSpy).toBeCalledWith(remove({ key: bulbasaur.name }));
 
     dispatchSpy.mockRestore();
   });

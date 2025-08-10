@@ -1,11 +1,13 @@
-import type { ReactNode } from 'react';
-import type { NoResultsProps } from '../../../types/interfaces';
+import { useContext, type ReactNode } from 'react';
 import gif from '../../../assets/not-results.gif';
+import { PokemonListContext } from '../../../types/contexts';
 
-export function NoResults(props: NoResultsProps): ReactNode {
+export function NoResults(): ReactNode {
+  const { error } = useContext(PokemonListContext);
+
   return (
     <div className="no-results">
-      {props.error || 'No results found'}
+      {error || 'No results found'}
       <img src={gif} alt="Pikachu" />
     </div>
   );

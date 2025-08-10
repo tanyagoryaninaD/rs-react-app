@@ -9,7 +9,7 @@ import {
   remove,
   removeAll,
   getLocalStorage,
-} from '../../utils/store';
+} from '../../store/reducers/selectedItems';
 
 const mockPokemon = {
   name: 'pikachu',

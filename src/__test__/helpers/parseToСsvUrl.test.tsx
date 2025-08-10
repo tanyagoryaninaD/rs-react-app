@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parseToСsvUrl } from '../../utils/helpers';
-import { mockPokemons } from './mockPokemon';
+import { mockPokemons } from '../moks/data';
 
 describe('parseToСsvUrl: ', () => {
   it('should return parse data', () => {

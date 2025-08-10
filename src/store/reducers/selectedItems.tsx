@@ -1,9 +1,5 @@
-import {
-  configureStore,
-  createSlice,
-  type PayloadAction,
-} from '@reduxjs/toolkit';
-import type { MyPokemon, StateSelectedItems } from '../types/interfaces';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { MyPokemon, StateSelectedItems } from '../../types/interfaces';
 
 export const selectedItemsSlice = createSlice({
   name: 'selectedItems',
@@ -57,11 +53,3 @@ export const selectedItemsSlice = createSlice({
 
 export const { add, remove, removeAll, getLocalStorage } =
   selectedItemsSlice.actions;
-
-const store = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
-});
-
-export default store;

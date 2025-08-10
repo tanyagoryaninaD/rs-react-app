@@ -1,7 +1,21 @@
-import type { Pokemon } from 'pokeapi-typescript';
+import type { NamedApiResourceList, Pokemon } from 'pokeapi-typescript';
 import type { MyPokemon } from '../types/interfaces';
 
-export function parsePokemonData(data: Pokemon): MyPokemon {
+export function parsePokemonPageData(
+  data?: NamedApiResourceList<Pokemon>
+): MyPokemon[] {
+  if (!data) {
+    return [] as MyPokemon[];
+  }
+
+  return data.results.map((item) => parsePokemonData(item));
+}
+
+export function parsePokemonData(data?: Pokemon): MyPokemon {
+  if (!data) {
+    return {} as MyPokemon;
+  }
+
   return {
     name: data.name,
     id: data.id,
@@ -50,4 +64,24 @@ export function parseToСsvUrl(data: { [key: string]: MyPokemon }): string {
   const url = URL.createObjectURL(blob);
 
   return url;
+}
+
+export function isListPokemon(
+  data: Pokemon | NamedApiResourceList<Pokemon> | undefined
+): data is NamedApiResourceList<Pokemon> {
+  if (!data) {
+    return false;
+  }
+
+  return (data as NamedApiResourceList<Pokemon>).results !== undefined;
+}
+
+export function isPokemon(
+  data: Pokemon | NamedApiResourceList<Pokemon> | undefined
+): data is Pokemon {
+  if (!data) {
+    return false;
+  }
+
+  return (data as Pokemon).name !== undefined;
 }

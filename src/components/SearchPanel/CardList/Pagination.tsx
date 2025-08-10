@@ -1,52 +1,24 @@
-import { useState, type ReactNode } from 'react';
-import type { PaginationProps } from '../../../types/interfaces';
+import { useContext, type ReactNode } from 'react';
+import { PokemonListContext } from '../../../types/contexts';
 
-export function Pagination(props: PaginationProps): ReactNode {
-  const [pagination, setPageCount] = useState({
-    isLoading: true,
-    prevDisabled: props.page === 1 ? true : false,
-    nextDisabled: false,
-  });
-
-  const updateStates = async (newPage: number): Promise<void> => {
-    props.onUpdateState({ page: newPage, isLoading: true });
-
-    setPageCount((prevState) => ({
-      ...prevState,
-      isLoading: true,
-      prevDisabled: true,
-      nextDisabled: true,
-    }));
-
-    await props.onSearch({ page: newPage });
-
-    props.onUpdateState({ isLoading: false });
-
-    if (newPage === 1) {
-      setPageCount((prevState) => ({
-        ...prevState,
-        isLoading: false,
-        prevDisabled: true,
-        nextDisabled: false,
-      }));
-    } else {
-      setPageCount((prevState) => ({
-        ...prevState,
-        isLoading: false,
-        prevDisabled: false,
-        nextDisabled: false,
-      }));
-    }
-  };
+export function Pagination(): ReactNode {
+  const { page, pagePrev, pageNext, updateContext } =
+    useContext(PokemonListContext);
 
   const handlePaginationClickPrev = (): void => {
-    const newPage = props.page ? props.page - 1 : 1;
-    updateStates(newPage);
+    updateContext({
+      page: page ? page - 1 : 1,
+      loading: true,
+      currentApiRequest: { apiRequest: pagePrev },
+    });
   };
 
   const handlePaginationClickNext = (): void => {
-    const newPage = props.page ? props.page + 1 : 1;
-    updateStates(newPage);
+    updateContext({
+      page: page ? page + 1 : 1,
+      loading: true,
+      currentApiRequest: { apiRequest: pageNext },
+    });
   };
 
   return (
@@ -54,15 +26,15 @@ export function Pagination(props: PaginationProps): ReactNode {
       <button
         className="prev"
         onClick={handlePaginationClickPrev}
-        disabled={pagination.prevDisabled}
+        disabled={pagePrev ? false : true}
       >
         Prev
       </button>
-      <p data-testid="page">{props.page}</p>
+      <p data-testid="page">{page}</p>
       <button
         className="next"
         onClick={handlePaginationClickNext}
-        disabled={pagination.nextDisabled}
+        disabled={pageNext ? false : true}
       >
         Next
       </button>

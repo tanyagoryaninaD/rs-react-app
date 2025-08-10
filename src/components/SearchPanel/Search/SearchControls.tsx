@@ -1,14 +1,25 @@
-import type { ReactNode } from 'react';
-import type { SearchControlsProps } from '../../../types/interfaces';
+import { useContext, type ReactNode } from 'react';
+import { PokemonListContext } from '../../../types/contexts';
 
-export function SearchControls(props: SearchControlsProps): ReactNode {
+export function SearchControls(): ReactNode {
+  const { query, loading, updateContext } = useContext(PokemonListContext);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    props.onSearch({ query: props.query });
+    updateContext({
+      loading: true,
+      currentApiRequest: { apiRequest: query },
+      results: [],
+      page: null,
+      pageNext: null,
+      pagePrev: null,
+      details: null,
+      error: null,
+    });
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    props.onChange(event.target.value);
+    updateContext({ query: event.target.value });
   };
 
   return (
@@ -17,14 +28,14 @@ export function SearchControls(props: SearchControlsProps): ReactNode {
         className="search-input"
         type="text"
         name="search"
-        value={props.query}
+        value={query}
         onChange={handleChange}
         placeholder="Enter your search term"
-        disabled={props.isLoading}
+        disabled={loading}
         data-testid="search-input"
       />
-      <button type="submit" disabled={props.isLoading}>
-        {props.isLoading ? 'Searching...' : 'Search'}
+      <button type="submit" disabled={loading}>
+        {loading ? 'Searching...' : 'Search'}
       </button>
     </form>
   );

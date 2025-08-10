@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { MyStore } from '../../types/interfaces';
-import { removeAll } from '../../utils/store';
 import { parseToСsvUrl } from '../../utils/helpers';
+import { removeAll } from '../../store/reducers/selectedItems';
 
 export function Flyout(): ReactNode {
   const stateSelectedItems = useSelector(

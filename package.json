@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "msw": "^2.10.4",
     "pokeapi-typescript": "^3.0.3",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
@@ -53,7 +54,8 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.5",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "vitest-fetch-mock": "^0.4.5"
   },
   "lint-staged": {
     "*.ts?(x)": [

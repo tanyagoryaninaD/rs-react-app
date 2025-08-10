@@ -1,11 +1,16 @@
-import type { ReactNode } from 'react';
+import { useContext, type ReactNode } from 'react';
 import type { CardProps, MyStore } from '../../../types/interfaces';
-import { upperFirstLetter } from '../../../utils/helpers';
+import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { useSelector, useDispatch } from 'react-redux';
-import { remove, add } from '../../../utils/store';
+import { remove, add } from '../../../store/reducers/selectedItems';
+import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
+import { PokemonListContext } from '../../../types/contexts';
 
 export function Card(props: CardProps): ReactNode {
-  const { name, image } = props.data;
+  const { updateContext } = useContext(PokemonListContext);
+  const { data, error, isFetching } = useGetPokemonByNameQuery(props.name);
+  const parseData = parsePokemonData(data);
+
   const stateSelectedItems = useSelector(
     (state: MyStore) => state.selectedItems.items
   );
@@ -16,28 +21,36 @@ export function Card(props: CardProps): ReactNode {
       return;
     }
 
-    props.onUpdateState({ details: name });
+    updateContext({ details: parseData.name });
   };
 
   const handleCheckboxChange = () => {
-    if (Object.keys(stateSelectedItems).includes(name)) {
-      dispatch(remove({ key: name }));
+    if (Object.keys(stateSelectedItems).includes(parseData.name || '')) {
+      dispatch(remove({ key: parseData.name || '' }));
     } else {
-      dispatch(add(props.data));
+      dispatch(add(parseData));
     }
   };
 
   return (
-    <li onClick={handleClick} className="item" data-testid="card">
-      <h3 data-testid="card-title">{upperFirstLetter(name)}</h3>
-      <div>{image ? <img src={image} alt={name} /> : ''}</div>
-      <input
-        data-testid="card-checkbox"
-        type="checkbox"
-        className="item-checkbox"
-        checked={Object.keys(stateSelectedItems).includes(name)}
-        onChange={handleCheckboxChange}
-      ></input>
-    </li>
+    <>
+      {!isFetching && !error && (
+        <li onClick={handleClick} className="item" data-testid="card">
+          <h3 data-testid="card-title">{upperFirstLetter(parseData.name)}</h3>
+          <div>
+            {parseData.image && (
+              <img src={parseData.image} alt={parseData.name} />
+            )}
+          </div>
+          <input
+            data-testid="card-checkbox"
+            type="checkbox"
+            className="item-checkbox"
+            checked={Object.keys(stateSelectedItems).includes(parseData.name)}
+            onChange={handleCheckboxChange}
+          ></input>
+        </li>
+      )}
+    </>
   );
 }

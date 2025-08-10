@@ -11,7 +11,10 @@ import {
 import userEvent from '@testing-library/user-event';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { selectedItemsSlice, removeAll } from '../../utils/store';
+import {
+  selectedItemsSlice,
+  removeAll,
+} from '../../store/reducers/selectedItems';
 import { Flyout } from '../../components/components/Flyout';
 import * as helpers from '../../utils/helpers';
 import type { MyPokemon } from '../../types/interfaces';

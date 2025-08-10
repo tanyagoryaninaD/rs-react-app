@@ -6,15 +6,8 @@ import { NotFound } from '../components/NotFound/NotFound';
 import { SearchPanel } from '../components/SearchPanel/SearchPanel';
 import userEvent from '@testing-library/user-event';
 import { Main } from '../components/Main';
-import { configureStore } from '@reduxjs/toolkit';
-import { selectedItemsSlice } from '../utils/store';
 import { Provider } from 'react-redux';
-
-const mockStore = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
-});
+import { mockStore } from './moks/store';
 
 describe('App component', () => {
   it('should render Main', () => {

@@ -1,20 +1,23 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
-
-const mockOnSearch = vi.fn();
-const mockOnChange = vi.fn();
+import { Provider } from 'react-redux';
+import { PokemonListContext } from '../../../types/contexts';
+import { contextMock } from '../../moks/data';
+import { mockStore } from '../../moks/store';
 
 describe('SearchControls component', () => {
   it('renders with form elements', () => {
+    contextMock.query = '';
+    contextMock.loading = false;
+
     render(
-      <SearchControls
-        query={''}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      <Provider store={mockStore}>
+        <PokemonListContext value={contextMock}>
+          <SearchControls />
+        </PokemonListContext>
+      </Provider>
     );
 
     expect(screen.getByTestId('search-input')).toBeInTheDocument();
@@ -26,13 +29,15 @@ describe('SearchControls component', () => {
   });
 
   it('during loading the button text content should be changed', () => {
+    contextMock.query = '';
+    contextMock.loading = true;
+
     render(
-      <SearchControls
-        query={''}
-        isLoading={true}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      <Provider store={mockStore}>
+        <PokemonListContext value={contextMock}>
+          <SearchControls />
+        </PokemonListContext>
+      </Provider>
     );
 
     expect(
@@ -43,44 +48,50 @@ describe('SearchControls component', () => {
   });
 
   it('renders input with last query', () => {
+    contextMock.query = 'test';
+    contextMock.loading = false;
+
     render(
-      <SearchControls
-        query={'test'}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      <Provider store={mockStore}>
+        <PokemonListContext value={contextMock}>
+          <SearchControls />
+        </PokemonListContext>
+      </Provider>
     );
 
     expect(screen.getByDisplayValue('test')).toBeInTheDocument();
   });
 
   it('change input value should call onChange', async () => {
+    contextMock.query = '';
+    contextMock.loading = false;
+
     render(
-      <SearchControls
-        query={''}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      <Provider store={mockStore}>
+        <PokemonListContext value={contextMock}>
+          <SearchControls />
+        </PokemonListContext>
+      </Provider>
     );
 
     const input = screen.getByTestId('search-input');
 
     await userEvent.type(input, 'query');
 
-    expect(mockOnChange).toHaveBeenCalledTimes(5);
-    expect(mockOnChange).toHaveBeenLastCalledWith('y');
+    expect(contextMock.updateContext).toHaveBeenCalledTimes(5);
+    expect(contextMock.updateContext).toHaveBeenLastCalledWith({ query: 'y' });
   });
 
   it('clicks on button should call onSearch', async () => {
+    contextMock.query = 'test-2';
+    contextMock.loading = false;
+
     render(
-      <SearchControls
-        query={'test-2'}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      <Provider store={mockStore}>
+        <PokemonListContext value={contextMock}>
+          <SearchControls />
+        </PokemonListContext>
+      </Provider>
     );
 
     const button = screen.getByRole('button', {
@@ -89,6 +100,15 @@ describe('SearchControls component', () => {
 
     await userEvent.click(button);
 
-    expect(mockOnSearch).toBeCalledWith({ query: 'test-2' });
+    expect(contextMock.updateContext).toHaveBeenLastCalledWith({
+      loading: true,
+      currentApiRequest: { apiRequest: 'test-2' },
+      results: [],
+      page: null,
+      pageNext: null,
+      pagePrev: null,
+      details: null,
+      error: null,
+    });
   });
 });

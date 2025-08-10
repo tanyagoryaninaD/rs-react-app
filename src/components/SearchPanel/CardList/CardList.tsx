@@ -1,30 +1,72 @@
-import { useEffect, type ReactNode } from 'react';
-import type { CardListProps } from '../../../types/interfaces';
+import { useContext, useEffect, type ReactNode } from 'react';
+import type { MyPokemon } from '../../../types/interfaces';
 import { Card } from './Card';
 import { LoadingIndicator } from './LoadingIndicator';
 import { NoResults } from './NoResults';
 import { Pagination } from './Pagination';
 import { CardDetails } from './CardDetails';
+import { PokemonListContext } from '../../../types/contexts';
+import { useGetPokemonByPageQuery } from '../../../server/pokemonApi';
+import {
+  isListPokemon,
+  parsePokemonData,
+  parsePokemonPageData,
+} from '../../../utils/helpers';
 
-export function CardList(props: CardListProps): ReactNode {
-  const { page, results, isLoading, details, error } = props.data;
-  const updateState = props.onUpdateState;
+export function CardList(): ReactNode {
+  const { page, results, currentApiRequest, details, updateContext } =
+    useContext(PokemonListContext);
+  const { data, error, isFetching } = useGetPokemonByPageQuery(
+    currentApiRequest || {}
+  );
 
   useEffect(() => {
     if (error) {
-      updateState({ page: null });
+      updateContext({
+        page: null,
+        pagePrev: null,
+        pageNext: null,
+        error: 'No found results',
+        results: [],
+        loading: false,
+      });
+      return;
     }
-  }, [error, updateState]);
+
+    if (data) {
+      if (isListPokemon(data)) {
+        const parsedData = parsePokemonPageData(data);
+
+        updateContext({
+          results: parsedData,
+          page: page ?? 1,
+          pagePrev: data.previous,
+          pageNext: data.next,
+          loading: false,
+        });
+      } else {
+        const parsedData = [parsePokemonData(data)];
+
+        updateContext({
+          results: parsedData,
+          page: null,
+          pagePrev: null,
+          pageNext: null,
+          loading: false,
+        });
+      }
+    }
+  }, [currentApiRequest, data, error, page, updateContext]);
 
   const renderList = (): ReactNode => {
-    if (isLoading) {
+    if (isFetching) {
       return <LoadingIndicator />;
     }
 
     return (
       <>
-        {results.map((item) => (
-          <Card key={item.id} data={item} onUpdateState={props.onUpdateState} />
+        {results.map((item: MyPokemon, index) => (
+          <Card key={index} name={item.name} />
         ))}
       </>
     );
@@ -36,27 +78,15 @@ export function CardList(props: CardListProps): ReactNode {
         {!error || results.length ? (
           <>
             <ul className="list">{renderList()}</ul>
-            {page ? (
-              <Pagination
-                page={page}
-                onUpdateState={props.onUpdateState}
-                onSearch={props.onSearch}
-              />
-            ) : (
-              ''
-            )}
+            {page && !isFetching && <Pagination />}
           </>
         ) : (
           <div>
-            <NoResults error={error} />
+            <NoResults />
           </div>
         )}
       </div>
-      {details ? (
-        <CardDetails details={details} onUpdateState={props.onUpdateState} />
-      ) : (
-        ''
-      )}
+      {details && <CardDetails />}
     </div>
   );
 }
