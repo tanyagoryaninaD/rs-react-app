@@ -6,23 +6,19 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { About } from './components/About/About';
 import { NotFound } from './components/NotFound/NotFound';
 import { Main } from './components/Main';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ThemeContext, type Theme } from './types/contexts';
 import { useLocalStorage } from './utils/localStorage';
 
 export function App(): ReactNode {
-  const [stateStorageTheme, setStateStorageTheme] = useLocalStorage<Theme>(
-    'tg-theme',
-    'light'
-  );
-  const [theme, setTheme] = useState<Theme>(stateStorageTheme);
+  const [theme, setTheme] = useLocalStorage<Theme>('tg-theme', 'light');
 
   useEffect(() => {
-    setStateStorageTheme(theme);
+    setTheme(theme);
 
     document.body.classList.toggle('dark', theme === 'dark');
     document.body.classList.toggle('light', theme === 'light');
-  }, [setStateStorageTheme, theme]);
+  }, [setTheme, theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
