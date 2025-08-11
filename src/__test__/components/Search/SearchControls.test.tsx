@@ -1,10 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
-
-const mockOnSearch = vi.fn();
-const mockOnChange = vi.fn();
+import { mockOnChange, mockOnSearch } from '../../mocks/mocks';
 
 describe('SearchControls component', () => {
   it('renders with form elements', () => {

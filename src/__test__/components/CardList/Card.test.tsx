@@ -1,43 +1,25 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { configureStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
-import { add, remove, selectedItemsSlice } from '../../../utils/store';
+import { add, remove } from '../../../utils/store';
 import { Card } from '../../../components/SearchPanel/CardList/Card';
-
-const mockPokemon = {
-  name: 'pikachu',
-  id: 1,
-  abilities: [''],
-  image: '',
-  moves: [''],
-};
-const mockOnUpdateState = vi.fn();
-
-const mockStore = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
-});
-
-const dispatchSpy = vi.spyOn(mockStore, 'dispatch');
+import { mockOnUpdateState, dispatchSpy } from '../../mocks/mocks';
+import { MockProvider } from '../../mocks/MockProvider';
+import { bulbasaur } from '../../mocks/data';
 
 describe('Card component', () => {
   it('clicks on the checkbox should update stateSelectedItems', async () => {
     render(
-      <Provider store={mockStore}>
-        <Card data={mockPokemon} onUpdateState={mockOnUpdateState} />
-      </Provider>
+      MockProvider(<Card data={bulbasaur} onUpdateState={mockOnUpdateState} />)
     );
 
     await userEvent.click(screen.getByTestId('card-checkbox'));
 
     expect(mockOnUpdateState).not.toBeCalled();
-    expect(dispatchSpy).toBeCalledWith(add(mockPokemon));
+    expect(dispatchSpy).toBeCalledWith(add(bulbasaur));
 
     await userEvent.click(screen.getByTestId('card-checkbox'));
-    expect(dispatchSpy).toBeCalledWith(remove({ key: mockPokemon.name }));
+    expect(dispatchSpy).toBeCalledWith(remove({ key: bulbasaur.name }));
 
     dispatchSpy.mockRestore();
   });

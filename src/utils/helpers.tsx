@@ -25,7 +25,9 @@ export function upperFirstLetter(value: string): string {
   return value[0].toUpperCase() + value.slice(1);
 }
 
-export function parseToСsvUrl(data: { [key: string]: MyPokemon }): string {
+export function parseToСsvUrl(
+  data: { [key: string]: MyPokemon } | null
+): string {
   if (!data) {
     return '';
   }

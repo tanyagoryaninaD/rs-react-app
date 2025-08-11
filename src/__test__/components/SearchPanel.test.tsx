@@ -10,35 +10,10 @@ import {
 } from 'vitest';
 import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
 import * as pokemonApi from '../../server/Loader';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import type { GetPokemon, MyPokemon } from '../../types/interfaces';
-import { configureStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
-import { selectedItemsSlice } from '../../utils/store';
-
-const mockResults = [
-  {
-    name: 'pikachu',
-    id: 1,
-    abilities: [''],
-    image: '',
-    moves: [''],
-  },
-];
-
-const mockState = {
-  query: 'pikachu',
-  results: mockResults,
-  error: null,
-  isLoading: false,
-  details: '',
-};
-
-const mockStore = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
-});
+import { bulbasaur, mockState } from '../mocks/data';
+import { MockProvider } from '../mocks/MockProvider';
 
 describe('SearchPanel component', () => {
   let getItemSpy: MockInstance<(key: string) => string | null>;
@@ -63,13 +38,12 @@ describe('SearchPanel component', () => {
       .mockImplementation(() => {});
 
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
-          <Routes>
-            <Route index element={<SearchPanel />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route index element={<SearchPanel />} />
+        </Routes>,
+        { initialEntries: '/?details=pikachu&page=2' }
+      )
     );
 
     await waitFor(() => {
@@ -100,13 +74,12 @@ describe('SearchPanel component', () => {
       .mockImplementation(() => {});
 
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/?details=pikachu&page=2']}>
-          <Routes>
-            <Route index element={<SearchPanel />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route index element={<SearchPanel />} />
+        </Routes>,
+        { initialEntries: '/?details=pikachu&page=2' }
+      )
     );
 
     await waitFor(() => {
@@ -123,15 +96,12 @@ describe('SearchPanel component', () => {
   it('during rendering data should be loaded from localStorage', async () => {
     mockGetPokemon = vi
       .spyOn(pokemonApi, 'getPokemon')
-      .mockResolvedValueOnce(mockResults);
+      .mockResolvedValueOnce([bulbasaur]);
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/']}>
-          <SearchPanel />
-        </MemoryRouter>
-      </Provider>
-    );
+    mockState.query = 'bulbasaur';
+    getItemSpy.mockReturnValueOnce(JSON.stringify(mockState));
+
+    render(MockProvider(<SearchPanel />));
 
     await waitFor(() => {
       expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
@@ -139,10 +109,10 @@ describe('SearchPanel component', () => {
       expect(mockGetPokemon).toHaveBeenCalledTimes(1);
       expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
         page: undefined,
-        query: 'pikachu',
+        query: 'bulbasaur',
       });
 
-      expect(screen.getByText('Pikachu')).toBeInTheDocument();
+      expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
     });
   });
 
@@ -155,13 +125,7 @@ describe('SearchPanel component', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/']}>
-          <SearchPanel />
-        </MemoryRouter>
-      </Provider>
-    );
+    render(MockProvider(<SearchPanel />));
 
     await waitFor(() => {
       expect(screen.getByText('test error')).toBeInTheDocument();

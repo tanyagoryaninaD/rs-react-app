@@ -1,47 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { configureStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
-import {
-  selectedItemsSlice,
-  add,
-  remove,
-  removeAll,
-  getLocalStorage,
-} from '../../utils/store';
-
-const mockPokemon = {
-  name: 'pikachu',
-  id: 1,
-  abilities: [''],
-  image: '',
-  moves: [''],
-};
+import { add, remove, removeAll, getLocalStorage } from '../../utils/store';
+import { mockStore } from '../mocks/store';
+import { bulbasaur } from '../mocks/data';
+import { dispatchSpy } from '../mocks/mocks';
+import { MockProvider } from '../mocks/MockProvider';
 
 describe('store:', () => {
-  const mockStore = configureStore({
-    reducer: {
-      selectedItems: selectedItemsSlice.reducer,
-    },
-  });
-
-  const dispatchSpy = vi.spyOn(mockStore, 'dispatch');
-
   beforeEach(() => {
-    const handleAdd = () => mockStore.dispatch(add(mockPokemon));
+    const handleAdd = () => mockStore.dispatch(add(bulbasaur));
     const handleRemove = () =>
-      mockStore.dispatch(remove({ key: mockPokemon.name }));
+      mockStore.dispatch(remove({ key: bulbasaur.name }));
     const handleRemoveAll = () => mockStore.dispatch(removeAll());
     const handleGetLS = () => mockStore.dispatch(getLocalStorage());
 
     render(
-      <Provider store={mockStore}>
-        <button data-testid="add" onClick={handleAdd} />
-        <button data-testid="remove" onClick={handleRemove} />
-        <button data-testid="removeAll" onClick={handleRemoveAll} />
-        <button data-testid="getLocalStorage" onClick={handleGetLS} />
-      </Provider>
+      MockProvider(
+        <>
+          <button data-testid="add" onClick={handleAdd} />
+          <button data-testid="remove" onClick={handleRemove} />
+          <button data-testid="removeAll" onClick={handleRemoveAll} />
+          <button data-testid="getLocalStorage" onClick={handleGetLS} />
+        </>
+      )
     );
   });
 
@@ -53,7 +35,7 @@ describe('store:', () => {
     await userEvent.click(screen.getByTestId('add'));
 
     expect(mockStore.getState().selectedItems.items).toEqual({
-      pikachu: mockPokemon,
+      bulbasaur,
     });
     expect(mockStore.getState().selectedItems.size).toBe(1);
   });
@@ -76,14 +58,12 @@ describe('store:', () => {
   it('getLocalStorage: should get data from LocalStorage and added data to items', async () => {
     const getItemSpy = vi
       .spyOn(Storage.prototype, 'getItem')
-      .mockReturnValueOnce(
-        JSON.stringify({ items: { pikachu: mockPokemon }, size: 1 })
-      );
+      .mockReturnValueOnce(JSON.stringify({ items: { bulbasaur }, size: 1 }));
 
     await userEvent.click(screen.getByTestId('getLocalStorage'));
 
     expect(mockStore.getState().selectedItems.items).toEqual({
-      pikachu: mockPokemon,
+      bulbasaur,
     });
     expect(mockStore.getState().selectedItems.size).toBe(1);
 

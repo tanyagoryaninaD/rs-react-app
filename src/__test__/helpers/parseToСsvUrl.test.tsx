@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parseToСsvUrl } from '../../utils/helpers';
-import { mockPokemons } from './mockPokemon';
+import { mockPokemons } from '../mocks/data';
 
 describe('parseToСsvUrl: ', () => {
   it('should return parse data', () => {
@@ -21,5 +21,11 @@ describe('parseToСsvUrl: ', () => {
 
     expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
     global.URL.createObjectURL = globalMethod;
+  });
+
+  it('should return empty string', () => {
+    const result = parseToСsvUrl(null);
+
+    expect(result).toBe('');
   });
 });

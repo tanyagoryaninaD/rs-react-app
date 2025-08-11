@@ -1,31 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { screen, render } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { About } from '../components/About/About';
 import { NotFound } from '../components/NotFound/NotFound';
 import { SearchPanel } from '../components/SearchPanel/SearchPanel';
 import userEvent from '@testing-library/user-event';
 import { Main } from '../components/Main';
-import { configureStore } from '@reduxjs/toolkit';
-import { selectedItemsSlice } from '../utils/store';
-import { Provider } from 'react-redux';
-
-const mockStore = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
-});
+import { MockProvider } from './mocks/MockProvider';
 
 describe('App component', () => {
   it('should render Main', () => {
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/']}>
-          <Routes>
-            <Route path="/" element={<Main />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route path="/" element={<Main />} />
+        </Routes>
+      )
     );
 
     expect(
@@ -35,13 +25,11 @@ describe('App component', () => {
 
   it('should render SearchPanel', () => {
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/']}>
-          <Routes>
-            <Route index element={<SearchPanel />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route index element={<SearchPanel />} />
+        </Routes>
+      )
     );
 
     expect(screen.getByRole('textbox')).toBeInTheDocument();
@@ -53,13 +41,12 @@ describe('App component', () => {
 
   it('should render About', () => {
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/about']}>
-          <Routes>
-            <Route path="/about" element={<About />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route path="/about" element={<About />} />
+        </Routes>,
+        { initialEntries: '/about' }
+      )
     );
 
     expect(
@@ -75,13 +62,12 @@ describe('App component', () => {
 
   it('should render Not found', () => {
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/qwerty']}>
-          <Routes>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>,
+        { initialEntries: '/qwerty' }
+      )
     );
 
     expect(screen.getByText(/oops/i)).toBeInTheDocument();
@@ -92,14 +78,13 @@ describe('App component', () => {
 
   it('button in NotFound should navigate to Home', async () => {
     render(
-      <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/qwerty']}>
-          <Routes>
-            <Route path="/" element={<h1>TEST</h1>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      MockProvider(
+        <Routes>
+          <Route path="/" element={<h1>TEST</h1>} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>,
+        { initialEntries: '/qwerty' }
+      )
     );
 
     const button = screen.getByRole('button', { name: /Back to Home/i });
