@@ -3,23 +3,38 @@
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
-  color: rgb(255 255 255 / 87%);
-  background-color: #242424;
+  color: var(--color-white-light);
+  background-color: var(--color-background-dark);
   font-synthesis: none;
   text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --color-black: #000;
+  --color-violet: #646cff;
+  --color-violet-dark: #646cff59;
+  --color-white: #fff;
+  --color-white-light: #f9f9f9;
+  --color-background-dark: #242424;
+  --color-border: #bababa;
+  --color-border-30: #bababa30;
+  --color-button-background: #1a1a1a;
+  --color-button-background-dark: #393939;
+  --color-shadow-hover: #646cff10;
+  --color-logo-hover: #61dafbaa;
+  --color-red: #b10000;
+  --color-green: #27b100;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--color-violet);
   text-decoration: inherit;
 }
 
 a:hover {
   transition: text-shadow 0.3s ease-in-out;
-  text-shadow: 0 0 10px #646cff59;
+  text-shadow: 0 0 10px var(--color-violet-dark);
 }
 
 body {
@@ -30,8 +45,8 @@ body {
 }
 
 body.dark {
-  color: #f9f9f9;
-  background-color: #242424;
+  color: var(--color-white-light);
+  background-color: var(--color-background-dark);
 }
 
 h1 {
@@ -47,12 +62,12 @@ ul {
 
 button {
   border-radius: 8px;
-  border: 1px solid #bababa;
+  border: 1px solid var(--color-border);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--color-button-background);
   cursor: pointer;
 }
 
@@ -63,7 +78,7 @@ input {
 
 button:hover,
 input:hover {
-  box-shadow: 0 0 5px 8px #646cff10;
+  box-shadow: 0 0 5px 8px var(--color-shadow-hover);
 }
 
 button:focus,
@@ -73,21 +88,6 @@ button:focus-visible {
 
 body.dark button,
 body.dark input {
-  color: #f9f9f9;
-  background-color: #393939;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #fff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+  color: var(--color-white-light);
+  background-color: var(--color-button-background-dark);
 }
