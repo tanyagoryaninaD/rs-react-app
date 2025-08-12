@@ -101,7 +101,6 @@ export const ivysaur = {
   moves: ['move-1', 'move-2', 'move-3', 'move-4', 'move-5'],
 };
 
-export const mockPokemons = { bulbasaur, ivysaur };
 export const mockResults = [bulbasaur, ivysaur];
 
 export const mockState: SearchPanelState = {

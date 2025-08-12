@@ -17,9 +17,7 @@ import { dispatchSpy } from '../mocks/mocks';
 import { MockProvider } from '../mocks/MockProvider';
 
 describe('Flyout component', () => {
-  let parseToСsvUrlSpy: MockInstance<
-    (data: { [key: string]: MyPokemon }) => string
-  >;
+  let parseToСsvUrlSpy: MockInstance<(data: MyPokemon[]) => string>;
 
   beforeEach(() => {
     parseToСsvUrlSpy = vi
@@ -43,7 +41,7 @@ describe('Flyout component', () => {
   it('anchor "Download" should call parseToСsvUrl() ans contains "download" attribute ', () => {
     const link = screen.getByTestId('flyout-download') as HTMLAnchorElement;
 
-    expect(parseToСsvUrlSpy).toBeCalledWith({});
+    expect(parseToСsvUrlSpy).toBeCalledWith([]);
     expect(link).toHaveAttribute('href');
     expect(link.download).toMatch('.csv');
   });

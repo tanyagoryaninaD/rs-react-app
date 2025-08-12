@@ -19,7 +19,7 @@ describe('Card component', () => {
     expect(dispatchSpy).toBeCalledWith(add(bulbasaur));
 
     await userEvent.click(screen.getByTestId('card-checkbox'));
-    expect(dispatchSpy).toBeCalledWith(remove({ key: bulbasaur.name }));
+    expect(dispatchSpy).toBeCalledWith(remove(bulbasaur));
 
     dispatchSpy.mockRestore();
   });

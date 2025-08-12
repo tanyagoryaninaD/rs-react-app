@@ -10,6 +10,7 @@ import {
 } from 'vitest';
 import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
 import * as pokemonApi from '../../server/Loader';
+import * as helpers from '../../utils/helpers';
 import { Route, Routes } from 'react-router-dom';
 import type { GetPokemon, MyPokemon } from '../../types/interfaces';
 import { bulbasaur, mockState } from '../mocks/data';
@@ -18,16 +19,22 @@ import { MockProvider } from '../mocks/MockProvider';
 describe('SearchPanel component', () => {
   let getItemSpy: MockInstance<(key: string) => string | null>;
   let mockGetPokemon: MockInstance<(data: GetPokemon) => Promise<MyPokemon[]>>;
+  let parseToСsvUrlSpy: MockInstance<(data: MyPokemon[]) => string>;
 
   beforeEach(() => {
     getItemSpy = vi
       .spyOn(Storage.prototype, 'getItem')
       .mockReturnValue(JSON.stringify(mockState));
+
+    parseToСsvUrlSpy = vi
+      .spyOn(helpers, 'parseToСsvUrl')
+      .mockImplementation(() => 'url');
   });
 
   afterEach(() => {
     getItemSpy.mockRestore();
     mockGetPokemon.mockRestore();
+    parseToСsvUrlSpy.mockRestore();
   });
 
   it('should upload data to the SearchPanel for search queries from the url and get an error for the rejected request', async () => {
@@ -100,11 +107,13 @@ describe('SearchPanel component', () => {
 
     mockState.query = 'bulbasaur';
     getItemSpy.mockReturnValueOnce(JSON.stringify(mockState));
+    getItemSpy.mockReturnValueOnce(JSON.stringify([bulbasaur]));
 
     render(MockProvider(<SearchPanel />));
 
     await waitFor(() => {
-      expect(getItemSpy).toHaveBeenCalledWith('tg-last-search');
+      expect(getItemSpy).toHaveBeenNthCalledWith(1, 'tg-last-search');
+      expect(getItemSpy).toHaveBeenNthCalledWith(2, 'tg-selected-items');
 
       expect(mockGetPokemon).toHaveBeenCalledTimes(1);
       expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
@@ -120,6 +129,9 @@ describe('SearchPanel component', () => {
     mockGetPokemon = vi
       .spyOn(pokemonApi, 'getPokemon')
       .mockRejectedValue(new Error('test error'));
+
+    getItemSpy.mockReturnValueOnce(JSON.stringify(mockState));
+    getItemSpy.mockReturnValueOnce(JSON.stringify([]));
 
     const consoleError = vi
       .spyOn(console, 'error')

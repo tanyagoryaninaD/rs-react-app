@@ -3,60 +3,42 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import type { MyPokemon, StateSelectedItems } from '../types/interfaces';
+import type { MyPokemon } from '../types/interfaces';
 
 export const selectedItemsSlice = createSlice({
   name: 'selectedItems',
-  initialState: { items: {}, size: 0 },
+  initialState: [] as MyPokemon[],
   reducers: {
-    add: (state: StateSelectedItems, action: PayloadAction<MyPokemon>) => {
-      state.items[action.payload.name] = action.payload;
-      state.size += 1;
-      window.localStorage.setItem('tg-selected-items', JSON.stringify(state));
-    },
-    remove: (
-      state: StateSelectedItems,
-      action: PayloadAction<{ key: string }>
-    ) => {
-      const newItems = Object.keys(state.items).reduce(
-        (acc, key) => {
-          if (key !== action.payload.key) {
-            acc[key] = state.items[key];
-          }
-
-          return acc;
-        },
-        {} as { [key: string]: MyPokemon }
-      );
-
-      state.items = newItems;
-      state.size -= 1;
-      window.localStorage.setItem('tg-selected-items', JSON.stringify(state));
-    },
-    removeAll: (state: StateSelectedItems) => {
-      state.items = {};
-      state.size = 0;
-      window.localStorage.setItem('tg-selected-items', JSON.stringify(state));
-    },
-    getLocalStorage: (state: StateSelectedItems) => {
-      try {
-        const json = window.localStorage.getItem('tg-selected-items');
-        if (json) {
-          const data = JSON.parse(json) as StateSelectedItems;
-          state.items = data.items || {};
-          state.size = data.size || 0;
-        }
-      } catch (error) {
-        console.error('Error from getLocalStorage:', error);
-        state.items = {};
-        state.size = 0;
+    add: (state: MyPokemon[], action: PayloadAction<MyPokemon>) => {
+      if (!selectHasItem.unwrapped(state, action.payload)) {
+        state.push(action.payload);
       }
     },
+    remove: (state: MyPokemon[], action: PayloadAction<MyPokemon>) => {
+      const index = state.findIndex(
+        (item) => item.name === action.payload.name
+      );
+
+      if (index !== -1) {
+        state.splice(index, 1);
+      }
+    },
+    removeAll: (state: MyPokemon[]) => {
+      state.length = 0;
+    },
+    setState: (state: MyPokemon[], action: PayloadAction<MyPokemon[]>) => {
+      state.push(...action.payload);
+    },
+  },
+  selectors: {
+    selectItems: (state: MyPokemon[]) => state,
+    selectHasItem: (state: MyPokemon[], data: MyPokemon) =>
+      state.some((item) => item.name === data.name),
   },
 });
 
-export const { add, remove, removeAll, getLocalStorage } =
-  selectedItemsSlice.actions;
+export const { add, remove, removeAll, setState } = selectedItemsSlice.actions;
+export const { selectItems, selectHasItem } = selectedItemsSlice.selectors;
 
 const store = configureStore({
   reducer: {

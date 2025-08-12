@@ -1,15 +1,16 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import type { CardProps, MyStore } from '../../../types/interfaces';
 import { upperFirstLetter } from '../../../utils/helpers';
 import { useSelector, useDispatch } from 'react-redux';
-import { remove, add } from '../../../utils/store';
+import { remove, add, selectHasItem } from '../../../utils/store';
 
 export function Card(props: CardProps): ReactNode {
   const { name, image } = props.data;
-  const stateSelectedItems = useSelector(
-    (state: MyStore) => state.selectedItems.items
-  );
+
   const dispatch = useDispatch();
+  const stateHasItem = useSelector((state: MyStore) =>
+    selectHasItem(state, props.data)
+  );
 
   const handleClick = (event: React.MouseEvent) => {
     if (event.target instanceof HTMLInputElement) {
@@ -20,8 +21,8 @@ export function Card(props: CardProps): ReactNode {
   };
 
   const handleCheckboxChange = () => {
-    if (Object.keys(stateSelectedItems).includes(name)) {
-      dispatch(remove({ key: name }));
+    if (stateHasItem) {
+      dispatch(remove(props.data));
     } else {
       dispatch(add(props.data));
     }
@@ -35,7 +36,7 @@ export function Card(props: CardProps): ReactNode {
         data-testid="card-checkbox"
         type="checkbox"
         className="item-checkbox"
-        checked={Object.keys(stateSelectedItems).includes(name)}
+        checked={stateHasItem}
         onChange={handleCheckboxChange}
       ></input>
     </li>
