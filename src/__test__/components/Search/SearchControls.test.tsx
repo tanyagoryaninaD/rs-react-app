@@ -4,8 +4,8 @@ import { SearchControls } from '../../../components/SearchPanel/Search/SearchCon
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { PokemonListContext } from '../../../types/contexts';
-import { contextMock } from '../../moks/data';
-import { mockStore } from '../../moks/store';
+import { contextMock } from '../../mocks/data';
+import { mockStore } from '../../mocks/store';
 
 describe('SearchControls component', () => {
   it('renders with form elements', () => {
@@ -107,7 +107,6 @@ describe('SearchControls component', () => {
       page: null,
       pageNext: null,
       pagePrev: null,
-      details: null,
       error: null,
     });
   });

@@ -1,7 +1,11 @@
-import type { PokemonListContextProps } from '../../types/interfaces';
-import { updateContext } from './moks';
+import type {
+  MyPokemon,
+  PokemonListContextProps,
+  PokemonListContextState,
+} from '../../types/interfaces';
+import { updateContext } from './mocks';
 
-export type MockPokemon = {
+type MockPokemon = {
   name: string;
   id: number;
   sprites: {
@@ -28,7 +32,7 @@ export type MockPokemon = {
     | undefined;
 };
 
-export const bulbasaurFetch: MockPokemon = {
+export const bulbasaurResponse: MockPokemon = {
   name: 'bulbasaur',
   id: 1,
   sprites: {
@@ -57,7 +61,7 @@ export const bulbasaurFetch: MockPokemon = {
   ],
 };
 
-export const ivysaurFetch: MockPokemon = {
+export const ivysaurResponse: MockPokemon = {
   name: 'ivysaur',
   id: 2,
   sprites: {
@@ -102,28 +106,23 @@ export const ivysaur = {
   moves: ['move-1', 'move-2', 'move-3', 'move-4', 'move-5'],
 };
 
-export const mockPokemons = {
-  bulbasaur,
-  ivysaur,
-};
+export const mockResults = [bulbasaur, ivysaur];
 
-export const mockState = {
-  query: 'pikachu',
-  results: bulbasaur,
-  error: null,
-  isLoading: false,
-  details: '',
-};
-
-export const contextMock: PokemonListContextProps = {
+export const contextStateMock: PokemonListContextState = {
   query: '',
   currentApiRequest: null,
   results: [],
   page: null,
   pageNext: null,
   pagePrev: null,
-  details: 'bulbasaur',
+  details: null,
   loading: false,
   error: null,
+};
+
+export const contextMock: PokemonListContextProps = {
+  ...contextStateMock,
   updateContext,
 };
+
+export const selectedItems: MyPokemon[] = [];

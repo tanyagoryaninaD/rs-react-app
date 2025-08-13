@@ -2,12 +2,19 @@ import { render } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach, type Mock } from 'vitest';
 import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
 import { useLocalStorage } from '../../utils/localStorage';
-import { bulbasaurFetch, contextMock } from '../moks/data';
-import { MemoryRouter } from 'react-router-dom';
 import {
   useGetPokemonByNameQuery,
   useGetPokemonByPageQuery,
 } from '../../server/pokemonApi';
+import {
+  bulbasaurResponse,
+  contextMock,
+  contextStateMock,
+  selectedItems,
+} from '../mocks/data';
+import { mockStore } from '../mocks/store';
+import { MockProvider } from '../mocks/MockProvider';
+import { setSelectedItems } from '../mocks/mocks';
 
 vi.mock('../../server/pokemonApi', async () => {
   const originalModule = await vi.importActual('../../server/pokemonApi');
@@ -29,25 +36,43 @@ describe('SearchPanel component', () => {
     vi.resetAllMocks();
   });
 
-  it('should call setContext', async () => {
-    (useLocalStorage as Mock).mockReturnValue([contextMock, setContext]);
+  it('should get context from local storage', async () => {
+    const dispatchSpy = vi.spyOn(mockStore, 'dispatch');
+    (useLocalStorage as Mock).mockReturnValueOnce([contextMock, setContext]);
+    (useLocalStorage as Mock).mockReturnValueOnce([
+      selectedItems,
+      setSelectedItems,
+    ]);
     (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
-      data: bulbasaurFetch,
+      data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
     }));
     (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
-      data: bulbasaurFetch,
+      data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
     }));
 
     render(
-      <MemoryRouter initialEntries={['/?details=bulbasaur&page=2']}>
-        <SearchPanel />
-      </MemoryRouter>
+      MockProvider(<SearchPanel />, {
+        initialEntries: '/?details=bulbasaur&page=2',
+      })
     );
 
+    contextStateMock.details = 'bulbasaur';
+    contextStateMock.page = 2;
+    contextStateMock.currentApiRequest = {};
+
+    expect(useLocalStorage).toHaveBeenCalledTimes(2);
+    expect(useLocalStorage).toHaveBeenNthCalledWith(
+      1,
+      'tg-last-search',
+      contextStateMock
+    );
+    expect(useLocalStorage).toHaveBeenNthCalledWith(2, 'tg-selected-items', []);
     expect(setContext).toHaveBeenCalled();
+
+    dispatchSpy.mockRestore();
   });
 });

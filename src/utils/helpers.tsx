@@ -39,13 +39,12 @@ export function upperFirstLetter(value: string): string {
   return value[0].toUpperCase() + value.slice(1);
 }
 
-export function parseToСsvUrl(data: { [key: string]: MyPokemon }): string {
-  if (!data) {
+export function parseToСsvUrl(data: MyPokemon[]): string {
+  if (!data.length) {
     return '';
   }
 
-  const firstKey = Object.keys(data)[0];
-  const headers = Object.keys(data[firstKey]).join(',');
+  const headers = Object.keys(data[0]).join(',');
 
   const rows = Object.values(data)
     .map((item) => {

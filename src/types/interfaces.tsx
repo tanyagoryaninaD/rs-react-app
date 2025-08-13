@@ -48,12 +48,7 @@ export interface GetPokemon {
 }
 
 export interface MyStore {
-  selectedItems: StateSelectedItems;
-}
-
-export interface StateSelectedItems {
-  items: { [key: string]: MyPokemon };
-  size: number;
+  selectedItems: MyPokemon[];
 }
 
 export interface ThemeContextProps {

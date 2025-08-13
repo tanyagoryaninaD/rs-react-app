@@ -4,12 +4,12 @@ import {
   useGetPokemonByPageQuery,
 } from '../server/pokemonApi';
 import { renderHook, waitFor } from '@testing-library/react';
-import { bulbasaurFetch } from './moks/data';
-import { wrapper } from './moks/moks';
+import { bulbasaurResponse } from './mocks/data';
+import { wrapper } from './mocks/mocks';
 
 describe('pokemonApi', () => {
   const pokemon = 'bulbasaur';
-  const data = bulbasaurFetch;
+  const data = bulbasaurResponse;
 
   beforeEach(() => {
     fetchMock.mockOnceIf(`https://pokeapi.co/api/v2/pokemon/${pokemon}`, () =>
@@ -61,7 +61,6 @@ describe('pokemonApi', () => {
       }
     );
 
-    console.log(result.current);
     expect(result.current).toMatchObject({
       status: 'pending',
       endpointName: 'getPokemonByPage',

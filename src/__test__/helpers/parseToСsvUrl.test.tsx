@@ -1,18 +1,18 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parseToСsvUrl } from '../../utils/helpers';
-import { mockPokemons } from '../moks/data';
+import { mockResults } from '../mocks/data';
 
 describe('parseToСsvUrl: ', () => {
   it('should return parse data', () => {
     const globalMethod = global.URL.createObjectURL;
     global.URL.createObjectURL = vi.fn();
 
-    parseToСsvUrl(mockPokemons);
+    parseToСsvUrl(mockResults);
 
     const headers = 'name,id,image,abilities,moves';
     const rows = [
-      `"${mockPokemons.bulbasaur.name}","${mockPokemons.bulbasaur.id}","${mockPokemons.bulbasaur.image}","${mockPokemons.bulbasaur.abilities.join(', ')}","${mockPokemons.bulbasaur.moves.join(', ')}"`,
-      `"${mockPokemons.ivysaur.name}","${mockPokemons.ivysaur.id}","${mockPokemons.ivysaur.image}","${mockPokemons.ivysaur.abilities.join(', ')}","${mockPokemons.ivysaur.moves.join(', ')}"`,
+      `"${mockResults[0].name}","${mockResults[0].id}","${mockResults[0].image}","${mockResults[0].abilities.join(', ')}","${mockResults[0].moves.join(', ')}"`,
+      `"${mockResults[1].name}","${mockResults[1].id}","${mockResults[1].image}","${mockResults[1].abilities.join(', ')}","${mockResults[1].moves.join(', ')}"`,
     ].join('\n');
 
     const blob = new Blob([`${headers}\n${rows}`], {
@@ -21,5 +21,11 @@ describe('parseToСsvUrl: ', () => {
 
     expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
     global.URL.createObjectURL = globalMethod;
+  });
+
+  it('should return empty string', () => {
+    const result = parseToСsvUrl([]);
+
+    expect(result).toBe('');
   });
 });

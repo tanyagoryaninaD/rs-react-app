@@ -13,7 +13,6 @@ export function SearchControls(): ReactNode {
       page: null,
       pageNext: null,
       pagePrev: null,
-      details: null,
       error: null,
     });
   };

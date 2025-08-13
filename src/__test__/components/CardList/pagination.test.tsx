@@ -3,9 +3,9 @@ import { describe, it, expect } from 'vitest';
 import { Pagination } from '../../../components/SearchPanel/CardList/Pagination';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { contextMock } from '../../moks/data';
 import { PokemonListContext } from '../../../types/contexts';
 import store from '../../../store/store';
+import { contextMock } from '../../mocks/data';
 
 describe('Pagination component', () => {
   it('renders with button and page', () => {

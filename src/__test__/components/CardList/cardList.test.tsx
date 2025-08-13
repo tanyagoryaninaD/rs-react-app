@@ -1,14 +1,30 @@
-import { describe, it, afterEach, vi, type Mock, expect } from 'vitest';
+import {
+  describe,
+  it,
+  afterEach,
+  vi,
+  type Mock,
+  expect,
+  beforeEach,
+} from 'vitest';
 import { render } from '@testing-library/react';
 import {
   useGetPokemonByNameQuery,
   useGetPokemonByPageQuery,
 } from '../../../server/pokemonApi';
-import { bulbasaurFetch, contextMock } from '../../moks/data';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
 import { Provider } from 'react-redux';
-import store from '../../../store/store';
 import { PokemonListContext } from '../../../types/contexts';
+import {
+  bulbasaurResponse,
+  contextMock,
+  ivysaur,
+  selectedItems,
+} from '../../mocks/data';
+import { mockStore } from '../../mocks/store';
+import { useLocalStorage } from '../../../utils/localStorage';
+import { setSelectedItems } from '../../mocks/mocks';
+import * as helpers from '../../../utils/helpers';
 
 vi.mock('../../../server/pokemonApi', async () => {
   const originalModule = await vi.importActual('../../../server/pokemonApi');
@@ -19,26 +35,40 @@ vi.mock('../../../server/pokemonApi', async () => {
   };
 });
 
+vi.mock('../../../utils/localStorage', () => ({
+  useLocalStorage: vi.fn(),
+}));
+
 describe('CardList component', () => {
+  beforeEach(() => {
+    contextMock.results = [];
+    contextMock.error = null;
+    contextMock.loading = false;
+  });
+
   afterEach(() => {
+    contextMock.results = [];
+    contextMock.error = null;
+    contextMock.loading = false;
     vi.resetAllMocks();
   });
 
-  it('useGetPokemonByPageQuery and useGetPokemonByNameQuery should been called with apiRequest', () => {
+  it('useGetPokemonByPageQuery and useGetPokemonByNameQuery should been called with currentApiRequest', () => {
+    (useLocalStorage as Mock).mockReturnValue([[], setSelectedItems]);
     (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
-      data: bulbasaurFetch,
+      data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
     }));
     (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
-      data: bulbasaurFetch,
+      data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
     }));
 
     contextMock.currentApiRequest = { apiRequest: 'bulbasaur' };
     render(
-      <Provider store={store}>
+      <Provider store={mockStore}>
         <PokemonListContext value={contextMock}>
           <CardList />
         </PokemonListContext>
@@ -48,33 +78,43 @@ describe('CardList component', () => {
     expect(useGetPokemonByPageQuery).toBeCalledWith({
       apiRequest: 'bulbasaur',
     });
-    expect(useGetPokemonByNameQuery).toBeCalledWith('bulbasaur');
+    expect(useGetPokemonByNameQuery).not.toBeCalled();
   });
 
-  it('useGetPokemonByPageQuery and useGetPokemonByNameQuery should been called with offset', () => {
+  it('first render should get selectedItems from local storage', () => {
+    selectedItems.push(ivysaur);
+
+    (useLocalStorage as Mock).mockReturnValue([
+      selectedItems,
+      setSelectedItems,
+    ]);
     (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
-      data: { results: [{ name: 'bulbasaur' }] },
+      data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
     }));
     (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
-      data: bulbasaurFetch,
+      data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
     }));
+    const parseToСsvUrlSpy = vi
+      .spyOn(helpers, 'parseToСsvUrl')
+      .mockImplementation(() => 'url');
 
-    contextMock.currentApiRequest = { offset: 10 };
+    contextMock.currentApiRequest = { apiRequest: 'bulbasaur' };
     render(
-      <Provider store={store}>
+      <Provider store={mockStore}>
         <PokemonListContext value={contextMock}>
           <CardList />
         </PokemonListContext>
       </Provider>
     );
 
-    expect(useGetPokemonByPageQuery).toBeCalledWith({
-      offset: 10,
-    });
-    expect(useGetPokemonByNameQuery).toBeCalledWith('bulbasaur');
+    expect(useLocalStorage).toHaveBeenCalledWith('tg-selected-items', []);
+    expect(mockStore.getState().selectedItems).toEqual([ivysaur]);
+
+    parseToСsvUrlSpy.mockRestore();
+    selectedItems.length = 0;
   });
 });

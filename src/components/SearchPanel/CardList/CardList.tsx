@@ -1,4 +1,4 @@
-import { useContext, useEffect, type ReactNode } from 'react';
+import { useContext, useEffect, useRef, type ReactNode } from 'react';
 import type { MyPokemon } from '../../../types/interfaces';
 import { Card } from './Card';
 import { LoadingIndicator } from './LoadingIndicator';
@@ -12,6 +12,10 @@ import {
   parsePokemonData,
   parsePokemonPageData,
 } from '../../../utils/helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocalStorage } from '../../../utils/localStorage';
+import { Flyout } from '../../components/Flyout';
+import { selectItems, setState } from '../../../store/reducers/selectedItems';
 
 export function CardList(): ReactNode {
   const { page, results, currentApiRequest, details, updateContext } =
@@ -19,6 +23,26 @@ export function CardList(): ReactNode {
   const { data, error, isFetching } = useGetPokemonByPageQuery(
     currentApiRequest || {}
   );
+
+  const firstRender = useRef(true);
+  const dispatch = useDispatch();
+  const stateItems = useSelector(selectItems);
+  const [selectedItems, setSelectedItems] = useLocalStorage<MyPokemon[]>(
+    'tg-selected-items',
+    []
+  );
+
+  useEffect(() => {
+    if (firstRender.current) {
+      dispatch(setState(selectedItems));
+
+      firstRender.current = false;
+    }
+  }, [dispatch, selectedItems]);
+
+  useEffect(() => {
+    setSelectedItems(stateItems);
+  }, [setSelectedItems, stateItems]);
 
   useEffect(() => {
     if (error) {
@@ -87,6 +111,7 @@ export function CardList(): ReactNode {
         )}
       </div>
       {details && <CardDetails />}
+      {stateItems.length ? <Flyout /> : ''}
     </div>
   );
 }
