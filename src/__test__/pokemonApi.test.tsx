@@ -6,6 +6,10 @@ import {
 import { renderHook, waitFor } from '@testing-library/react';
 import { bulbasaurResponse } from './mocks/data';
 import { wrapper } from './mocks/mocks';
+import type { NamedApiResource } from 'pokeapi-typescript/dist/interfaces/Utility/NamedApiResourceList';
+import type { Pokemon } from 'pokeapi-typescript';
+import { mockStore } from './mocks/store';
+import type { QueryCacheKey } from '@reduxjs/toolkit/query';
 
 describe('pokemonApi', () => {
   const pokemon = 'bulbasaur';
@@ -55,7 +59,7 @@ describe('pokemonApi', () => {
 
   it('should call useGetPokemonByPageQuery with apiRequest', async () => {
     const { result } = renderHook(
-      () => useGetPokemonByPageQuery({ apiRequest: pokemon }),
+      () => useGetPokemonByPageQuery({ apiRequest: 'bulbasaur' }),
       {
         wrapper,
       }
@@ -83,5 +87,33 @@ describe('pokemonApi', () => {
       currentData: data,
       isFetching: false,
     });
+
+    const keysTags = mockStore.getState().pokemonApi.provided.keys;
+    const key =
+      'getPokemonByPage({"apiRequest":"bulbasaur"})' as unknown as QueryCacheKey;
+    expect(keysTags[key][0].type).toBe('Pokemon');
+  });
+
+  it('should set tags PokemonList', async () => {
+    fetchMock.resetMocks();
+    fetchMock.mockOnceIf(`https://pokeapi.co/api/v2/pokemon/${pokemon}`, () =>
+      Promise.resolve({
+        status: 200,
+        body: JSON.stringify({
+          name: '',
+          url: '',
+        } as NamedApiResource<Pokemon>),
+      })
+    );
+
+    const { result } = renderHook(() => useGetPokemonByPageQuery({}), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.data).toBeTruthy());
+
+    const keysTags = mockStore.getState().pokemonApi.provided.keys;
+    const key = 'getPokemonByPage({})' as unknown as QueryCacheKey;
+    expect(keysTags[key][0].type).toBe('PokemonList');
   });
 });

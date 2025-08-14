@@ -1,44 +1,23 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, type Mock, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Header } from '../../components/Header';
-import { MemoryRouter } from 'react-router-dom';
 import { ThemeContext } from '../../types/contexts';
-import {
-  useResetAllPokemonMutation,
-  useResetPokemonPageMutation,
-} from '../../server/pokemonApi';
 import userEvent from '@testing-library/user-event';
-
-const resetPokemonPage = vi.fn();
-const resetAllPokemon = vi.fn();
-
-vi.mock('../../server/pokemonApi', async () => {
-  const originalModule = await vi.importActual('../../server/pokemonApi');
-
-  return {
-    ...originalModule,
-    useResetPokemonPageMutation: vi.fn(),
-    useResetAllPokemonMutation: vi.fn(),
-  };
-});
+import { MockProvider } from '../mocks/MockProvider';
+import { dispatchSpy } from '../mocks/mocks';
 
 describe('Header component', () => {
-  afterEach(() => {
-    vi.resetAllMocks();
-  });
-
-  it('renders without errors', () => {
-    (useResetPokemonPageMutation as Mock).mockReturnValue([resetPokemonPage]);
-    (useResetAllPokemonMutation as Mock).mockReturnValue([resetAllPokemon]);
-
+  beforeEach(() => {
     render(
-      <MemoryRouter>
+      MockProvider(
         <ThemeContext value={{ theme: 'light', toggleTheme: vi.fn() }}>
           <Header />
         </ThemeContext>
-      </MemoryRouter>
+      )
     );
+  });
 
+  it('renders without errors', () => {
     const anchorByRole = screen.getByTestId('header-logo');
     const imgByRole = screen.getByRole('img');
     const titleByRole = screen.getByRole('heading', {
@@ -51,57 +30,32 @@ describe('Header component', () => {
     expect(titleByRole).toHaveTextContent('Search Pokémon');
   });
 
-  it('click on anchor should transfer to website', () => {
-    (useResetPokemonPageMutation as Mock).mockReturnValue([resetPokemonPage]);
-    (useResetAllPokemonMutation as Mock).mockReturnValue([resetAllPokemon]);
-
-    render(
-      <MemoryRouter>
-        <ThemeContext value={{ theme: 'light', toggleTheme: vi.fn() }}>
-          <Header />
-        </ThemeContext>
-      </MemoryRouter>
-    );
-
+  it('clicks on anchor should transfer to website', () => {
     const anchorByRole = screen.getByTestId('header-logo');
     expect(anchorByRole).toHaveAttribute('href', 'https://pokeapi.co/about');
     expect(anchorByRole).toHaveAttribute('target', '_blank');
     expect(anchorByRole).toHaveAttribute('rel', 'noreferrer');
   });
 
-  it('click on "Reset Cache Pager" should call resetPokemonPage', async () => {
-    (useResetPokemonPageMutation as Mock).mockReturnValue([resetPokemonPage]);
-    (useResetAllPokemonMutation as Mock).mockReturnValue([resetAllPokemon]);
-
-    render(
-      <MemoryRouter>
-        <ThemeContext value={{ theme: 'light', toggleTheme: vi.fn() }}>
-          <Header />
-        </ThemeContext>
-      </MemoryRouter>
-    );
-
+  it('clicks on "Reset Cache Page" should refresh query for page', async () => {
     const button = screen.getByTestId('reset-cache-page');
 
     await userEvent.click(button);
-    expect(resetPokemonPage).toHaveBeenCalled();
+
+    expect(dispatchSpy).toHaveBeenCalledWith({
+      type: 'pokemonApi/invalidateTags',
+      payload: ['PokemonList'],
+    });
   });
 
-  it('click on "Reset Cache All Pokemons" should call resetAllPokemon', async () => {
-    (useResetPokemonPageMutation as Mock).mockReturnValue([resetPokemonPage]);
-    (useResetAllPokemonMutation as Mock).mockReturnValue([resetAllPokemon]);
-
-    render(
-      <MemoryRouter>
-        <ThemeContext value={{ theme: 'light', toggleTheme: vi.fn() }}>
-          <Header />
-        </ThemeContext>
-      </MemoryRouter>
-    );
-
+  it('clicks on "Reset Cache All Pokemons" should refresh query for all pokemon', async () => {
     const button = screen.getByTestId('reset-cache-all-pokemon');
 
     await userEvent.click(button);
-    expect(resetAllPokemon).toHaveBeenCalled();
+
+    expect(dispatchSpy).toHaveBeenCalledWith({
+      type: 'pokemonApi/invalidateTags',
+      payload: ['Pokemon'],
+    });
   });
 });

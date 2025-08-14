@@ -2,7 +2,7 @@ import type { Pokemon } from 'pokeapi-typescript';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { GetPokemonByPage } from '../types/types';
 import type { ApiRequest } from '../types/interfaces';
-import { isListPokemon, isPokemon } from '../utils/helpers';
+import { isListPokemon } from '../utils/helpers';
 
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
@@ -19,36 +19,24 @@ export const pokemonApi = createApi({
           ? apiRequest?.split('pokemon')[1] || `/${apiRequest}`
           : `?offset=${offset}&limit=10`;
       },
-      providesTags: (result) =>
+      providesTags: (result, _error, query) =>
         isListPokemon(result)
           ? [
               ...result.results.map(({ name }) => ({
                 type: 'PokemonList' as const,
                 id: name,
               })),
-              { type: 'PokemonList', id: 'PokemonList' },
+              { type: 'PokemonList', id: JSON.stringify(query) },
             ]
           : [
               {
-                type: 'PokemonList',
-                id: isPokemon(result) ? result?.name : 'PokemonList',
+                type: 'Pokemon',
+                id: result?.name,
               },
             ],
-    }),
-    resetPokemonPage: build.mutation({
-      queryFn: () => ({ data: null }),
-      invalidatesTags: ['PokemonList'],
-    }),
-    resetAllPokemon: build.mutation({
-      queryFn: () => ({ data: null }),
-      invalidatesTags: ['Pokemon'],
     }),
   }),
 });
 
-export const {
-  useGetPokemonByNameQuery,
-  useGetPokemonByPageQuery,
-  useResetAllPokemonMutation,
-  useResetPokemonPageMutation,
-} = pokemonApi;
+export const { useGetPokemonByNameQuery, useGetPokemonByPageQuery } =
+  pokemonApi;

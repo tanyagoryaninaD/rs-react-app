@@ -2,22 +2,19 @@ import { useContext, type ReactNode } from 'react';
 import pokeLogo from '../assets/pokeapi.png';
 import { NavLink } from 'react-router-dom';
 import { ThemeContext } from '../types/contexts';
-import {
-  useResetAllPokemonMutation,
-  useResetPokemonPageMutation,
-} from '../server/pokemonApi';
+import { useDispatch } from 'react-redux';
+import { pokemonApi } from '../server/pokemonApi';
 
 export function Header(): ReactNode {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const [resetPokemonPage] = useResetPokemonPageMutation();
-  const [resetAllPokemon] = useResetAllPokemonMutation();
+  const dispatch = useDispatch();
 
   const handleResetCashPokemonPage = () => {
-    resetPokemonPage('');
+    dispatch(pokemonApi.util.invalidateTags(['PokemonList']));
   };
 
   const handleResetCashAllPokemon = () => {
-    resetAllPokemon('');
+    dispatch(pokemonApi.util.invalidateTags(['Pokemon']));
   };
 
   return (

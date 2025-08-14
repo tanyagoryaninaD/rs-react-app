@@ -53,7 +53,7 @@ describe('CardList component', () => {
     vi.resetAllMocks();
   });
 
-  it('useGetPokemonByPageQuery and useGetPokemonByNameQuery should been called with currentApiRequest', () => {
+  it('useGetPokemonByPageQuery should been called with currentApiRequest and query should have called one', () => {
     (useLocalStorage as Mock).mockReturnValue([[], setSelectedItems]);
     (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
       data: bulbasaurResponse,

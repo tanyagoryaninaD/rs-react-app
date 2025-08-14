@@ -74,13 +74,3 @@ export function isListPokemon(
 
   return (data as NamedApiResourceList<Pokemon>).results !== undefined;
 }
-
-export function isPokemon(
-  data: Pokemon | NamedApiResourceList<Pokemon> | undefined
-): data is Pokemon {
-  if (!data) {
-    return false;
-  }
-
-  return (data as Pokemon).name !== undefined;
-}
