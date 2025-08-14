@@ -18,12 +18,13 @@ import { PokemonListContext } from '../../../types/contexts';
 import {
   bulbasaurResponse,
   contextMock,
+  contextStateMock,
   ivysaur,
   selectedItems,
 } from '../../mocks/data';
 import { mockStore } from '../../mocks/store';
 import { useLocalStorage } from '../../../utils/localStorage';
-import { setSelectedItems } from '../../mocks/mocks';
+import { setContext, setSelectedItems } from '../../mocks/mocks';
 import * as helpers from '../../../utils/helpers';
 
 vi.mock('../../../server/pokemonApi', async () => {
@@ -59,11 +60,13 @@ describe('CardList component', () => {
       data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
+      error: undefined,
     }));
     (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
       data: bulbasaurResponse,
       isLoading: false,
       isFetching: false,
+      error: undefined,
     }));
 
     contextMock.currentApiRequest = { apiRequest: 'bulbasaur' };
@@ -84,10 +87,14 @@ describe('CardList component', () => {
   it('first render should get selectedItems from local storage', () => {
     selectedItems.push(ivysaur);
 
-    (useLocalStorage as Mock).mockReturnValue([
-      selectedItems,
-      setSelectedItems,
-    ]);
+    (useLocalStorage as Mock).mockImplementation((key, initialValue) => {
+      if (key === 'tg-last-search') {
+        return [contextStateMock, setContext];
+      } else if (key === 'tg-selected-items') {
+        return [selectedItems, setSelectedItems];
+      }
+      return [initialValue, vi.fn()];
+    });
     (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
       data: bulbasaurResponse,
       isLoading: false,

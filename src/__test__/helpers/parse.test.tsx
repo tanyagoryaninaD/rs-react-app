@@ -28,6 +28,12 @@ describe('parse Pokemon data: ', () => {
 
       expect(result.image).toBe('front_default.png');
     });
+
+    it('should return empty object', () => {
+      const result = parsePokemonData(undefined);
+
+      expect(result).toEqual({});
+    });
   });
 
   describe('parsePokemonPageData: ', () => {

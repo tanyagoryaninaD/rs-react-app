@@ -31,7 +31,7 @@ export function parsePokemonData(data?: Pokemon): MyPokemon {
   };
 }
 
-export function upperFirstLetter(value: string): string {
+export function upperFirstLetter(value?: string): string {
   if (!value) {
     return '';
   }
