@@ -20,8 +20,8 @@ export function CardDetails(): ReactNode {
   }, [data, updateContext]);
 
   const abilities = (): ReactNode | null => {
-    return state.data?.abilities ? (
-      <div className="wrapper-list">
+    return state.data?.abilities?.length ? (
+      <div className="wrapper-list" data-testis="abilities">
         <h3 className="list-title">Abilities</h3>
         <ul>
           {state.data.abilities.map((item) => (
@@ -33,8 +33,8 @@ export function CardDetails(): ReactNode {
   };
 
   const moves = (): ReactNode | null => {
-    return state.data?.moves ? (
-      <div className="wrapper-list">
+    return state.data?.moves?.length ? (
+      <div className="wrapper-list" data-testis="moves">
         <h3 className="list-title">Moves</h3>
         <ul>
           {state.data.moves.map((item) => (
@@ -58,7 +58,7 @@ export function CardDetails(): ReactNode {
         ) : (
           <>
             <h2 data-testid="card-details-title">
-              {upperFirstLetter(state.data?.name || '')}
+              {upperFirstLetter(state.data?.name)}
             </h2>
             <div className="wrapper-image">
               {state.data?.image && (

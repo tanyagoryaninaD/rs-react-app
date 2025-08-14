@@ -2,10 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
-import { Provider } from 'react-redux';
 import { PokemonListContext } from '../../../types/contexts';
 import { contextMock } from '../../mocks/data';
-import { mockStore } from '../../mocks/store';
+import { MockProvider } from '../../mocks/MockProvider';
 
 describe('SearchControls component', () => {
   it('renders with form elements', () => {
@@ -13,11 +12,11 @@ describe('SearchControls component', () => {
     contextMock.loading = false;
 
     render(
-      <Provider store={mockStore}>
+      MockProvider(
         <PokemonListContext value={contextMock}>
           <SearchControls />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     expect(screen.getByTestId('search-input')).toBeInTheDocument();
@@ -33,11 +32,11 @@ describe('SearchControls component', () => {
     contextMock.loading = true;
 
     render(
-      <Provider store={mockStore}>
+      MockProvider(
         <PokemonListContext value={contextMock}>
           <SearchControls />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     expect(
@@ -52,11 +51,11 @@ describe('SearchControls component', () => {
     contextMock.loading = false;
 
     render(
-      <Provider store={mockStore}>
+      MockProvider(
         <PokemonListContext value={contextMock}>
           <SearchControls />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     expect(screen.getByDisplayValue('test')).toBeInTheDocument();
@@ -67,11 +66,11 @@ describe('SearchControls component', () => {
     contextMock.loading = false;
 
     render(
-      <Provider store={mockStore}>
+      MockProvider(
         <PokemonListContext value={contextMock}>
           <SearchControls />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     const input = screen.getByTestId('search-input');
@@ -87,11 +86,11 @@ describe('SearchControls component', () => {
     contextMock.loading = false;
 
     render(
-      <Provider store={mockStore}>
+      MockProvider(
         <PokemonListContext value={contextMock}>
           <SearchControls />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     const button = screen.getByRole('button', {

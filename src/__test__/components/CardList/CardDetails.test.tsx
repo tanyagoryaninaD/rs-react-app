@@ -2,11 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, afterEach, vi, type Mock } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { CardDetails } from '../../../components/SearchPanel/CardList/CardDetails';
-import { Provider } from 'react-redux';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
 import { PokemonListContext } from '../../../types/contexts';
-import store from '../../../store/store';
 import { bulbasaurResponse, contextMock } from '../../mocks/data';
+import { MockProvider } from '../../mocks/MockProvider';
 
 vi.mock('../../../server/pokemonApi', async () => {
   const originalModule = await vi.importActual('../../../server/pokemonApi');
@@ -29,11 +28,11 @@ describe('CardDetails component', () => {
     });
 
     render(
-      <Provider store={store}>
+      MockProvider(
         <PokemonListContext value={contextMock}>
           <CardDetails />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     const button = screen.getByRole('button', { name: /Close/i });
@@ -42,5 +41,28 @@ describe('CardDetails component', () => {
     await userEvent.click(button);
 
     expect(contextMock.updateContext).toHaveBeenCalledWith({ details: null });
+  });
+
+  it('renders without abilities and moves', async () => {
+    const response = { ...bulbasaurResponse };
+    response.abilities = [];
+    response.moves = [];
+
+    (useGetPokemonByNameQuery as Mock).mockReturnValue({
+      data: response,
+      isLoading: false,
+      error: null,
+    });
+
+    render(
+      MockProvider(
+        <PokemonListContext value={contextMock}>
+          <CardDetails />
+        </PokemonListContext>
+      )
+    );
+
+    expect(screen.queryByTestId('abilities')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('moves')).not.toBeInTheDocument();
   });
 });

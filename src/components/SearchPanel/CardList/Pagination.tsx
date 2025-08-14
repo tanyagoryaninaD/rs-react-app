@@ -7,7 +7,7 @@ export function Pagination(): ReactNode {
 
   const handlePaginationClickPrev = (): void => {
     updateContext({
-      page: page ? page - 1 : 1,
+      page: page && page - 1,
       loading: true,
       currentApiRequest: { apiRequest: pagePrev },
     });
@@ -15,7 +15,7 @@ export function Pagination(): ReactNode {
 
   const handlePaginationClickNext = (): void => {
     updateContext({
-      page: page ? page + 1 : 1,
+      page: page && page + 1,
       loading: true,
       currentApiRequest: { apiRequest: pageNext },
     });

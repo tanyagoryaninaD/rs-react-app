@@ -13,7 +13,6 @@ import {
   useGetPokemonByPageQuery,
 } from '../../../server/pokemonApi';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
-import { Provider } from 'react-redux';
 import { PokemonListContext } from '../../../types/contexts';
 import {
   bulbasaurResponse,
@@ -26,6 +25,7 @@ import { mockStore } from '../../mocks/store';
 import { useLocalStorage } from '../../../utils/localStorage';
 import { setContext, setSelectedItems } from '../../mocks/mocks';
 import * as helpers from '../../../utils/helpers';
+import { MockProvider } from '../../mocks/MockProvider';
 
 vi.mock('../../../server/pokemonApi', async () => {
   const originalModule = await vi.importActual('../../../server/pokemonApi');
@@ -41,16 +41,15 @@ vi.mock('../../../utils/localStorage', () => ({
 }));
 
 describe('CardList component', () => {
+  const context = { ...contextMock };
+
   beforeEach(() => {
-    contextMock.results = [];
-    contextMock.error = null;
-    contextMock.loading = false;
+    context.results = [];
+    context.error = null;
+    context.loading = false;
   });
 
   afterEach(() => {
-    contextMock.results = [];
-    contextMock.error = null;
-    contextMock.loading = false;
     vi.resetAllMocks();
   });
 
@@ -69,13 +68,14 @@ describe('CardList component', () => {
       error: undefined,
     }));
 
-    contextMock.currentApiRequest = { apiRequest: 'bulbasaur' };
+    context.currentApiRequest = { apiRequest: 'bulbasaur' };
+
     render(
-      <Provider store={mockStore}>
-        <PokemonListContext value={contextMock}>
+      MockProvider(
+        <PokemonListContext value={context}>
           <CardList />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     expect(useGetPokemonByPageQuery).toBeCalledWith({
@@ -109,13 +109,14 @@ describe('CardList component', () => {
       .spyOn(helpers, 'parseToСsvUrl')
       .mockImplementation(() => 'url');
 
-    contextMock.currentApiRequest = { apiRequest: 'bulbasaur' };
+    context.currentApiRequest = { apiRequest: 'bulbasaur' };
+
     render(
-      <Provider store={mockStore}>
-        <PokemonListContext value={contextMock}>
+      MockProvider(
+        <PokemonListContext value={context}>
           <CardList />
         </PokemonListContext>
-      </Provider>
+      )
     );
 
     expect(useLocalStorage).toHaveBeenCalledWith('tg-selected-items', []);
