@@ -13,7 +13,7 @@ import {
   useGetPokemonByPageQuery,
 } from '../../../server/pokemonApi';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
 import {
   bulbasaurResponse,
   contextMock,

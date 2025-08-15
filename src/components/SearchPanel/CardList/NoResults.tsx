@@ -1,6 +1,6 @@
 import { useContext, type ReactNode } from 'react';
-import gif from '../../../assets/not-results.gif';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
+import Image from 'next/image';
 
 export function NoResults(): ReactNode {
   const { error } = useContext(PokemonListContext);
@@ -8,7 +8,7 @@ export function NoResults(): ReactNode {
   return (
     <div className="no-results">
       {error || 'No results found'}
-      <img src={gif} alt="Pikachu" />
+      <Image src="/not-results.gif" alt="Pikachu" width={100} height={100} />;
     </div>
   );
 }

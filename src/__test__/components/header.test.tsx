@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Header } from '../../components/Header';
-import { ThemeContext } from '../../types/contexts';
+import { ThemeContext } from '../../utils/contexts';
 import userEvent from '@testing-library/user-event';
 import { MockProvider } from '../mocks/MockProvider';
 import { dispatchSpy } from '../mocks/mocks';

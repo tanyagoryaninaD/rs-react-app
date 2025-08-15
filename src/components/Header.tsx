@@ -1,20 +1,26 @@
-import { useContext, type ReactNode } from 'react';
-import pokeLogo from '../assets/pokeapi.png';
-import { NavLink } from 'react-router-dom';
-import { ThemeContext } from '../types/contexts';
-import { useDispatch } from 'react-redux';
-import { pokemonApi } from '../server/pokemonApi';
+'use client';
 
-export function Header(): ReactNode {
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const dispatch = useDispatch();
+import Image from 'next/image';
+import Link from 'next/link';
+import { ThemeButton } from './components/ThemeButton';
+import { ResetCache } from './components/ResetCache';
+import { useLocalStorage } from '../utils/localStorage';
+import { useEffect } from 'react';
+import { ThemeContext } from '../utils/contexts';
+import { Theme } from '../types/types';
 
-  const handleResetCashPokemonPage = () => {
-    dispatch(pokemonApi.util.invalidateTags(['PokemonList']));
-  };
+export function Header(): React.ReactNode {
+  const [theme, setTheme] = useLocalStorage<Theme>('tg-theme', 'light');
 
-  const handleResetCashAllPokemon = () => {
-    dispatch(pokemonApi.util.invalidateTags(['Pokemon']));
+  useEffect(() => {
+    setTheme(theme);
+
+    document.body.classList.toggle('dark', theme === 'dark');
+    document.body.classList.toggle('light', theme === 'light');
+  }, [setTheme, theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
@@ -28,31 +34,28 @@ export function Header(): ReactNode {
               target="_blank"
               rel="noreferrer"
             >
-              <img src={pokeLogo} className="logo" alt="Poke logo" />
+              <Image
+                src="/pokeapi.png"
+                className="logo"
+                alt="Poke logo"
+                width={100}
+                height={100}
+                priority
+              />
             </a>
           </div>
-          <nav>
-            <NavLink to="/" className="header-link">
+          <nav className="nav">
+            <Link href="/" className="header-link">
               Home
-            </NavLink>{' '}
-            |{' '}
-            <NavLink to="/about" className="header-link">
+            </Link>
+            <Link href="/about" className="header-link">
               About us
-            </NavLink>
+            </Link>
           </nav>
-          <button className={`theme ${theme}`} onClick={toggleTheme}></button>
-          <button
-            data-testid="reset-cache-page"
-            onClick={handleResetCashPokemonPage}
-          >
-            Reset Cache Page
-          </button>
-          <button
-            data-testid="reset-cache-all-pokemon"
-            onClick={handleResetCashAllPokemon}
-          >
-            Reset Cache All Pokemons
-          </button>
+          <ThemeContext value={{ theme, toggleTheme }}>
+            <ThemeButton />
+          </ThemeContext>
+          <ResetCache />
         </div>
         <h1 className="header-title">Search Pokémon</h1>
       </header>

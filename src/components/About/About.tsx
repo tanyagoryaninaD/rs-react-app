@@ -1,8 +1,7 @@
-import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import '../../styles/About.css';
 
-export function About(): ReactNode {
+export function About(): React.ReactNode {
   return (
     <>
       <h2>About us</h2>
@@ -20,7 +19,7 @@ export function About(): ReactNode {
       <div className="wrapper-about">
         <div className="school">
           <h3>School</h3>
-          <Link to="https://rs.school/courses/reactjs">
+          <Link href="https://rs.school/courses/reactjs">
             <img
               src="https://i.ytimg.com/vi/s0BEXi7x2bk/hqdefault.jpg"
               alt=""
@@ -46,7 +45,10 @@ export function About(): ReactNode {
               <li>From Mink, Belarus</li>
               <li>
                 GitHub:{' '}
-                <Link to="https://github.com/tanyagoryaninaD" target={'_blank'}>
+                <Link
+                  href="https://github.com/tanyagoryaninaD"
+                  target={'_blank'}
+                >
                   @tanyagoryaninaD
                 </Link>
               </li>

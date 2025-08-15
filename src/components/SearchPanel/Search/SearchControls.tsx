@@ -1,5 +1,5 @@
 import { useContext, type ReactNode } from 'react';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
 
 export function SearchControls(): ReactNode {
   const { query, loading, updateContext } = useContext(PokemonListContext);

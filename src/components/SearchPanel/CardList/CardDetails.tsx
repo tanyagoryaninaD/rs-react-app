@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, type ReactNode } from 'react';
 import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { LoadingIndicator } from './LoadingIndicator';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
 import type { CardDetailsState } from '../../../types/interfaces';
 
 export function CardDetails(): ReactNode {

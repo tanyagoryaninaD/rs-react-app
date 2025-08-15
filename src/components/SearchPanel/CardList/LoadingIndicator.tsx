@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import gif from '../../../assets/load.gif';
+import Image from 'next/image';
 
 export function LoadingIndicator(): ReactNode {
   return (
     <div className="loader-wrapper">
       <div className="loader">
-        <img src={gif} alt="Pikachu" />
+        <Image src="/load.gif" alt="Pikachu" width={100} height={100} />
         <p>Loading data...</p>
       </div>
     </div>

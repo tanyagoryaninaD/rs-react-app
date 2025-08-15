@@ -1,5 +1,8 @@
 import React from 'react';
-import type { PokemonListContextProps, ThemeContextProps } from './interfaces';
+import type {
+  PokemonListContextProps,
+  ThemeContextProps,
+} from '../types/interfaces';
 
 export const ThemeContext = React.createContext<ThemeContextProps>({
   theme: 'light',

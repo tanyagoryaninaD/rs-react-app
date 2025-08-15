@@ -8,7 +8,7 @@ import {
   selectHasItem,
 } from '../../../store/reducers/selectedItems';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
 
 export function Card(props: CardProps): ReactNode {
   const { updateContext } = useContext(PokemonListContext);

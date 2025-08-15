@@ -1,14 +1,17 @@
+'use client';
+
 import { useCallback, useEffect, useRef } from 'react';
 import { SearchControls } from './Search/SearchControls';
 import { CardList } from './CardList/CardList';
 import type { PokemonListContextState } from '../../types/interfaces';
 import { GenerateError } from './Error/GenerateError';
 import { useLocalStorage } from '../../utils/localStorage';
-import { useSearchParams } from 'react-router-dom';
-import { PokemonListContext } from '../../types/contexts';
+import { PokemonListContext } from '../../utils/contexts';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export function SearchPanel() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') || '1') || null;
   const details = searchParams.get('details');
   const firstRender = useRef(true);
@@ -35,25 +38,27 @@ export function SearchPanel() {
         ...newContext,
       }));
 
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+
       if (newContext.details) {
-        searchParams.set('details', newContext.details);
+        newSearchParams.set('details', newContext.details);
       }
 
       if (newContext.details === null) {
-        searchParams.delete('details');
+        newSearchParams.delete('details');
       }
 
       if (newContext.page) {
-        searchParams.set('page', newContext.page.toString());
+        newSearchParams.set('page', newContext.page.toString());
       }
 
       if (newContext.page === null) {
-        searchParams.delete('page');
+        newSearchParams.delete('page');
       }
 
-      setSearchParams(searchParams);
+      router.push(`?${newSearchParams.toString()}`);
     },
-    [searchParams, setContext, setSearchParams]
+    [router, searchParams, setContext]
   );
 
   useEffect(() => {

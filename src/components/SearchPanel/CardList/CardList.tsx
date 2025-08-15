@@ -5,7 +5,7 @@ import { LoadingIndicator } from './LoadingIndicator';
 import { NoResults } from './NoResults';
 import { Pagination } from './Pagination';
 import { CardDetails } from './CardDetails';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
 import { useGetPokemonByPageQuery } from '../../../server/pokemonApi';
 import {
   isListPokemon,
@@ -89,8 +89,8 @@ export function CardList(): ReactNode {
 
     return (
       <>
-        {results.map((item: MyPokemon, index) => (
-          <Card key={index} name={item.name} />
+        {results.map((item: MyPokemon) => (
+          <Card key={item.name} name={item.name} />
         ))}
       </>
     );

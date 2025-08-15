@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach, vi, type Mock } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { CardDetails } from '../../../components/SearchPanel/CardList/CardDetails';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
-import { PokemonListContext } from '../../../types/contexts';
+import { PokemonListContext } from '../../../utils/contexts';
 import { bulbasaurResponse, contextMock } from '../../mocks/data';
 import { MockProvider } from '../../mocks/MockProvider';
 
