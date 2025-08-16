@@ -23,7 +23,11 @@ export const selectedItemsSlice = createSlice({
       state.length = 0;
     },
     setState: (state: MyPokemon[], action: PayloadAction<MyPokemon[]>) => {
-      state.push(...action.payload);
+      action.payload.forEach((item) => {
+        if (!selectHasItem.unwrapped(state, item)) {
+          state.push(item);
+        }
+      });
     },
   },
   selectors: {
