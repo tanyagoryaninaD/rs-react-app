@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { parseToСsvUrl } from '../../utils/helpers';
 import { removeAll, selectItems } from '../../store/reducers/selectedItems';
 import { useTranslations } from 'next-intl';
+import { downloadCsv } from '../../utils/helpers';
 
 export function Flyout(): React.ReactNode {
   const t = useTranslations('flyout');
@@ -10,6 +10,10 @@ export function Flyout(): React.ReactNode {
 
   const handlerUnselect = () => {
     dispatch(removeAll());
+  };
+
+  const handlerDownload = () => {
+    downloadCsv(stateItems);
   };
 
   return (
@@ -23,14 +27,13 @@ export function Flyout(): React.ReactNode {
       >
         {t('unselect')}
       </button>
-      <a
+      <button
         data-testid="flyout-download"
         className="flyout-link download"
-        download={`${stateItems.length}_items.csv`}
-        href={parseToСsvUrl(stateItems)}
+        onClick={handlerDownload}
       >
         {t('download')}
-      </a>
+      </button>
     </div>
   );
 }

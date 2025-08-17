@@ -39,30 +39,23 @@ export function upperFirstLetter(value?: string): string {
   return value[0].toUpperCase() + value.slice(1);
 }
 
-export function parseToСsvUrl(data: MyPokemon[]): string {
+export async function downloadCsv(data: MyPokemon[]): Promise<void> {
   if (!data.length) {
-    return '';
+    return;
   }
 
-  const headers = Object.keys(data[0]).join(',');
-
-  const rows = Object.values(data)
-    .map((item) => {
-      const abilities = item.abilities?.join(', ');
-      const moves = item.moves?.join(', ');
-
-      return [item.name, item.id, item.image, abilities, moves]
-        .map((value) => `"${String(value).replace(/"/g, '""')}"`)
-        .join(',');
-    })
-    .join('\n');
-
-  const blob = new Blob([`${headers}\n${rows}`], {
-    type: 'text/csv;charset=utf-8;',
+  const response = await fetch('/api', {
+    method: 'POST',
+    body: JSON.stringify(data),
   });
+
+  const blob = await response.blob();
   const url = URL.createObjectURL(blob);
 
-  return url;
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${data.length}_items.csv`;
+  link.click();
 }
 
 export function isListPokemon(
