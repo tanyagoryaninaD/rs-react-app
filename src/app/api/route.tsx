@@ -3,7 +3,6 @@ import { MyPokemon } from '../../types/interfaces';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const data: MyPokemon[] = await request.json();
-  console.log('🚀 ~ POST ~ data:', data);
 
   const headers = Object.keys(data[0]).join(',');
 
