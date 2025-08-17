@@ -1,7 +1,9 @@
 import { useContext, type ReactNode } from 'react';
 import { PokemonListContext } from '../../../utils/contexts';
+import { useTranslations } from 'next-intl';
 
 export function Pagination(): ReactNode {
+  const t = useTranslations('homePage');
   const { page, pagePrev, pageNext, updateContext } =
     useContext(PokemonListContext);
 
@@ -28,7 +30,7 @@ export function Pagination(): ReactNode {
         onClick={handlePaginationClickPrev}
         disabled={pagePrev ? false : true}
       >
-        Prev
+        {t('buttons.prev')}
       </button>
       <p data-testid="page">{page}</p>
       <button
@@ -36,7 +38,7 @@ export function Pagination(): ReactNode {
         onClick={handlePaginationClickNext}
         disabled={pageNext ? false : true}
       >
-        Next
+        {t('buttons.next')}
       </button>
     </div>
   );

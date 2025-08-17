@@ -8,6 +8,7 @@ import { GenerateError } from './Error/GenerateError';
 import { useLocalStorage } from '../../utils/localStorage';
 import { PokemonListContext } from '../../utils/contexts';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { ResetCache } from '../components/ResetCache';
 
 export function SearchPanel() {
   const router = useRouter();
@@ -81,7 +82,10 @@ export function SearchPanel() {
       <PokemonListContext value={{ ...context, updateContext }}>
         <SearchControls />
         <CardList />
-        <GenerateError />
+        <div className="search-panel-buttons">
+          <ResetCache />
+          <GenerateError />
+        </div>
       </PokemonListContext>
     </div>
   );

@@ -1,3 +1,4 @@
+'use client';
 import { useContext, type ReactNode } from 'react';
 import { ThemeContext } from '../../utils/contexts';
 

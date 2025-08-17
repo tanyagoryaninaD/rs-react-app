@@ -34,10 +34,10 @@ class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <div className="error error-container">
-          <h2>Don&apos;t worry it&apos;s a mock error</h2>
-          <p>{this.state.errorMessage}</p>
+          <h2>{this.props.context.title}</h2>
+          <p>{this.state.errorMessage ?? this.props.context.description}</p>
           <button className="error__btn" onClick={this.handleClick}>
-            Back
+            {this.props.context.button}
           </button>
         </div>
       );

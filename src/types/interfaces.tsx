@@ -35,6 +35,13 @@ export interface ErrorBoundaryState {
 
 export interface ErrorBoundaryProps {
   children: ReactNode;
+  context: ContextError;
+}
+
+interface ContextError {
+  title: string;
+  description: string;
+  button: string;
 }
 
 export interface ErrorBoundaryState {
@@ -75,4 +82,9 @@ export interface PokemonListContextProps extends PokemonListContextState {
 export interface ApiRequest {
   apiRequest?: string | null;
   offset?: number;
+}
+
+export interface RootLayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }

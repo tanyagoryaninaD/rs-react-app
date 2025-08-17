@@ -4,8 +4,10 @@ import { LoadingIndicator } from './LoadingIndicator';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
 import { PokemonListContext } from '../../../utils/contexts';
 import type { CardDetailsState } from '../../../types/interfaces';
+import { useTranslations } from 'next-intl';
 
 export function CardDetails(): ReactNode {
+  const t = useTranslations('homePage');
   const { details, updateContext } = useContext(PokemonListContext);
   const { data } = useGetPokemonByNameQuery(details || '');
 
@@ -22,7 +24,7 @@ export function CardDetails(): ReactNode {
   const abilities = (): ReactNode | null => {
     return state.data?.abilities?.length ? (
       <div className="wrapper-list" data-testis="abilities">
-        <h3 className="list-title">Abilities</h3>
+        <h3 className="list-title">{t('details.abilities')}</h3>
         <ul>
           {state.data.abilities.map((item) => (
             <li key={item}>{upperFirstLetter(item)}</li>
@@ -35,7 +37,7 @@ export function CardDetails(): ReactNode {
   const moves = (): ReactNode | null => {
     return state.data?.moves?.length ? (
       <div className="wrapper-list" data-testis="moves">
-        <h3 className="list-title">Moves</h3>
+        <h3 className="list-title">{t('details.moves')}</h3>
         <ul>
           {state.data.moves.map((item) => (
             <li key={item}>{upperFirstLetter(item)}</li>
@@ -69,7 +71,7 @@ export function CardDetails(): ReactNode {
               {abilities()}
               {moves()}
             </div>
-            <button onClick={handleClick}>Close</button>
+            <button onClick={handleClick}>{t('buttons.close')}</button>
           </>
         )}
       </div>

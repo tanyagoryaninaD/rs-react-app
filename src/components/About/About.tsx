@@ -1,48 +1,41 @@
-import Link from 'next/link';
+import Link from 'next/dist/client/link';
 import '../../styles/About.css';
+import { useTranslations } from 'next-intl';
 
 export function About(): React.ReactNode {
+  const t = useTranslations('aboutPage');
+
   return (
     <>
-      <h2>About us</h2>
+      <h2>{t('title')}</h2>
       <div className="wrapper-about">
-        <h3>What is this?</h3>
-        <p>
-          This website provides a RESTful API interface to highly detailed
-          objects built from thousands of lines of data related to Pokémon. We
-          specifically cover the video game franchise. Using this website, you
-          can consume information on Pokémon, their moves, abilities, types, egg
-          groups and much, much more.
-        </p>
+        <h3>{t('about.title')}</h3>
+        <p>{t('about.description')}</p>
       </div>
 
       <div className="wrapper-about">
         <div className="school">
-          <h3>School</h3>
-          <Link href="https://rs.school/courses/reactjs">
+          <h3>{t('school.title')}</h3>
+          <Link href="https://rs.school/courses/reactjs" target={'_blank'}>
             <img
               src="https://i.ytimg.com/vi/s0BEXi7x2bk/hqdefault.jpg"
               alt=""
             />
           </Link>
         </div>
-        <p>
-          This project is a training course on React. I study at The Rolling
-          Scopes School. This is a great school where you can master all the
-          skills you need to work as a Frontend developer.
-        </p>
+        <p>{t('school.description')}</p>
       </div>
       <div className="wrapper-about">
-        <h3>Developer</h3>
+        <h3>{t('develop.title')}</h3>
         <div className="develop">
           <img
             src="https://avatars.githubusercontent.com/u/176940159?v=4"
             alt="Tatsiana Haranina"
           />
           <div>
-            <h4>Tatiana Haranina</h4>
+            <h4>{t('develop.name')}</h4>
             <ul>
-              <li>From Mink, Belarus</li>
+              <li>{t('develop.description')}</li>
               <li>
                 GitHub:{' '}
                 <Link

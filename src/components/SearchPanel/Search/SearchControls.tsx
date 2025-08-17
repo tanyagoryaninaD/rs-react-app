@@ -1,7 +1,9 @@
 import { useContext, type ReactNode } from 'react';
 import { PokemonListContext } from '../../../utils/contexts';
+import { useTranslations } from 'next-intl';
 
 export function SearchControls(): ReactNode {
+  const t = useTranslations('homePage');
   const { query, loading, updateContext } = useContext(PokemonListContext);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
@@ -29,12 +31,12 @@ export function SearchControls(): ReactNode {
         name="search"
         value={query}
         onChange={handleChange}
-        placeholder="Enter your search term"
+        placeholder={t('search.placeholder')}
         disabled={loading}
         data-testid="search-input"
       />
       <button type="submit" disabled={loading}>
-        {loading ? 'Searching...' : 'Search'}
+        {loading ? t('buttons.searching') : t('buttons.search')}
       </button>
     </form>
   );

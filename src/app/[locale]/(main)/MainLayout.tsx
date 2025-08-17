@@ -1,4 +1,4 @@
-import { Header } from '../../components/Header';
+import { Header } from '../../../components/components/Header';
 import StoreProvider from './StoreProvider';
 
 export default function MainLayout({
