@@ -1,3 +1,4 @@
+import '../../../style/form.scss';
 import type { JSX } from 'react';
 import type { FormKey, FormStore } from '../../../types/store';
 import { AgeField } from '../fields/age';

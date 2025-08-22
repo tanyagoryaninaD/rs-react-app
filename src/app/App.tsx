@@ -3,7 +3,6 @@ import '../style/App.scss';
 import Form from './components/forms/form';
 import Modal from './components/modal/modal';
 import FormWithReactHook from './components/forms/formWithReactHook';
-import { createPortal } from 'react-dom';
 
 interface ModalState {
   formComponent: (() => JSX.Element) | null;
@@ -43,13 +42,9 @@ export default function App(): JSX.Element {
           Form with React Hook
         </button>
       </div>
-      {CurrentForm &&
-        createPortal(
-          <Modal onClose={onClose}>
-            <CurrentForm />
-          </Modal>,
-          document.getElementById('root') || document.body
-        )}
+      <Modal isOpen={!!modalState.formComponent} onClose={onClose}>
+        {CurrentForm && <CurrentForm />}
+      </Modal>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import '../../../style/form.scss';
 import { useFormStore } from '../../store/useFormStore';
 import { NameField } from '../fields/name';
 import type { FormKey } from '../../../types/store';
