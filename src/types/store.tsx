@@ -24,6 +24,7 @@ export interface Store {
   isValidEmail: () => boolean;
   isValidPassword: () => boolean;
   isValidRepeatPassword: () => boolean;
+  isValidCountry: () => boolean;
 }
 
 export type FormKey = keyof FormStore;

@@ -3,56 +3,60 @@ import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function CountryField(props: InputField): JSX.Element {
-  const { form, countries, setFormData } = useFormStore((state) => state);
+  const { form, countries, isValidCountry } = useFormStore((state) => state);
   const error = props.formState?.errors.country;
 
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setFormData('country', value);
-  };
-
-  const createSelectDefault = () => {
+  const createInputDefault = () => {
     return (
-      <select
-        id="country"
-        name="country"
-        onChange={onChange}
-        required={true}
-        autoComplete="country"
-        value={form.country || ''}
-      >
+      <>
+        <input
+          type="text"
+          list="countrydata"
+          id="country"
+          name="country"
+          autoComplete="off"
+          required={true}
+          placeholder="Country"
+          onChange={props.onChange}
+        />
         <Options />
-      </select>
+      </>
     );
   };
 
-  const createSelectReactHook = () => {
+  const createInputReactHook = () => {
     return (
-      <select
-        id="country"
-        autoComplete="country"
-        {...props.register?.('country', {
-          required: 'Select a country',
-          onChange: props.onChange,
-          value: form.country || '',
-          validate: () => (form.country === '' ? 'Select a country' : true),
-        })}
-      >
+      <>
+        <input
+          type="text"
+          list="countrydata"
+          id="country"
+          placeholder="Country"
+          autoComplete="off"
+          {...props.register?.('country', {
+            required: 'Select a country',
+            value: form.country || '',
+            onChange: props.onChange,
+            validate: () =>
+              !isValidCountry() ? 'Select a country with list' : true,
+          })}
+        />
         <Options />
-      </select>
+      </>
     );
   };
 
   const Options = () => {
     return (
-      <>
-        <option value="">Select a country</option>
+      <datalist id="countrydata">
         {countries.map((country) => (
-          <option key={country.code} value={country.code}>
-            {country.name}
-          </option>
+          <option
+            key={country.code}
+            label={country.code}
+            value={country.name}
+          />
         ))}
-      </>
+      </datalist>
     );
   };
 
@@ -63,14 +67,14 @@ export function CountryField(props: InputField): JSX.Element {
       </label>
       {props.formState ? (
         <>
-          {createSelectReactHook()}
+          {createInputReactHook()}
           {error && <p className="validation">{error.message}</p>}
         </>
       ) : (
         <>
-          {createSelectDefault()}
-          {form.country === '' && (
-            <p className="validation">Select a country</p>
+          {createInputDefault()}
+          {!!form.country?.length && !isValidCountry() && (
+            <p className="validation">Select a country with list</p>
           )}
         </>
       )}

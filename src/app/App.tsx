@@ -48,7 +48,7 @@ export default function App(): JSX.Element {
           <Modal onClose={onClose}>
             <CurrentForm />
           </Modal>,
-          document.body
+          document.getElementById('root') || document.body
         )}
     </>
   );

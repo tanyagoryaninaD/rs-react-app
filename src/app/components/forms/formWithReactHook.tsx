@@ -45,7 +45,11 @@ export default function FormWithReactHook(): JSX.Element {
               register={register}
               formState={formState}
             />
-            <CountryField register={register} formState={formState} />
+            <CountryField
+              onChange={onChange('country')}
+              register={register}
+              formState={formState}
+            />
           </div>
           <div className="wrapper-subform">
             <EmailField

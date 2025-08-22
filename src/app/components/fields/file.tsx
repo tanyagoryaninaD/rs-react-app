@@ -19,6 +19,7 @@ export function FileField(props: InputField): JSX.Element {
         name="file"
         onChange={onChange}
         accept=".jpeg, .png"
+        placeholder="nff"
       />
     );
   };

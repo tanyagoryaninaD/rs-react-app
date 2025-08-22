@@ -10,7 +10,7 @@ export const useFormStore = create<Store>((set, get) => ({
     repeatPassword: '',
     gender: '',
     accept: false,
-    country: null,
+    country: '',
     file: null,
   },
 
@@ -46,6 +46,15 @@ export const useFormStore = create<Store>((set, get) => ({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     return emailRegex.test(email);
+  },
+
+  isValidCountry: (): boolean => {
+    const country = get().form.country;
+    console.log('🚀 ~ country:', country);
+    const validCountry = get().countries.some((item) => item.name === country);
+    console.log('🚀 ~ validCountry:', validCountry);
+
+    return validCountry;
   },
 
   isValidPassword: (): boolean => {

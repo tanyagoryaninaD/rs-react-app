@@ -33,7 +33,7 @@ export default function Form() {
           <div className="wrapper-subform">
             <NameField onChange={onChange('name')} />
             <AgeField onChange={onChange('age')} />
-            <CountryField />
+            <CountryField onChange={onChange('country')} />
           </div>
           <div className="wrapper-subform">
             <EmailField onChange={onChange('email')} />
