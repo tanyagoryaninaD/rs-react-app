@@ -3,8 +3,11 @@ import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function PasswordField(props: InputField): JSX.Element {
-  const { form, isValidPassword } = useFormStore((state) => state);
-  const error = props.formState?.errors.password;
+  const { form } = useFormStore((state) => state);
+
+  const error = props.formState?.errors.password || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -15,7 +18,6 @@ export function PasswordField(props: InputField): JSX.Element {
         placeholder="Password"
         value={form.password}
         onChange={props.onChange}
-        required={true}
       />
     );
   };
@@ -30,10 +32,7 @@ export function PasswordField(props: InputField): JSX.Element {
           required: 'This field is required',
           onChange: props.onChange,
           value: form.password,
-          validate: () =>
-            !isValidPassword()
-              ? 'Use one digit, one uppercase letter, one lowercase letter, and one special character'
-              : true,
+          validate: () => !!error,
         })}
       />
     );
@@ -44,22 +43,8 @@ export function PasswordField(props: InputField): JSX.Element {
       <label htmlFor="password">
         Password<span className="required">*</span>
       </label>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>
-          {createInputDefault()}
-          {!!form.password.length && !isValidPassword() && (
-            <p className="validation">
-              Use one digit, one uppercase letter, one lowercase letter, and one
-              special character
-            </p>
-          )}
-        </>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

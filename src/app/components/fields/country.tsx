@@ -3,8 +3,11 @@ import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function CountryField(props: InputField): JSX.Element {
-  const { form, countries, isValidCountry } = useFormStore((state) => state);
-  const error = props.formState?.errors.country;
+  const { form, countries } = useFormStore((state) => state);
+
+  const error = props.formState?.errors.country || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -15,7 +18,6 @@ export function CountryField(props: InputField): JSX.Element {
           id="country"
           name="country"
           autoComplete="off"
-          required={true}
           placeholder="Country"
           onChange={props.onChange}
         />
@@ -37,8 +39,7 @@ export function CountryField(props: InputField): JSX.Element {
             required: 'Select a country',
             value: form.country || '',
             onChange: props.onChange,
-            validate: () =>
-              !isValidCountry() ? 'Select a country with list' : true,
+            validate: () => !!error,
           })}
         />
         <Options />
@@ -65,19 +66,8 @@ export function CountryField(props: InputField): JSX.Element {
       <label htmlFor="country">
         Country<span className="required">*</span>
       </label>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>
-          {createInputDefault()}
-          {!!form.country?.length && !isValidCountry() && (
-            <p className="validation">Select a country with list</p>
-          )}
-        </>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

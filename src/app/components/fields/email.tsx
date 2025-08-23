@@ -3,8 +3,11 @@ import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function EmailField(props: InputField): JSX.Element {
-  const { form, isValidEmail } = useFormStore((state) => state);
-  const error = props.formState?.errors.email;
+  const { form } = useFormStore((state) => state);
+
+  const error = props.formState?.errors.email || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -15,7 +18,6 @@ export function EmailField(props: InputField): JSX.Element {
         placeholder="Email"
         value={form.email}
         onChange={props.onChange}
-        required={true}
         autoComplete="email"
       />
     );
@@ -33,7 +35,7 @@ export function EmailField(props: InputField): JSX.Element {
           onChange: props.onChange,
           minLength: 1,
           value: form.email,
-          validate: () => (!isValidEmail() ? 'Invalid email' : true),
+          validate: () => !!error,
         })}
       />
     );
@@ -44,19 +46,8 @@ export function EmailField(props: InputField): JSX.Element {
       <label htmlFor="email">
         Email<span className="required">*</span>
       </label>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>
-          {createInputDefault()}
-          {!!form.email.length && !isValidEmail() && (
-            <p className="validation">Invalid email</p>
-          )}
-        </>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

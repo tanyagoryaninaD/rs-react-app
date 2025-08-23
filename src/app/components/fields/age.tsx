@@ -3,8 +3,11 @@ import type { InputField } from '../../../types/common';
 import { useFormStore } from '../../store/useFormStore';
 
 export function AgeField(props: InputField): JSX.Element {
-  const { form, isValidAge } = useFormStore((state) => state);
-  const error = props.formState?.errors.age;
+  const { form } = useFormStore((state) => state);
+
+  const error = props.formState?.errors.age || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -15,8 +18,6 @@ export function AgeField(props: InputField): JSX.Element {
         placeholder="Age"
         value={form.age}
         onChange={props.onChange}
-        required={true}
-        min={0}
       />
     );
   };
@@ -31,8 +32,7 @@ export function AgeField(props: InputField): JSX.Element {
           required: 'This field is required',
           onChange: props.onChange,
           value: form.age,
-          validate: () =>
-            !isValidAge() ? 'Should be number, no negative values' : true,
+          validate: () => !!error,
         })}
       />
     );
@@ -43,19 +43,8 @@ export function AgeField(props: InputField): JSX.Element {
       <label htmlFor="age">
         Age<span className="required">*</span>
       </label>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>
-          {createInputDefault()}
-          {!isValidAge() && (
-            <p className="validation">Should be number, no negative values</p>
-          )}
-        </>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

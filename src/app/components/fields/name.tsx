@@ -3,9 +3,11 @@ import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function NameField(props: InputField): JSX.Element {
-  const { form, isValidName } = useFormStore((state) => state);
+  const { form } = useFormStore((state) => state);
 
-  const error = props.formState?.errors.name;
+  const error = props.formState?.errors.name || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -16,7 +18,6 @@ export function NameField(props: InputField): JSX.Element {
         placeholder="Name"
         value={form.name}
         onChange={props.onChange}
-        required={true}
         autoComplete="name"
       />
     );
@@ -33,8 +34,7 @@ export function NameField(props: InputField): JSX.Element {
           required: 'This field is required',
           onChange: props.onChange,
           value: form.name,
-          validate: () =>
-            !isValidName() ? 'The first letter must be uppercase' : true,
+          validate: () => !!error,
         })}
       />
     );
@@ -45,19 +45,8 @@ export function NameField(props: InputField): JSX.Element {
       <label htmlFor="name">
         Name<span className="required">*</span>
       </label>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>
-          {createInputDefault()}
-          {!!form.name.length && !isValidName() && (
-            <p className="validation">The first letter must be uppercase</p>
-          )}
-        </>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

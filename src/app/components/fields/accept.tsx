@@ -1,15 +1,10 @@
 import { type JSX } from 'react';
-import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function AcceptField(props: InputField): JSX.Element {
-  const { setFormData } = useFormStore((state) => state);
-  const error = props.formState?.errors.accept;
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = !!event.target.checked;
-    setFormData('accept', value);
-  };
+  const error = props.formState?.errors.age || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -17,8 +12,7 @@ export function AcceptField(props: InputField): JSX.Element {
         id="accept"
         type="checkbox"
         name="accept"
-        onChange={onChange}
-        required={true}
+        onChange={props.onChange}
       />
     );
   };
@@ -32,6 +26,7 @@ export function AcceptField(props: InputField): JSX.Element {
         {...props.register?.('accept', {
           required: 'This field is required',
           onChange: props.onChange,
+          validate: () => !!error,
         })}
       />
     );
@@ -43,9 +38,7 @@ export function AcceptField(props: InputField): JSX.Element {
         {props.formState ? createInputReactHook() : createInputDefault()}
         <label htmlFor="accept">I Accept the Terms and Conditions</label>
       </div>
-      {props.formState && error && (
-        <p className="validation">{error.message}</p>
-      )}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

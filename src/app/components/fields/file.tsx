@@ -4,10 +4,9 @@ import type { InputField } from '../../../types/common';
 
 export function FileField(props: InputField): JSX.Element {
   const { setFormData } = useFormStore((state) => state);
-  const error = props.formState?.errors.file;
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.files?.[0] ?? null;
+    const value = event.target.files?.[0];
     setFormData('file', value);
   };
 
@@ -41,9 +40,6 @@ export function FileField(props: InputField): JSX.Element {
     <div className="wrapper-input">
       <label htmlFor="file">Choose a profile picture:</label>
       {props.formState ? createInputReactHook() : createInputDefault()}
-      {props.formState && error && (
-        <p className="validation">{error.message}</p>
-      )}
     </div>
   );
 }

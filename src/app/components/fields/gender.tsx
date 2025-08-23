@@ -1,15 +1,10 @@
 import { type JSX } from 'react';
-import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function GenderField(props: InputField): JSX.Element {
-  const { setFormData } = useFormStore((state) => state);
-  const error = props.formState?.errors.gender;
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.name;
-    setFormData('gender', value);
-  };
+  const error = props.formState?.errors.gender || props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -19,8 +14,7 @@ export function GenderField(props: InputField): JSX.Element {
             id="man"
             type="radio"
             name="gender"
-            onChange={onChange}
-            required={true}
+            onChange={props.onChange}
           />
           <label htmlFor="man">Man</label>
         </div>
@@ -29,8 +23,7 @@ export function GenderField(props: InputField): JSX.Element {
             id="woman"
             type="radio"
             name="gender"
-            onChange={onChange}
-            required={true}
+            onChange={props.onChange}
           />
           <label htmlFor="woman">Woman</label>
         </div>
@@ -61,6 +54,7 @@ export function GenderField(props: InputField): JSX.Element {
             {...props.register?.('gender', {
               required: 'This field is required',
               onChange: props.onChange,
+              validate: () => !!error,
             })}
           />
           <label htmlFor="woman">Woman</label>
@@ -74,14 +68,8 @@ export function GenderField(props: InputField): JSX.Element {
       <legend>
         Gender<span className="required">*</span>
       </legend>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>{createInputDefault()}</>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

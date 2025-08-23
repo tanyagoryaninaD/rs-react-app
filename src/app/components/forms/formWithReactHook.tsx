@@ -1,33 +1,82 @@
 import '../../../style/form.scss';
-import type { JSX } from 'react';
-import type { FormKey, FormStore } from '../../../types/store';
+import { type JSX } from 'react';
+import type { FormKey, FormTypes } from '../../../types/store';
 import { AgeField } from '../fields/age';
 import { NameField } from '../fields/name';
 import { useFormStore } from '../../store/useFormStore';
 import { EmailField } from '../fields/email';
 import { PasswordField } from '../fields/password';
-import { RepeatPasswordField } from '../fields/passwordEmail';
+import { RepeatPasswordField } from '../fields/repeatPassword';
 import { CountryField } from '../fields/country';
 import { AcceptField } from '../fields/accept';
 import { FileField } from '../fields/file';
 import { GenderField } from '../fields/gender';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formScheme } from '../../../utils/zod';
+import z from 'zod';
 
 export default function FormWithReactHook(): JSX.Element {
-  const { setFormData } = useFormStore((state) => state);
-  const { register, handleSubmit, formState } = useForm<FormStore>({
+  const { form, setFormData } = useFormStore((state) => state);
+  const { register, handleSubmit, formState, setError } = useForm<FormTypes>({
     mode: 'onChange',
+    resolver: zodResolver(formScheme),
   });
 
-  const onSubmit: SubmitHandler<FormStore> = (data) => {
-    console.log('🚀 ~ onSubmit ~ data:', data);
+  const onSubmit: SubmitHandler<FormTypes> = () => {
+    const result = formScheme.safeParse(form);
+
+    if (result.success) {
+      console.log('🚀 ~ onSubmit ~ result success:', result);
+    } else {
+      console.log('🚀 ~ onSubmit ~ result fail:', result);
+    }
   };
 
   const onChange =
     (key: FormKey) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
+      let value;
+
+      if (event.target.type === 'checkbox') {
+        value = event.target.checked;
+      } else if (event.target.type === 'radio') {
+        value = event.target.name;
+      }
+
+      value = event.target.value;
       setFormData(key, value);
+      checkError(key, value);
+      checkCorrectRepeatPassword(event.target);
     };
+
+  const checkError = (key: FormKey, value: unknown) => {
+    const validation = formScheme.shape[key].safeParse(value);
+
+    if (!validation.success) {
+      const errorMessage = z.formatError(validation.error as never)._errors[0];
+      setError(key, { message: errorMessage });
+    }
+  };
+
+  const checkCorrectRepeatPassword = (
+    target: EventTarget & HTMLInputElement
+  ) => {
+    if (target.name === 'repeatPassword') {
+      const value = target.value;
+      const isCorrectRepeat = form.password === value;
+
+      setFormData('isCorrectRepeatPassword', isCorrectRepeat);
+      checkError('isCorrectRepeatPassword', isCorrectRepeat);
+    }
+
+    if (target.name === 'password') {
+      const value = target.value;
+      const isCorrectRepeat = value === form.repeatPassword;
+
+      setFormData('isCorrectRepeatPassword', isCorrectRepeat);
+      checkError('isCorrectRepeatPassword', isCorrectRepeat);
+    }
+  };
 
   return (
     <>
@@ -69,9 +118,17 @@ export default function FormWithReactHook(): JSX.Element {
               formState={formState}
             />
           </div>
-          <GenderField register={register} formState={formState} />
+          <GenderField
+            onChange={onChange('gender')}
+            register={register}
+            formState={formState}
+          />
           <FileField register={register} formState={formState} />
-          <AcceptField register={register} formState={formState} />
+          <AcceptField
+            onChange={onChange('accept')}
+            register={register}
+            formState={formState}
+          />
         </div>
         <button type="submit">Submit</button>
       </form>

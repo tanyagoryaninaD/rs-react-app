@@ -1,10 +1,10 @@
 import type { JSX } from 'react';
-import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
 
 export function RepeatPasswordField(props: InputField): JSX.Element {
-  const { form, isValidRepeatPassword } = useFormStore((state) => state);
-  const error = props.formState?.errors.repeatPassword;
+  const error = props.formState?.errors.isCorrectRepeatPassword ?? props.error;
+  const errorMessage =
+    typeof error === 'boolean' ? props.errorMessage : error?.message;
 
   const createInputDefault = () => {
     return (
@@ -12,9 +12,8 @@ export function RepeatPasswordField(props: InputField): JSX.Element {
         id="repeat-password"
         type="password"
         placeholder="Repeat password"
-        value={form.repeatPassword}
+        name="repeatPassword"
         onChange={props.onChange}
-        required={true}
       />
     );
   };
@@ -25,12 +24,11 @@ export function RepeatPasswordField(props: InputField): JSX.Element {
         id="repeat-password"
         type="password"
         placeholder="Repeat password"
+        name="repeatPassword"
         {...props.register?.('repeatPassword', {
           required: 'This field is required',
           onChange: props.onChange,
-          value: form.repeatPassword,
-          validate: () =>
-            !isValidRepeatPassword() ? `The password doesn't match` : true,
+          validate: () => !!error,
         })}
       />
     );
@@ -41,19 +39,8 @@ export function RepeatPasswordField(props: InputField): JSX.Element {
       <label htmlFor="repeat-password">
         Repeat password<span className="required">*</span>
       </label>
-      {props.formState ? (
-        <>
-          {createInputReactHook()}
-          {error && <p className="validation">{error.message}</p>}
-        </>
-      ) : (
-        <>
-          {createInputDefault()}
-          {!!form.repeatPassword.length && !isValidRepeatPassword() && (
-            <p className="validation">The password doesn&apos;t match</p>
-          )}
-        </>
-      )}
+      {props.formState ? createInputReactHook() : createInputDefault()}
+      {error && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

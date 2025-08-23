@@ -1,14 +1,5 @@
-export type FormStore = {
-  name: string;
-  age: number;
-  email: string;
-  password: string;
-  repeatPassword: string;
-  gender: string;
-  accept: boolean;
-  country: string | null;
-  file: File | null;
-};
+import type z from 'zod';
+import type { formScheme } from '../utils/zod';
 
 export type Countries = {
   code: string;
@@ -16,15 +7,10 @@ export type Countries = {
 };
 
 export interface Store {
-  form: FormStore;
+  form: FormTypes;
   countries: Countries[];
-  setFormData: <Key extends FormKey>(key: Key, value: FormStore[Key]) => void;
-  isValidName: () => boolean;
-  isValidAge: () => boolean;
-  isValidEmail: () => boolean;
-  isValidPassword: () => boolean;
-  isValidRepeatPassword: () => boolean;
-  isValidCountry: () => boolean;
+  setFormData: <Key extends FormKey>(key: Key, value: FormTypes[Key]) => void;
 }
 
-export type FormKey = keyof FormStore;
+export type FormKey = keyof z.infer<typeof formScheme>;
+export type FormTypes = z.infer<typeof formScheme>;
