@@ -13,17 +13,34 @@ import { CountryField } from '../fields/country';
 import { formScheme } from '../../../utils/zod';
 import { useState } from 'react';
 import z from 'zod';
+import type { FormProps } from '../../../types/common';
+import { convertToBase64 } from '../../../utils/helpers';
 
-export default function Form() {
-  const { form, setFormData } = useFormStore((state) => state);
+export default function Form(props: FormProps) {
+  const { form, setFormData, setSuccessData, resetForm } = useFormStore(
+    (state) => state
+  );
   const [errors, setError] = useState<z.ZodFormattedError<FormTypes, string>>();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = formScheme.safeParse(form);
 
     if (result.success) {
       console.log('🚀 ~ onSubmit ~ result success:', result);
+      props.onClose();
+
+      if (result.data.file) {
+        const convertFile = await convertToBase64(result.data.file);
+        const newData = { ...result.data, file: convertFile };
+        setSuccessData(newData);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { file, ...newData } = result.data;
+        setSuccessData(newData);
+      }
+
+      resetForm();
     } else {
       console.log('🚀 ~ onSubmit ~ result fail:', result);
     }
@@ -40,10 +57,11 @@ export default function Form() {
     (key: FormKey) => (event: React.ChangeEvent<HTMLInputElement>) => {
       let value;
 
+      console.log('🚀 ~ onChange ~ event.target.type:', event.target.type);
       if (event.target.type === 'checkbox') {
         value = event.target.checked;
       } else if (event.target.type === 'radio') {
-        value = event.target.name;
+        value = event.target.id;
       } else if (
         event.target.name === 'repeatPassword' ||
         event.target.name === 'password'

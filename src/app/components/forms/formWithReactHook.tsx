@@ -15,19 +15,35 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formScheme } from '../../../utils/zod';
 import z from 'zod';
+import type { FormProps } from '../../../types/common';
+import { convertToBase64 } from '../../../utils/helpers';
 
-export default function FormWithReactHook(): JSX.Element {
-  const { form, setFormData } = useFormStore((state) => state);
+export default function FormWithReactHook(props: FormProps): JSX.Element {
+  const { form, setFormData, setSuccessData, resetForm } = useFormStore(
+    (state) => state
+  );
   const { register, handleSubmit, formState, setError } = useForm<FormTypes>({
     mode: 'onChange',
     resolver: zodResolver(formScheme),
   });
 
-  const onSubmit: SubmitHandler<FormTypes> = () => {
-    const result = formScheme.safeParse(form);
+  const onSubmit: SubmitHandler<FormTypes> = async (data) => {
+    const result = formScheme.safeParse(data);
 
     if (result.success) {
       console.log('🚀 ~ onSubmit ~ result success:', result);
+      props.onClose();
+
+      if (result.data.file) {
+        const convertFile = await convertToBase64(result.data.file);
+        const newData = { ...result.data, file: convertFile };
+        setSuccessData(newData);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { file, ...newData } = result.data;
+        setSuccessData(newData);
+      }
+      resetForm();
     } else {
       console.log('🚀 ~ onSubmit ~ result fail:', result);
     }
@@ -40,7 +56,7 @@ export default function FormWithReactHook(): JSX.Element {
       if (event.target.type === 'checkbox') {
         value = event.target.checked;
       } else if (event.target.type === 'radio') {
-        value = event.target.name;
+        value = event.target.id;
       }
 
       value = event.target.value;

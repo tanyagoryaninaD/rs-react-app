@@ -38,7 +38,6 @@ export function GenderField(props: InputField): JSX.Element {
           <input
             id="man"
             type="radio"
-            name="gender"
             {...props.register?.('gender', {
               required: 'This field is required',
               onChange: props.onChange,
@@ -50,7 +49,6 @@ export function GenderField(props: InputField): JSX.Element {
           <input
             id="woman"
             type="radio"
-            name="gender"
             {...props.register?.('gender', {
               required: 'This field is required',
               onChange: props.onChange,
