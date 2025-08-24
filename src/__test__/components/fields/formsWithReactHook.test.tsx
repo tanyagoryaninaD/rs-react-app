@@ -19,7 +19,6 @@ describe('FormWithReactHook components', () => {
     await userEvent.click(screen.getByTestId('accept'));
     await userEvent.click(screen.getByTestId('accept'));
 
-    screen.debug();
     expect(screen.getByTestId('name-error')).toBeInTheDocument();
     expect(screen.getByTestId('age-error')).toBeInTheDocument();
     expect(screen.getByTestId('accept-error')).toBeInTheDocument();
