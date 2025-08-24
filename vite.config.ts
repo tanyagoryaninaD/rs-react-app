@@ -12,6 +12,7 @@ export default defineConfig({
     exclude: ['node_modules', 'dist'],
     coverage: {
       provider: 'istanbul',
+      reporter: ['text', 'text-summary'],
       reportsDirectory: './coverage',
       thresholds: {
         global: {

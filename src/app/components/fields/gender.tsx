@@ -16,23 +16,25 @@ export function GenderField(props: InputField): JSX.Element {
       </legend>
       <div className="subinput">
         <input
-          id="man"
+          id="male"
           type="radio"
           name="gender"
           data-testid="gender-man"
+          value="male"
           {...props.register?.('gender', {})}
         />
-        <label htmlFor="man">Man</label>
+        <label htmlFor="man">Male</label>
       </div>
       <div className="subinput">
         <input
-          id="woman"
+          id="female"
           type="radio"
           name="gender"
+          value="female"
           data-testid="gender-woman"
           {...props.register?.('gender', {})}
         />
-        <label htmlFor="woman">Woman</label>
+        <label htmlFor="woman">Female</label>
       </div>
       {!!errorMessage && (
         <p className="validation" data-testid="gender-error">
