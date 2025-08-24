@@ -51,7 +51,7 @@ export default function Form(props: FormProps) {
     <>
       <h2>Form</h2>
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} data-testid="form">
         <div className="wrapper-form">
           <div className="wrapper-subform">
             <NameField errors={errors} />
@@ -67,7 +67,9 @@ export default function Form(props: FormProps) {
           <FileField errors={errors} />
           <AcceptField errors={errors} />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" data-testid="form-submit">
+          Submit
+        </button>
       </form>
     </>
   );

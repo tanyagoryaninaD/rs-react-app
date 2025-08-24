@@ -20,9 +20,14 @@ export function NameField(props: InputField): JSX.Element {
         placeholder="Name"
         autoComplete="name"
         name="name"
+        data-testid="name"
         {...props.register?.('name', {})}
       />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="name-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

@@ -2,7 +2,6 @@ import '../../../style/profile.scss';
 import type { ProfileProps } from '../../../types/common';
 
 export default function Profile(props: ProfileProps) {
-  console.log('🚀 ~ Profile ~ props:', props.data.file);
   return (
     <div className={`profile ${props.last ? 'new' : ''}`}>
       <div className="profile-top">

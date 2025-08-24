@@ -38,10 +38,15 @@ export function CountryField(props: InputField): JSX.Element {
         placeholder="Country"
         autoComplete="off"
         name="country"
+        data-testid="country"
         {...props.register?.('country', {})}
       />
       <Options />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="country-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

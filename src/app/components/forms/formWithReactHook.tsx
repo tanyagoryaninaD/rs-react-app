@@ -40,7 +40,7 @@ export default function FormWithReactHook(props: FormProps): JSX.Element {
     <>
       <h2>Form with React Hook</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} data-testid="form-react">
         <div className="wrapper-form">
           <div className="wrapper-subform">
             <NameField register={register} formState={formState} />
@@ -56,7 +56,11 @@ export default function FormWithReactHook(props: FormProps): JSX.Element {
           <FileField register={register} formState={formState} />
           <AcceptField register={register} formState={formState} />
         </div>
-        <button type="submit" disabled={!formState.isValid}>
+        <button
+          type="submit"
+          disabled={!formState.isValid}
+          data-testid="form-react-submit"
+        >
           Submit
         </button>
       </form>

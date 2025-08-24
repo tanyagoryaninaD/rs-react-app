@@ -7,6 +7,10 @@ export interface InputField extends Omit<Error, 'key'> {
   register?: UseFormRegister<FormTypes>;
 }
 
+export interface ModalState {
+  formComponent: ((props: FormProps) => JSX.Element) | null;
+}
+
 export interface ModalProps {
   children: JSX.Element | null;
   isOpen: boolean;

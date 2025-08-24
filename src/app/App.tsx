@@ -3,13 +3,9 @@ import '../style/App.scss';
 import Form from './components/forms/form';
 import Modal from './components/modal/modal';
 import FormWithReactHook from './components/forms/formWithReactHook';
-import type { FormProps } from '../types/common';
+import type { ModalState } from '../types/common';
 import { useFormStore } from './store/useFormStore';
 import Profile from './components/profile/Profile';
-
-interface ModalState {
-  formComponent: ((props: FormProps) => JSX.Element) | null;
-}
 
 export default function App(): JSX.Element {
   const [modalState, setModalState] = useState<ModalState>({

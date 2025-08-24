@@ -20,9 +20,14 @@ export function EmailField(props: InputField): JSX.Element {
         placeholder="Email"
         autoComplete="email"
         name="email"
+        data-testid="email"
         {...props.register?.('email', {})}
       />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="email-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

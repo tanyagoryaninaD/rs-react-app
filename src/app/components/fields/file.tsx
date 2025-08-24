@@ -19,9 +19,14 @@ export function FileField(props: InputField): JSX.Element {
         type="file"
         accept=".jpeg, .png"
         name="file"
+        data-testid="file"
         {...props.register?.('file', {})}
       />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="file-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

@@ -27,16 +27,24 @@ export default function Modal(props: ModalProps): JSX.Element {
   }
 
   return createPortal(
-    <div className="modal">
+    <div className="modal" data-testid="modal">
       <div className="modal-content">
         <div className="wrapper-close">
-          <button className="close" onClick={onClose}>
+          <button
+            className="close"
+            data-testid={'close-modal'}
+            onClick={onClose}
+          >
             x
           </button>
         </div>
         {children}
       </div>
-      <div className="modal-overlay" onClick={onClose}></div>
+      <div
+        className="modal-overlay"
+        data-testid={'overlay'}
+        onClick={onClose}
+      ></div>
     </div>,
     document.body
   );

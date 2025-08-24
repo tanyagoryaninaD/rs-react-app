@@ -20,9 +20,14 @@ export function RepeatPasswordField(props: InputField): JSX.Element {
         placeholder="Repeat password"
         name="repeatPassword"
         autoComplete="new-password"
+        data-testid="repeatPassword"
         {...props.register?.('repeatPassword', {})}
       />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="repeatPassword-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

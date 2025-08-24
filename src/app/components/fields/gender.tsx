@@ -19,6 +19,7 @@ export function GenderField(props: InputField): JSX.Element {
           id="man"
           type="radio"
           name="gender"
+          data-testid="gender-man"
           {...props.register?.('gender', {})}
         />
         <label htmlFor="man">Man</label>
@@ -28,11 +29,16 @@ export function GenderField(props: InputField): JSX.Element {
           id="woman"
           type="radio"
           name="gender"
+          data-testid="gender-woman"
           {...props.register?.('gender', {})}
         />
         <label htmlFor="woman">Woman</label>
       </div>
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="gender-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

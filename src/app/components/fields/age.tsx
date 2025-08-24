@@ -19,9 +19,14 @@ export function AgeField(props: InputField): JSX.Element {
         type="number"
         placeholder="Age"
         name="age"
+        data-testid="age"
         {...props.register?.('age', {})}
       />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="age-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

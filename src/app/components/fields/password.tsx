@@ -20,9 +20,14 @@ export function PasswordField(props: InputField): JSX.Element {
         name="password"
         placeholder="Password"
         autoComplete="new-password"
+        data-testid="password"
         {...props.register?.('password', {})}
       />
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="password-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

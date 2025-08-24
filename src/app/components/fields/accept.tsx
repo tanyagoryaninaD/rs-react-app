@@ -16,13 +16,18 @@ export function AcceptField(props: InputField): JSX.Element {
           id="accept"
           type="checkbox"
           name="accept"
+          data-testid="accept"
           {...props.register?.('accept', {})}
         />
         <label htmlFor="accept">
           I Accept the Terms and Conditions<span className="required">*</span>
         </label>
       </div>
-      {!!errorMessage && <p className="validation">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="validation" data-testid="accept-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

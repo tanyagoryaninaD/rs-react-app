@@ -1,8 +1,7 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { coverageConfigDefaults } from 'vitest/config';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   test: {
@@ -10,8 +9,10 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/__test__/setupTests.ts',
     include: ['./src/__test__', 'src/**/*.test.{js,ts,tsx}'],
-    exclude: [...coverageConfigDefaults.exclude, '**/node_modules/**'],
+    exclude: ['node_modules', 'dist'],
     coverage: {
+      provider: 'istanbul',
+      reportsDirectory: './coverage',
       thresholds: {
         global: {
           statements: 80,
