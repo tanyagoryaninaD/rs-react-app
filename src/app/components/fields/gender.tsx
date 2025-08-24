@@ -14,7 +14,7 @@ export function GenderField(props: InputField): JSX.Element {
       <legend>
         Gender<span className="required">*</span>
       </legend>
-      <div>
+      <div className="subinput">
         <input
           id="man"
           type="radio"
@@ -23,7 +23,7 @@ export function GenderField(props: InputField): JSX.Element {
         />
         <label htmlFor="man">Man</label>
       </div>
-      <div>
+      <div className="subinput">
         <input
           id="woman"
           type="radio"

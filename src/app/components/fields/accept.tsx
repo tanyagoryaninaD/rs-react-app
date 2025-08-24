@@ -11,7 +11,7 @@ export function AcceptField(props: InputField): JSX.Element {
 
   return (
     <div className="wrapper-input">
-      <div>
+      <div className="subinput">
         <input
           id="accept"
           type="checkbox"

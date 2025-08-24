@@ -22,6 +22,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
+    max-width: min-content;
 
     input,
     select {
@@ -39,6 +40,10 @@
       background-color: white;
     }
   }
+}
+
+.subinput {
+  width: max-content;
 }
 
 .validation {
