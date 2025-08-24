@@ -1,5 +1,4 @@
 import '../../../style/profile.scss';
-import avatar from '../../../assets/avatar.svg';
 import type { ProfileProps } from '../../../types/common';
 
 export default function Profile(props: ProfileProps) {
@@ -9,7 +8,7 @@ export default function Profile(props: ProfileProps) {
       <div className="profile-top">
         <h2 className="profile-title">{props.data.name}</h2>
         <div className="profile-avatar-wrapper">
-          <img src={props.data.file || avatar} alt="avatar" />
+          <img src={props.data.file} alt="avatar" />
         </div>
       </div>
       <div className="profile-content">

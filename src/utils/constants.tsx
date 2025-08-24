@@ -6,15 +6,3 @@ export const countries = [
   { code: 'UA', name: 'Ukraine' },
   { code: 'KZ', name: 'Kazakhstan' },
 ];
-
-export const defaultForm = {
-  name: '',
-  age: '',
-  email: '',
-  password: '',
-  repeatPassword: '',
-  isCorrectRepeatPassword: false,
-  gender: '',
-  accept: false,
-  country: '',
-};

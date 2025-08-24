@@ -16,7 +16,6 @@ export default function App(): JSX.Element {
     formComponent: null,
   });
   const { forms } = useFormStore((state) => state);
-  console.log('🚀 ~ App ~ forms:', forms);
 
   const CurrentForm = modalState.formComponent;
 

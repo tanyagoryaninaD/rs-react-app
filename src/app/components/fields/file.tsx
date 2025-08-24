@@ -1,45 +1,27 @@
 import { type JSX } from 'react';
-import { useFormStore } from '../../store/useFormStore';
 import type { InputField } from '../../../types/common';
+import { getError } from '../../../utils/helpers';
 
 export function FileField(props: InputField): JSX.Element {
-  const { setFormData } = useFormStore((state) => state);
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.files?.[0];
-    setFormData('file', value);
-  };
-
-  const createInputDefault = () => {
-    return (
-      <input
-        id="file"
-        type="file"
-        name="file"
-        onChange={onChange}
-        accept=".jpeg, .png"
-        placeholder="nff"
-      />
-    );
-  };
-
-  const createInputReactHook = () => {
-    return (
-      <input
-        id="file"
-        type="file"
-        accept=".jpeg, .png"
-        {...props.register?.('file', {
-          onChange: props.onChange,
-        })}
-      />
-    );
-  };
+  const errorMessage = getError({
+    key: 'file',
+    formState: props.formState,
+    errors: props.errors,
+  });
 
   return (
     <div className="wrapper-input">
-      <label htmlFor="file">Choose a profile picture:</label>
-      {props.formState ? createInputReactHook() : createInputDefault()}
+      <label htmlFor="file">
+        Choose a profile picture:<span className="required">*</span>
+      </label>
+      <input
+        id="file"
+        type="file"
+        accept=".jpeg, .png"
+        name="file"
+        {...props.register?.('file', {})}
+      />
+      {!!errorMessage && <p className="validation">{errorMessage}</p>}
     </div>
   );
 }

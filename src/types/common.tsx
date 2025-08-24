@@ -1,13 +1,10 @@
 import type { UseFormRegister, FormState } from 'react-hook-form';
 import type { JSX } from 'react';
-import type { ConvertForm, FormTypes } from './store';
+import type { ConvertForm, FormKey, FormTypes } from './store';
+import type z from 'zod';
 
-export interface InputField {
+export interface InputField extends Omit<Error, 'key'> {
   register?: UseFormRegister<FormTypes>;
-  formState?: FormState<FormTypes>;
-  error?: boolean;
-  errorMessage?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ModalProps {
@@ -23,4 +20,10 @@ export interface FormProps {
 export interface ProfileProps {
   data: ConvertForm;
   last?: boolean;
+}
+
+export interface Error {
+  key: FormKey;
+  errors?: z.ZodFormattedError<FormTypes, string>;
+  formState?: FormState<FormTypes>;
 }
