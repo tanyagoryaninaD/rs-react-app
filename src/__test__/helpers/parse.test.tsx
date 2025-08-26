@@ -7,7 +7,7 @@ describe('parsePokemonData: ', () => {
   let mockResponse: MockPokemon;
 
   beforeEach(() => {
-    mockResponse = { ...bulbasaurResponse };
+    mockResponse = structuredClone(bulbasaurResponse);
   });
 
   it('should return parse data', () => {
