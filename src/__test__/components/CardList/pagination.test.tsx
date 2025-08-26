@@ -1,13 +1,18 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Pagination } from '../../../components/SearchPanel/CardList/Pagination';
 import userEvent from '@testing-library/user-event';
 import { PokemonListContext } from '../../../types/contexts';
 import { contextMock } from '../../mocks/data';
 import { MockProvider } from '../../mocks/MockProvider';
+import type { PokemonListContextProps } from '../../../types/interfaces';
 
 describe('Pagination component', () => {
-  const context = { ...contextMock };
+  let context: PokemonListContextProps;
+
+  beforeEach(() => {
+    context = { ...contextMock };
+  });
 
   it('renders with button and page', () => {
     context.page = 1;

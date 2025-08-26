@@ -21,7 +21,7 @@ import {
 } from '../mocks/data';
 import { mockStore } from '../mocks/store';
 import { MockProvider } from '../mocks/MockProvider';
-import { setSelectedItems, updateContext } from '../mocks/mocks';
+import { setSelectedItems, updateContext } from '../mocks/mockFunctions';
 import userEvent from '@testing-library/user-event';
 
 vi.mock('../../server/pokemonApi', async () => {

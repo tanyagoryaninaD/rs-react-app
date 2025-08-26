@@ -57,7 +57,7 @@ describe('Card component', () => {
   });
 
   it('clicks on the card should call updateContext', async () => {
-    const response = { ...bulbasaurResponse };
+    const response = structuredClone(bulbasaurResponse);
     response.sprites.front_default = '';
     response.sprites.other.dream_world.front_default = null;
 

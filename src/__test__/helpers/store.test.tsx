@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { mockStore } from '../mocks/store';
 import { bulbasaur } from '../mocks/data';
-import { dispatchSpy } from '../mocks/mocks';
+import { dispatchSpy } from '../mocks/mockFunctions';
 import { MockProvider } from '../mocks/MockProvider';
 import {
   add,

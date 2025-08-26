@@ -3,9 +3,9 @@ import type {
   PokemonListContextProps,
   PokemonListContextState,
 } from '../../types/interfaces';
-import { updateContext } from './mocks';
+import { updateContext } from './mockFunctions';
 
-type MockPokemon = {
+export type MockPokemon = {
   name: string;
   id: number;
   sprites: {

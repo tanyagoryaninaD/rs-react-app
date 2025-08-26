@@ -1,19 +1,26 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
 import { PokemonListContext } from '../../../types/contexts';
 import { contextMock } from '../../mocks/data';
 import { MockProvider } from '../../mocks/MockProvider';
+import type { PokemonListContextProps } from '../../../types/interfaces';
 
 describe('SearchControls component', () => {
+  let context: PokemonListContextProps;
+
+  beforeEach(() => {
+    context = { ...contextMock };
+  });
+
   it('renders with form elements', () => {
-    contextMock.query = '';
-    contextMock.loading = false;
+    context.query = '';
+    context.loading = false;
 
     render(
       MockProvider(
-        <PokemonListContext value={contextMock}>
+        <PokemonListContext value={context}>
           <SearchControls />
         </PokemonListContext>
       )
@@ -28,12 +35,12 @@ describe('SearchControls component', () => {
   });
 
   it('during loading the button text content should be changed', () => {
-    contextMock.query = '';
-    contextMock.loading = true;
+    context.query = '';
+    context.loading = true;
 
     render(
       MockProvider(
-        <PokemonListContext value={contextMock}>
+        <PokemonListContext value={context}>
           <SearchControls />
         </PokemonListContext>
       )
@@ -47,12 +54,12 @@ describe('SearchControls component', () => {
   });
 
   it('renders input with last query', () => {
-    contextMock.query = 'test';
-    contextMock.loading = false;
+    context.query = 'test';
+    context.loading = false;
 
     render(
       MockProvider(
-        <PokemonListContext value={contextMock}>
+        <PokemonListContext value={context}>
           <SearchControls />
         </PokemonListContext>
       )
@@ -62,12 +69,12 @@ describe('SearchControls component', () => {
   });
 
   it('change input value should call onChange', async () => {
-    contextMock.query = '';
-    contextMock.loading = false;
+    context.query = '';
+    context.loading = false;
 
     render(
       MockProvider(
-        <PokemonListContext value={contextMock}>
+        <PokemonListContext value={context}>
           <SearchControls />
         </PokemonListContext>
       )
@@ -77,17 +84,17 @@ describe('SearchControls component', () => {
 
     await userEvent.type(input, 'query');
 
-    expect(contextMock.updateContext).toHaveBeenCalledTimes(5);
-    expect(contextMock.updateContext).toHaveBeenLastCalledWith({ query: 'y' });
+    expect(context.updateContext).toHaveBeenCalledTimes(5);
+    expect(context.updateContext).toHaveBeenLastCalledWith({ query: 'y' });
   });
 
   it('clicks on button should call onSearch', async () => {
-    contextMock.query = 'test-2';
-    contextMock.loading = false;
+    context.query = 'test-2';
+    context.loading = false;
 
     render(
       MockProvider(
-        <PokemonListContext value={contextMock}>
+        <PokemonListContext value={context}>
           <SearchControls />
         </PokemonListContext>
       )
@@ -99,7 +106,7 @@ describe('SearchControls component', () => {
 
     await userEvent.click(button);
 
-    expect(contextMock.updateContext).toHaveBeenLastCalledWith({
+    expect(context.updateContext).toHaveBeenLastCalledWith({
       loading: true,
       currentApiRequest: { apiRequest: 'test-2' },
       results: [],

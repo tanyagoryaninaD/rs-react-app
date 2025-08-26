@@ -1,10 +1,22 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, afterEach, vi, type Mock } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  afterEach,
+  vi,
+  type Mock,
+  beforeEach,
+} from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { CardDetails } from '../../../components/SearchPanel/CardList/CardDetails';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
 import { PokemonListContext } from '../../../types/contexts';
-import { bulbasaurResponse, contextMock } from '../../mocks/data';
+import {
+  bulbasaurResponse,
+  contextMock,
+  type MockPokemon,
+} from '../../mocks/data';
 import { MockProvider } from '../../mocks/MockProvider';
 
 vi.mock('../../../server/pokemonApi', async () => {
@@ -16,13 +28,19 @@ vi.mock('../../../server/pokemonApi', async () => {
 });
 
 describe('CardDetails component', () => {
+  let mockResponse: MockPokemon;
+
+  beforeEach(() => {
+    mockResponse = structuredClone(bulbasaurResponse);
+  });
+
   afterEach(() => {
     vi.resetAllMocks();
   });
 
   it('clicking on the "close" button should close cardDetails', async () => {
     (useGetPokemonByNameQuery as Mock).mockReturnValue({
-      data: bulbasaurResponse,
+      data: mockResponse,
       isLoading: false,
       error: null,
     });
@@ -44,12 +62,11 @@ describe('CardDetails component', () => {
   });
 
   it('renders without abilities and moves', async () => {
-    const response = { ...bulbasaurResponse };
-    response.abilities = [];
-    response.moves = [];
+    mockResponse.abilities = [];
+    mockResponse.moves = [];
 
     (useGetPokemonByNameQuery as Mock).mockReturnValue({
-      data: response,
+      data: mockResponse,
       isLoading: false,
       error: null,
     });

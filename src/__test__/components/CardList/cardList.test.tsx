@@ -23,7 +23,7 @@ import {
 } from '../../mocks/data';
 import { mockStore } from '../../mocks/store';
 import { useLocalStorage } from '../../../utils/localStorage';
-import { setContext, setSelectedItems } from '../../mocks/mocks';
+import { setContext, setSelectedItems } from '../../mocks/mockFunctions';
 import * as helpers from '../../../utils/helpers';
 import { MockProvider } from '../../mocks/MockProvider';
 

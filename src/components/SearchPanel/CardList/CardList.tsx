@@ -33,11 +33,12 @@ export function CardList(): ReactNode {
   );
 
   useEffect(() => {
-    if (firstRender.current) {
-      dispatch(setState(selectedItems));
-
-      firstRender.current = false;
+    if (!firstRender.current) {
+      return;
     }
+
+    dispatch(setState(selectedItems));
+    firstRender.current = false;
   }, [dispatch, selectedItems]);
 
   useEffect(() => {

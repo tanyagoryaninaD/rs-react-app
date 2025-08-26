@@ -4,7 +4,7 @@ import { Header } from '../../components/Header';
 import { ThemeContext } from '../../types/contexts';
 import userEvent from '@testing-library/user-event';
 import { MockProvider } from '../mocks/MockProvider';
-import { dispatchSpy } from '../mocks/mocks';
+import { dispatchSpy } from '../mocks/mockFunctions';
 
 describe('Header component', () => {
   beforeEach(() => {

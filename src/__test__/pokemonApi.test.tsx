@@ -5,7 +5,7 @@ import {
 } from '../server/pokemonApi';
 import { renderHook, waitFor } from '@testing-library/react';
 import { bulbasaurResponse } from './mocks/data';
-import { wrapper } from './mocks/mocks';
+import { wrapper } from './mocks/mockFunctions';
 import type { NamedApiResource } from 'pokeapi-typescript/dist/interfaces/Utility/NamedApiResourceList';
 import type { Pokemon } from 'pokeapi-typescript';
 import { mockStore } from './mocks/store';
