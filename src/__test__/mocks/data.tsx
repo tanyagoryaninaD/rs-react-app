@@ -1,6 +1,6 @@
 import type { SearchPanelState } from '../../types/interfaces';
 
-type MockPokemon = {
+export type MockPokemon = {
   name: string;
   id: number;
   sprites: {
