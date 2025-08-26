@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { add, remove } from '../../../utils/store';
 import { Card } from '../../../components/SearchPanel/CardList/Card';
-import { mockOnUpdateState, dispatchSpy } from '../../mocks/mocks';
+import { mockOnUpdateState, dispatchSpy } from '../../mocks/mockFunctions';
 import { MockProvider } from '../../mocks/MockProvider';
 import { bulbasaur } from '../../mocks/data';
 

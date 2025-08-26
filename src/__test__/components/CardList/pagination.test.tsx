@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Pagination } from '../../../components/SearchPanel/CardList/Pagination';
 import userEvent from '@testing-library/user-event';
-import { mockOnSearch, mockOnUpdateState } from '../../mocks/mocks';
+import { mockOnSearch, mockOnUpdateState } from '../../mocks/mockFunctions';
 
 describe('Pagination component', () => {
   it('renders with button and page', async () => {

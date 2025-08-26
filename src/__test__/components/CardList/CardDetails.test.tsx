@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { CardDetails } from '../../../components/SearchPanel/CardList/CardDetails';
 import { bulbasaur } from '../../mocks/data';
-import { mockOnUpdateState } from '../../mocks/mocks';
+import { mockOnUpdateState } from '../../mocks/mockFunctions';
 import * as pokemonApi from '../../../server/Loader';
 
 describe('CardDetails component', () => {

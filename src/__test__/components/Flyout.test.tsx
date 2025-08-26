@@ -13,7 +13,7 @@ import { removeAll } from '../../utils/store';
 import { Flyout } from '../../components/components/Flyout';
 import * as helpers from '../../utils/helpers';
 import type { MyPokemon } from '../../types/interfaces';
-import { dispatchSpy } from '../mocks/mocks';
+import { dispatchSpy } from '../mocks/mockFunctions';
 import { MockProvider } from '../mocks/MockProvider';
 
 describe('Flyout component', () => {

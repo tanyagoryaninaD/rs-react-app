@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
-import { mockOnChange, mockOnSearch } from '../../mocks/mocks';
+import { mockOnChange, mockOnSearch } from '../../mocks/mockFunctions';
 
 describe('SearchControls component', () => {
   it('renders with form elements', () => {

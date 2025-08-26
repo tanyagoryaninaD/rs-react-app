@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
 import userEvent from '@testing-library/user-event';
 import { mockResults, mockState } from '../../mocks/data';
-import { mockOnSearch, mockOnUpdateState } from '../../mocks/mocks';
+import { mockOnSearch, mockOnUpdateState } from '../../mocks/mockFunctions';
 import { MockProvider } from '../../mocks/MockProvider';
 
 describe('CardList component', () => {
