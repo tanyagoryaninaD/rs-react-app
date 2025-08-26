@@ -16,7 +16,7 @@ describe('SearchControls component', () => {
 
   it('renders with form elements', () => {
     context.query = '';
-    context.loading = false;
+    context.loadingButtonSearch = false;
 
     render(
       MockProvider(
@@ -36,7 +36,7 @@ describe('SearchControls component', () => {
 
   it('during loading the button text content should be changed', () => {
     context.query = '';
-    context.loading = true;
+    context.loadingButtonSearch = true;
 
     render(
       MockProvider(
@@ -55,7 +55,7 @@ describe('SearchControls component', () => {
 
   it('renders input with last query', () => {
     context.query = 'test';
-    context.loading = false;
+    context.loadingButtonSearch = false;
 
     render(
       MockProvider(
@@ -70,7 +70,7 @@ describe('SearchControls component', () => {
 
   it('change input value should call onChange', async () => {
     context.query = '';
-    context.loading = false;
+    context.loadingButtonSearch = false;
 
     render(
       MockProvider(
@@ -90,7 +90,7 @@ describe('SearchControls component', () => {
 
   it('clicks on button should call onSearch', async () => {
     context.query = 'test-2';
-    context.loading = false;
+    context.loadingButtonSearch = false;
 
     render(
       MockProvider(
@@ -107,7 +107,7 @@ describe('SearchControls component', () => {
     await userEvent.click(button);
 
     expect(context.updateContext).toHaveBeenLastCalledWith({
-      loading: true,
+      loadingButtonSearch: true,
       currentApiRequest: { apiRequest: 'test-2' },
       results: [],
       page: null,

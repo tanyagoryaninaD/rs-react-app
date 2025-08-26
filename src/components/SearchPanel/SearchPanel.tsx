@@ -23,7 +23,6 @@ export function SearchPanel() {
       pageNext: null,
       pagePrev: null,
       details: details,
-      loading: false,
       error: null,
     }
   );

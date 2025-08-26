@@ -8,7 +8,6 @@ export function Pagination(): ReactNode {
   const handlePaginationClickPrev = (): void => {
     updateContext({
       page: page && page - 1,
-      loading: true,
       currentApiRequest: { apiRequest: pagePrev },
     });
   };
@@ -16,7 +15,6 @@ export function Pagination(): ReactNode {
   const handlePaginationClickNext = (): void => {
     updateContext({
       page: page && page + 1,
-      loading: true,
       currentApiRequest: { apiRequest: pageNext },
     });
   };
@@ -26,7 +24,7 @@ export function Pagination(): ReactNode {
       <button
         className="prev"
         onClick={handlePaginationClickPrev}
-        disabled={pagePrev ? false : true}
+        disabled={!pagePrev}
       >
         Prev
       </button>
@@ -34,7 +32,7 @@ export function Pagination(): ReactNode {
       <button
         className="next"
         onClick={handlePaginationClickNext}
-        disabled={pageNext ? false : true}
+        disabled={!pageNext}
       >
         Next
       </button>

@@ -46,7 +46,6 @@ describe('CardList component', () => {
   beforeEach(() => {
     context.results = [];
     context.error = null;
-    context.loading = false;
   });
 
   afterEach(() => {
@@ -90,7 +89,8 @@ describe('CardList component', () => {
     (useLocalStorage as Mock).mockImplementation((key, initialValue) => {
       if (key === 'tg-last-search') {
         return [contextStateMock, setContext];
-      } else if (key === 'tg-selected-items') {
+      }
+      if (key === 'tg-selected-items') {
         return [selectedItems, setSelectedItems];
       }
       return [initialValue, vi.fn()];

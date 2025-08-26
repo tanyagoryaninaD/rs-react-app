@@ -14,7 +14,6 @@ export const PokemonListContext = React.createContext<PokemonListContextProps>({
   pageNext: null,
   pagePrev: null,
   details: null,
-  loading: false,
   error: null,
   updateContext: () => {},
 });

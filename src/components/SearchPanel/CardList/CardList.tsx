@@ -20,9 +20,12 @@ import { selectItems, setState } from '../../../store/reducers/selectedItems';
 export function CardList(): ReactNode {
   const { page, results, currentApiRequest, details, updateContext } =
     useContext(PokemonListContext);
-  const { data, error, isFetching } = useGetPokemonByPageQuery(
-    currentApiRequest || {}
-  );
+  const {
+    data,
+    error,
+    isLoading: loadingButtonSearch,
+    isFetching,
+  } = useGetPokemonByPageQuery(currentApiRequest || {});
 
   const firstRender = useRef(true);
   const dispatch = useDispatch();
@@ -53,8 +56,9 @@ export function CardList(): ReactNode {
         pageNext: null,
         error: 'No found results',
         results: [],
-        loading: false,
+        loadingButtonSearch,
       });
+
       return;
     }
 
@@ -67,7 +71,6 @@ export function CardList(): ReactNode {
           page: page ?? 1,
           pagePrev: data.previous,
           pageNext: data.next,
-          loading: false,
         });
       } else {
         const parsedData = [parsePokemonData(data)];
@@ -77,11 +80,21 @@ export function CardList(): ReactNode {
           page: null,
           pagePrev: null,
           pageNext: null,
-          loading: false,
         });
       }
     }
-  }, [currentApiRequest, data, error, page, updateContext]);
+
+    updateContext({
+      loadingButtonSearch,
+    });
+  }, [
+    currentApiRequest,
+    data,
+    error,
+    loadingButtonSearch,
+    page,
+    updateContext,
+  ]);
 
   const renderList = (): ReactNode => {
     if (isFetching) {

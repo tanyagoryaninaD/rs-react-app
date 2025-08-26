@@ -7,11 +7,11 @@ import type { CardDetailsState } from '../../../types/interfaces';
 
 export function CardDetails(): ReactNode {
   const { details, updateContext } = useContext(PokemonListContext);
-  const { data } = useGetPokemonByNameQuery(details || '');
+  const { data, isLoading } = useGetPokemonByNameQuery(details || '');
 
   const [state, setState] = useState<CardDetailsState>({
     data: parsePokemonData(data),
-    isLoading: false,
+    isLoading,
   });
 
   useEffect(() => {

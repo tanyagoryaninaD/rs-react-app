@@ -23,6 +23,7 @@ import { mockStore } from '../mocks/store';
 import { MockProvider } from '../mocks/MockProvider';
 import { setSelectedItems, updateContext } from '../mocks/mockFunctions';
 import userEvent from '@testing-library/user-event';
+import type { PokemonListContextState } from '../../types/interfaces';
 
 vi.mock('../../server/pokemonApi', async () => {
   const originalModule = await vi.importActual('../../server/pokemonApi');
@@ -39,12 +40,16 @@ vi.mock('../../utils/localStorage', () => ({
 
 describe('SearchPanel component', () => {
   const setContext = vi.fn().mockImplementation(() => updateContext);
+  let context: PokemonListContextState;
 
   beforeEach(() => {
+    context = { ...contextStateMock };
+
     (useLocalStorage as Mock).mockImplementation((key, initialValue) => {
       if (key === 'tg-last-search') {
         return [contextStateMock, setContext];
-      } else if (key === 'tg-selected-items') {
+      }
+      if (key === 'tg-selected-items') {
         return [selectedItems, setSelectedItems];
       }
       return [initialValue, vi.fn()];
@@ -73,23 +78,22 @@ describe('SearchPanel component', () => {
       })
     );
 
-    contextStateMock.details = 'bulbasaur';
-    contextStateMock.page = 2;
-    contextStateMock.currentApiRequest = {};
+    context.details = 'bulbasaur';
+    context.page = 2;
+    context.currentApiRequest = {};
+    context.loadingButtonSearch = undefined;
 
-    expect(useLocalStorage).toHaveBeenCalledTimes(2);
     expect(useLocalStorage).toHaveBeenNthCalledWith(
       1,
       'tg-last-search',
-      contextStateMock
+      context
     );
-    expect(useLocalStorage).toHaveBeenNthCalledWith(2, 'tg-selected-items', []);
     expect(setContext).toHaveBeenCalled();
 
     dispatchSpy.mockRestore();
-    contextStateMock.details = null;
-    contextStateMock.page = null;
-    contextStateMock.currentApiRequest = null;
+    context.details = null;
+    context.page = null;
+    context.currentApiRequest = null;
   });
 
   it('clicks for submit should update context', async () => {

@@ -58,7 +58,6 @@ describe('Pagination component', () => {
       currentApiRequest: {
         apiRequest: '3',
       },
-      loading: true,
       page: 3,
     });
   });
@@ -86,7 +85,6 @@ describe('Pagination component', () => {
       currentApiRequest: {
         apiRequest: '1',
       },
-      loading: true,
       page: 1,
     });
   });

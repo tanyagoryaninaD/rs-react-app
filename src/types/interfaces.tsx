@@ -65,7 +65,7 @@ export interface PokemonListContextState {
   pagePrev: string | null;
   details: string | null;
   error: string | null;
-  loading: boolean;
+  loadingButtonSearch?: boolean;
 }
 
 export interface PokemonListContextProps extends PokemonListContextState {

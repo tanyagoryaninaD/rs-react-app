@@ -116,8 +116,8 @@ export const contextStateMock: PokemonListContextState = {
   pageNext: null,
   pagePrev: null,
   details: null,
-  loading: false,
   error: null,
+  loadingButtonSearch: false,
 };
 
 export const contextMock: PokemonListContextProps = {
