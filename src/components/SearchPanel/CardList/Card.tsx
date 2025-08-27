@@ -1,42 +1,60 @@
-import { type ReactNode } from 'react';
+import { useContext, type ReactNode } from 'react';
 import type { CardProps } from '../../../types/interfaces';
-import { upperFirstLetter } from '../../../utils/helpers';
+import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { useSelector, useDispatch } from 'react-redux';
-import { remove, add, selectedHasItem } from '../../../utils/store';
+import {
+  remove,
+  add,
+  selectedHasItem,
+} from '../../../store/reducers/selectedItems';
+import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
+import { PokemonListContext } from '../../../types/contexts';
 
 export function Card(props: CardProps): ReactNode {
-  const { name, image } = props.data;
+  const { updateContext } = useContext(PokemonListContext);
+  const { data, error, isFetching } = useGetPokemonByNameQuery(props.name);
+  const parseData = parsePokemonData(data);
 
   const dispatch = useDispatch();
-  const stateHasItem = useSelector(selectedHasItem(props.data));
+  const stateHasItem = useSelector(selectedHasItem(parseData));
 
   const handleClick = (event: React.MouseEvent) => {
     if (event.target instanceof HTMLInputElement) {
       return;
     }
 
-    props.onUpdateState({ details: name });
+    updateContext({ details: parseData.name });
   };
 
   const handleCheckboxChange = () => {
     if (stateHasItem) {
-      dispatch(remove(props.data));
+      dispatch(remove(parseData));
     } else {
-      dispatch(add(props.data));
+      dispatch(add(parseData));
     }
   };
 
   return (
-    <li onClick={handleClick} className="item" data-testid="card">
-      <h3 data-testid="card-title">{upperFirstLetter(name)}</h3>
-      <div>{image ? <img src={image} alt={name} /> : ''}</div>
-      <input
-        data-testid="card-checkbox"
-        type="checkbox"
-        className="item-checkbox"
-        checked={stateHasItem}
-        onChange={handleCheckboxChange}
-      ></input>
-    </li>
+    <>
+      {!isFetching && !error && (
+        <li onClick={handleClick} className="item" data-testid="card">
+          <h3 data-testid="card-title">{upperFirstLetter(parseData.name)}</h3>
+          <div>
+            {parseData.image ? (
+              <img src={parseData.image} alt={parseData.name} />
+            ) : (
+              ''
+            )}
+          </div>
+          <input
+            data-testid="card-checkbox"
+            type="checkbox"
+            className="item-checkbox"
+            checked={stateHasItem}
+            onChange={handleCheckboxChange}
+          ></input>
+        </li>
+      )}
+    </>
   );
 }

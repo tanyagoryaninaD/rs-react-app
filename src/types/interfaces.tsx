@@ -1,20 +1,16 @@
 import type { ReactNode } from 'react';
+import type { Theme } from './types';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import type { SerializedError } from 'vitest';
 
-interface OnUpdateState {
-  onUpdateState: (newState: Partial<SearchPanelState>) => void;
-}
-
-export interface CardDetailsProps extends OnUpdateState {
-  details: string | null;
-}
-
-export interface CardProps extends OnUpdateState {
-  data: MyPokemon;
+export interface CardProps {
+  name: string;
 }
 
 export interface CardDetailsState {
-  data: MyPokemon | null;
+  data: MyPokemon;
   isLoading: boolean;
+  error?: FetchBaseQueryError | SerializedError;
 }
 
 export interface MyPokemon {
@@ -25,48 +21,13 @@ export interface MyPokemon {
   moves?: string[];
 }
 
-interface SearchState {
-  query: string;
-  isLoading: boolean;
-}
-
-export interface SearchControlsProps
-  extends SearchState,
-    Pick<CardListProps, 'onSearch'> {
-  onChange: (query: string) => void;
+export interface Table extends Omit<MyPokemon, 'id'> {
+  description?: string;
 }
 
 export type ErrorState = {
   isError: boolean;
 };
-
-export interface SearchPanelState extends SearchState {
-  results: MyPokemon[];
-  error: string | null;
-  page: number | null;
-  details: string | null;
-}
-export interface PaginationProps
-  extends OnUpdateState,
-    Pick<SearchPanelState, 'page'> {
-  onSearch: (data: GetPokemon) => Promise<void>;
-}
-
-export interface CardListProps extends Omit<PaginationProps, 'page'> {
-  data: SearchPanelState;
-}
-
-export interface Table extends Omit<MyPokemon, 'id'> {
-  description?: string;
-}
-
-export interface NoResultsProps {
-  error: string | null;
-}
-
-export interface ErrorBoundaryProps {
-  children: React.ReactNode;
-}
 
 export interface ErrorBoundaryState {
   hasError: boolean;
@@ -84,4 +45,30 @@ export interface ErrorBoundaryState {
 export interface GetPokemon {
   query?: string;
   page?: number;
+}
+
+export interface ThemeContextProps {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+
+export interface PokemonListContextState {
+  query: string;
+  currentApiRequest: ApiRequest | null;
+  results: MyPokemon[];
+  page: number | null;
+  pageNext: string | null;
+  pagePrev: string | null;
+  details: string | null;
+  error: string | null;
+  loadingButtonSearch?: boolean;
+}
+
+export interface PokemonListContextProps extends PokemonListContextState {
+  updateContext: (data: Partial<PokemonListContextState>) => void;
+}
+
+export interface ApiRequest {
+  apiRequest?: string | null;
+  offset?: number;
 }

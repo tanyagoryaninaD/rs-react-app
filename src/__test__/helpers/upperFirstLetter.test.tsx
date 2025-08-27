@@ -7,4 +7,10 @@ describe('upperFirstLetter:', () => {
 
     expect(result).toBe('Name');
   });
+
+  it('return empty string ', () => {
+    const result = upperFirstLetter();
+
+    expect(result).toBe('');
+  });
 });

@@ -1,26 +1,91 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, type Mock } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { add, remove } from '../../../utils/store';
 import { Card } from '../../../components/SearchPanel/CardList/Card';
-import { mockOnUpdateState, dispatchSpy } from '../../mocks/mockFunctions';
+import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
+import { PokemonListContext } from '../../../types/contexts';
+import { bulbasaur, bulbasaurResponse, contextMock } from '../../mocks/data';
+import { Flyout } from '../../../components/components/Flyout';
+import * as helpers from '../../../utils/helpers';
+import { mockStore } from '../../mocks/store';
 import { MockProvider } from '../../mocks/MockProvider';
-import { bulbasaur } from '../../mocks/data';
+
+vi.mock('../../../server/pokemonApi', async () => {
+  const originalModule = await vi.importActual('../../../server/pokemonApi');
+  return {
+    ...originalModule,
+    useGetPokemonByNameQuery: vi.fn(),
+  };
+});
 
 describe('Card component', () => {
-  it('clicks on the checkbox should update stateSelectedItems', async () => {
+  it('clicks on the checkbox should update Flyout and disable checkbox', async () => {
+    (useGetPokemonByNameQuery as Mock).mockReturnValue({
+      data: bulbasaurResponse,
+      isLoading: false,
+      error: null,
+    });
+    const parseToСsvUrlSpy = vi
+      .spyOn(helpers, 'parseToСsvUrl')
+      .mockImplementation(() => 'url');
+
     render(
-      MockProvider(<Card data={bulbasaur} onUpdateState={mockOnUpdateState} />)
+      MockProvider(
+        <PokemonListContext value={contextMock}>
+          <Card name={bulbasaur.name} />
+          <Flyout />
+        </PokemonListContext>
+      )
     );
 
-    await userEvent.click(screen.getByTestId('card-checkbox'));
+    const checkbox = screen.getByTestId('card-checkbox') as HTMLInputElement;
+    await userEvent.click(checkbox);
 
-    expect(mockOnUpdateState).not.toBeCalled();
-    expect(dispatchSpy).toBeCalledWith(add(bulbasaur));
+    expect(checkbox.checked).toBeTruthy();
+    expect(mockStore.getState().selectedItems).toEqual([bulbasaur]);
+    expect(screen.getByText(/1 items are selected/i)).toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('card-checkbox'));
-    expect(dispatchSpy).toBeCalledWith(remove(bulbasaur));
+    await userEvent.click(checkbox);
+    expect(checkbox.checked).toBeFalsy();
+    expect(mockStore.getState().selectedItems).toEqual([]);
+    expect(screen.getByText(/0 items are selected/i)).toBeInTheDocument();
 
-    dispatchSpy.mockRestore();
+    expect(contextMock.updateContext).not.toHaveBeenCalled();
+
+    parseToСsvUrlSpy.mockRestore();
+    vi.resetAllMocks();
+  });
+
+  it('clicks on the card should call updateContext', async () => {
+    const response = structuredClone(bulbasaurResponse);
+    response.sprites.front_default = '';
+    response.sprites.other.dream_world.front_default = null;
+
+    (useGetPokemonByNameQuery as Mock).mockReturnValue({
+      data: response,
+      isLoading: false,
+      error: null,
+    });
+    const parseToСsvUrlSpy = vi
+      .spyOn(helpers, 'parseToСsvUrl')
+      .mockImplementation(() => 'url');
+
+    render(
+      MockProvider(
+        <PokemonListContext value={contextMock}>
+          <Card name={bulbasaur.name} />
+          <Flyout />
+        </PokemonListContext>
+      )
+    );
+
+    const checkbox = screen.getByTestId('card');
+    await userEvent.click(checkbox);
+    expect(contextMock.updateContext).toHaveBeenCalledWith({
+      details: 'bulbasaur',
+    });
+
+    parseToСsvUrlSpy.mockRestore();
+    vi.resetAllMocks();
   });
 });

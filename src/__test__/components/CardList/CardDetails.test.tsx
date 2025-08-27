@@ -1,28 +1,85 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  afterEach,
+  vi,
+  type Mock,
+  beforeEach,
+} from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { CardDetails } from '../../../components/SearchPanel/CardList/CardDetails';
-import { bulbasaur } from '../../mocks/data';
-import { mockOnUpdateState } from '../../mocks/mockFunctions';
-import * as pokemonApi from '../../../server/Loader';
+import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
+import { PokemonListContext } from '../../../types/contexts';
+import {
+  bulbasaurResponse,
+  contextMock,
+  type MockPokemon,
+} from '../../mocks/data';
+import { MockProvider } from '../../mocks/MockProvider';
+
+vi.mock('../../../server/pokemonApi', async () => {
+  const originalModule = await vi.importActual('../../../server/pokemonApi');
+  return {
+    ...originalModule,
+    useGetPokemonByNameQuery: vi.fn(),
+  };
+});
 
 describe('CardDetails component', () => {
-  it('clicking on the "close" button should update the details status', async () => {
-    const mockGetPokemon = vi
-      .spyOn(pokemonApi, 'getPokemon')
-      .mockResolvedValueOnce([bulbasaur]);
+  let mockResponse: MockPokemon;
+
+  beforeEach(() => {
+    mockResponse = structuredClone(bulbasaurResponse);
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it('clicking on the "close" button should close cardDetails', async () => {
+    (useGetPokemonByNameQuery as Mock).mockReturnValue({
+      data: mockResponse,
+      isLoading: false,
+      error: null,
+    });
 
     render(
-      <CardDetails details={'bulbasaur'} onUpdateState={mockOnUpdateState} />
+      MockProvider(
+        <PokemonListContext value={contextMock}>
+          <CardDetails />
+        </PokemonListContext>
+      )
     );
 
-    const button = await screen.findByRole('button', { name: /Close/i });
+    const button = screen.getByRole('button', { name: /Close/i });
+    expect(button).toBeInTheDocument();
 
     await userEvent.click(button);
 
-    expect(mockGetPokemon).toBeCalledWith({ query: 'bulbasaur' });
-    expect(mockOnUpdateState).toBeCalledWith({ details: null });
+    expect(contextMock.updateContext).toHaveBeenCalledWith({ details: null });
+  });
 
-    mockGetPokemon.mockRestore();
+  it('renders without abilities and moves', async () => {
+    mockResponse.abilities = [];
+    mockResponse.moves = [];
+
+    (useGetPokemonByNameQuery as Mock).mockReturnValue({
+      data: mockResponse,
+      isLoading: false,
+      error: null,
+    });
+
+    render(
+      MockProvider(
+        <PokemonListContext value={contextMock}>
+          <CardDetails />
+        </PokemonListContext>
+      )
+    );
+
+    expect(screen.queryByTestId('abilities')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('moves')).not.toBeInTheDocument();
   });
 });

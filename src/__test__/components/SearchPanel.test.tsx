@@ -1,149 +1,113 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import {
   describe,
   it,
   expect,
   vi,
-  type MockInstance,
-  beforeEach,
   afterEach,
+  type Mock,
+  beforeEach,
 } from 'vitest';
 import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
-import * as pokemonApi from '../../server/Loader';
-import * as helpers from '../../utils/helpers';
-import { Route, Routes } from 'react-router-dom';
-import type { GetPokemon, MyPokemon } from '../../types/interfaces';
-import { bulbasaur, mockState } from '../mocks/data';
+import { useLocalStorage } from '../../utils/localStorage';
+import {
+  useGetPokemonByNameQuery,
+  useGetPokemonByPageQuery,
+} from '../../server/pokemonApi';
+import {
+  bulbasaurResponse,
+  contextStateMock,
+  selectedItems,
+} from '../mocks/data';
+import { mockStore } from '../mocks/store';
 import { MockProvider } from '../mocks/MockProvider';
+import { setSelectedItems, updateContext } from '../mocks/mockFunctions';
+import userEvent from '@testing-library/user-event';
+import type { PokemonListContextState } from '../../types/interfaces';
+
+vi.mock('../../server/pokemonApi', async () => {
+  const originalModule = await vi.importActual('../../server/pokemonApi');
+  return {
+    ...originalModule,
+    useGetPokemonByPageQuery: vi.fn(),
+    useGetPokemonByNameQuery: vi.fn(),
+  };
+});
+
+vi.mock('../../utils/localStorage', () => ({
+  useLocalStorage: vi.fn(),
+}));
 
 describe('SearchPanel component', () => {
-  let getItemSpy: MockInstance<(key: string) => string | null>;
-  let mockGetPokemon: MockInstance<(data: GetPokemon) => Promise<MyPokemon[]>>;
-  let parseToСsvUrlSpy: MockInstance<(data: MyPokemon[]) => string>;
+  const setContext = vi.fn().mockImplementation(() => updateContext);
+  let context: PokemonListContextState;
 
   beforeEach(() => {
-    getItemSpy = vi
-      .spyOn(Storage.prototype, 'getItem')
-      .mockReturnValue(JSON.stringify(mockState));
+    context = { ...contextStateMock };
 
-    parseToСsvUrlSpy = vi
-      .spyOn(helpers, 'parseToСsvUrl')
-      .mockImplementation(() => 'url');
+    (useLocalStorage as Mock).mockImplementation((key, initialValue) => {
+      if (key === 'tg-last-search') {
+        return [contextStateMock, setContext];
+      }
+      if (key === 'tg-selected-items') {
+        return [selectedItems, setSelectedItems];
+      }
+      return [initialValue, vi.fn()];
+    });
+    (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
+      data: bulbasaurResponse,
+      isLoading: false,
+      isFetching: false,
+    }));
+    (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
+      data: bulbasaurResponse,
+      isLoading: false,
+      isFetching: false,
+    }));
   });
 
   afterEach(() => {
-    getItemSpy.mockRestore();
-    mockGetPokemon.mockRestore();
-    parseToСsvUrlSpy.mockRestore();
+    vi.resetAllMocks();
   });
 
-  it('should upload data to the SearchPanel for search queries from the url and get an error for the rejected request', async () => {
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockRejectedValue('');
-    mockGetPokemon = vi.spyOn(pokemonApi, 'getPokemon').mockResolvedValue([]);
-    const consoleError = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-
+  it('renders with the request parameters should set them to the context', async () => {
+    const dispatchSpy = vi.spyOn(mockStore, 'dispatch');
     render(
-      MockProvider(
-        <Routes>
-          <Route index element={<SearchPanel />} />
-        </Routes>,
-        { initialEntries: '/?details=pikachu&page=2' }
-      )
+      MockProvider(<SearchPanel />, {
+        initialEntries: '/?details=bulbasaur&page=2',
+      })
     );
 
-    await waitFor(() => {
-      expect(mockGetPokemon).toBeCalledTimes(3);
-      expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
-        query: 'pikachu',
-        page: undefined,
-      });
-      expect(mockGetPokemon).toHaveBeenNthCalledWith(2, {
-        page: 2,
-        query: '',
-      });
-      expect(mockGetPokemon).toHaveBeenNthCalledWith(3, { query: 'pikachu' });
+    context.details = 'bulbasaur';
+    context.page = 2;
+    context.currentApiRequest = {};
+    context.loadingButtonSearch = undefined;
 
-      expect(consoleError).toBeCalled();
-    });
-
-    consoleError.mockRestore();
-  });
-
-  it('if there is an error in loading СardDetails, an error should be displayed in the console', async () => {
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockRejectedValue('');
-    mockGetPokemon = vi
-      .spyOn(pokemonApi, 'getPokemon')
-      .mockRejectedValue(new Error('test error'));
-    const consoleError = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-
-    render(
-      MockProvider(
-        <Routes>
-          <Route index element={<SearchPanel />} />
-        </Routes>,
-        { initialEntries: '/?details=pikachu&page=2' }
-      )
+    expect(useLocalStorage).toHaveBeenNthCalledWith(
+      1,
+      'tg-last-search',
+      context
     );
+    expect(setContext).toHaveBeenCalled();
 
-    await waitFor(() => {
-      expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
-        query: 'pikachu',
-        page: undefined,
-      });
-      expect(consoleError).toBeCalled();
-    });
-
-    consoleError.mockRestore();
+    dispatchSpy.mockRestore();
+    context.details = null;
+    context.page = null;
+    context.currentApiRequest = null;
   });
 
-  it('during rendering data should be loaded from localStorage', async () => {
-    mockGetPokemon = vi
-      .spyOn(pokemonApi, 'getPokemon')
-      .mockResolvedValueOnce([bulbasaur]);
-
-    mockState.query = 'bulbasaur';
-    getItemSpy.mockReturnValueOnce(JSON.stringify(mockState));
-    getItemSpy.mockReturnValueOnce(JSON.stringify([bulbasaur]));
-
+  it('clicks for submit should update context', async () => {
+    const dispatchSpy = vi.spyOn(mockStore, 'dispatch');
     render(MockProvider(<SearchPanel />));
 
-    await waitFor(() => {
-      expect(getItemSpy).toHaveBeenNthCalledWith(1, 'tg-last-search');
-      expect(getItemSpy).toHaveBeenNthCalledWith(2, 'tg-selected-items');
+    const button = screen.getByRole('button', {
+      name: /search/i,
+    }) as HTMLButtonElement;
 
-      expect(mockGetPokemon).toHaveBeenCalledTimes(1);
-      expect(mockGetPokemon).toHaveBeenNthCalledWith(1, {
-        page: undefined,
-        query: 'bulbasaur',
-      });
+    await userEvent.click(button);
 
-      expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
-    });
-  });
+    expect(setContext).toHaveBeenCalled();
 
-  it('loads data with error', async () => {
-    mockGetPokemon = vi
-      .spyOn(pokemonApi, 'getPokemon')
-      .mockRejectedValue(new Error('test error'));
-
-    getItemSpy.mockReturnValueOnce(JSON.stringify(mockState));
-    getItemSpy.mockReturnValueOnce(JSON.stringify([]));
-
-    const consoleError = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-
-    render(MockProvider(<SearchPanel />));
-
-    await waitFor(() => {
-      expect(screen.getByText('test error')).toBeInTheDocument();
-      expect(mockGetPokemon).toBeCalled();
-    });
-
-    consoleError.mockRestore();
+    dispatchSpy.mockRestore();
   });
 });

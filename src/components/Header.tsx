@@ -2,9 +2,21 @@ import { useContext, type ReactNode } from 'react';
 import pokeLogo from '../assets/pokeapi.png';
 import { NavLink } from 'react-router-dom';
 import { ThemeContext } from '../types/contexts';
+import { useDispatch } from 'react-redux';
+import { pokemonApi } from '../server/pokemonApi';
 
 export function Header(): ReactNode {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const dispatch = useDispatch();
+
+  const handleResetCashPokemonPage = () => {
+    dispatch(pokemonApi.util.invalidateTags(['PokemonList']));
+  };
+
+  const handleResetCashAllPokemon = () => {
+    dispatch(pokemonApi.util.invalidateTags(['Pokemon']));
+  };
+
   return (
     <>
       <header>
@@ -29,6 +41,18 @@ export function Header(): ReactNode {
             </NavLink>
           </nav>
           <button className={`theme ${theme}`} onClick={toggleTheme}></button>
+          <button
+            data-testid="reset-cache-page"
+            onClick={handleResetCashPokemonPage}
+          >
+            Reset Cache Page
+          </button>
+          <button
+            data-testid="reset-cache-all-pokemon"
+            onClick={handleResetCashAllPokemon}
+          >
+            Reset Cache All Pokemons
+          </button>
         </div>
         <h1 className="header-title">Search Pokémon</h1>
       </header>

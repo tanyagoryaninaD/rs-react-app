@@ -1,59 +1,78 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Pagination } from '../../../components/SearchPanel/CardList/Pagination';
 import userEvent from '@testing-library/user-event';
-import { mockOnSearch, mockOnUpdateState } from '../../mocks/mockFunctions';
+import { PokemonListContext } from '../../../types/contexts';
+import { contextMock } from '../../mocks/data';
+import { MockProvider } from '../../mocks/MockProvider';
+import type { PokemonListContextProps } from '../../../types/interfaces';
 
 describe('Pagination component', () => {
-  it('renders with button and page', async () => {
+  let context: PokemonListContextProps;
+
+  beforeEach(() => {
+    context = { ...contextMock };
+  });
+
+  it('renders with button and page', () => {
+    context.page = 1;
+    context.pagePrev = null;
+    context.pageNext = null;
+
     render(
-      <Pagination
-        page={1}
-        onUpdateState={mockOnUpdateState}
-        onSearch={mockOnSearch}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <Pagination />
+        </PokemonListContext>
+      )
     );
 
-    expect(screen.getByRole('button', { name: /Prev/i })).toBeInTheDocument();
+    const prevButton = screen.getByRole('button', { name: /Prev/i });
+    const nextButton = screen.getByRole('button', { name: /Next/i });
+
+    expect(prevButton).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Next/i })).toBeInTheDocument();
     expect(screen.getByText(/1/i)).toBeInTheDocument();
-
-    const prevButton = screen.getByRole('button', { name: /Prev/i });
     expect(prevButton).toBeDisabled();
+    expect(nextButton).toBeDisabled();
   });
 
   it('change page when clicked on Next', async () => {
+    context.page = 2;
+    context.pagePrev = '1';
+    context.pageNext = '3';
+
     render(
-      <Pagination
-        page={1}
-        onUpdateState={mockOnUpdateState}
-        onSearch={mockOnSearch}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <Pagination />
+        </PokemonListContext>
+      )
     );
 
     const button = screen.getByRole('button', { name: /Next/i });
 
     await userEvent.click(button);
 
-    expect(mockOnUpdateState).toHaveBeenNthCalledWith(1, {
-      isLoading: true,
-      page: 2,
-    });
-    expect(mockOnUpdateState).toHaveBeenNthCalledWith(2, {
-      isLoading: false,
-    });
-    expect(mockOnSearch).toHaveBeenCalledWith({
-      page: 2,
+    expect(context.updateContext).toHaveBeenCalledWith({
+      currentApiRequest: {
+        apiRequest: '3',
+      },
+      page: 3,
     });
   });
 
   it('change page when clicked on Prev', async () => {
+    context.page = 2;
+    context.pagePrev = '1';
+    context.pageNext = '3';
+
     render(
-      <Pagination
-        page={2}
-        onUpdateState={mockOnUpdateState}
-        onSearch={mockOnSearch}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <Pagination />
+        </PokemonListContext>
+      )
     );
 
     const button = screen.getByRole('button', {
@@ -62,14 +81,10 @@ describe('Pagination component', () => {
 
     await userEvent.click(button);
 
-    expect(mockOnUpdateState).toHaveBeenNthCalledWith(1, {
-      isLoading: true,
-      page: 1,
-    });
-    expect(mockOnUpdateState).toHaveBeenNthCalledWith(2, {
-      isLoading: false,
-    });
-    expect(mockOnSearch).toHaveBeenCalledWith({
+    expect(context.updateContext).toHaveBeenCalledWith({
+      currentApiRequest: {
+        apiRequest: '1',
+      },
       page: 1,
     });
   });

@@ -1,89 +1,128 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, afterEach, beforeEach } from 'vitest';
+import {
+  describe,
+  it,
+  afterEach,
+  vi,
+  type Mock,
+  expect,
+  beforeEach,
+} from 'vitest';
+import { render } from '@testing-library/react';
+import {
+  useGetPokemonByNameQuery,
+  useGetPokemonByPageQuery,
+} from '../../../server/pokemonApi';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
-import userEvent from '@testing-library/user-event';
-import { mockResults, mockState } from '../../mocks/data';
-import { mockOnSearch, mockOnUpdateState } from '../../mocks/mockFunctions';
+import { PokemonListContext } from '../../../types/contexts';
+import {
+  bulbasaurResponse,
+  contextMock,
+  contextStateMock,
+  ivysaur,
+  selectedItems,
+} from '../../mocks/data';
+import { mockStore } from '../../mocks/store';
+import { useLocalStorage } from '../../../utils/localStorage';
+import { setContext, setSelectedItems } from '../../mocks/mockFunctions';
+import * as helpers from '../../../utils/helpers';
 import { MockProvider } from '../../mocks/MockProvider';
 
+vi.mock('../../../server/pokemonApi', async () => {
+  const originalModule = await vi.importActual('../../../server/pokemonApi');
+  return {
+    ...originalModule,
+    useGetPokemonByPageQuery: vi.fn(),
+    useGetPokemonByNameQuery: vi.fn(),
+  };
+});
+
+vi.mock('../../../utils/localStorage', () => ({
+  useLocalStorage: vi.fn(),
+}));
+
 describe('CardList component', () => {
+  const context = { ...contextMock };
+
   beforeEach(() => {
-    mockState.results = [];
-    mockState.error = null;
-    mockState.isLoading = false;
+    context.results = [];
+    context.error = null;
   });
 
   afterEach(() => {
-    mockState.results = [];
-    mockState.error = null;
-    mockState.isLoading = false;
+    vi.resetAllMocks();
   });
 
-  it('renders without results', async () => {
-    mockState.error = 'No results found';
+  it('useGetPokemonByPageQuery should been called with currentApiRequest and query should have called one', () => {
+    (useLocalStorage as Mock).mockReturnValue([[], setSelectedItems]);
+    (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
+      data: bulbasaurResponse,
+      isLoading: false,
+      isFetching: false,
+      error: undefined,
+    }));
+    (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
+      data: bulbasaurResponse,
+      isLoading: false,
+      isFetching: false,
+      error: undefined,
+    }));
+
+    context.currentApiRequest = { apiRequest: 'bulbasaur' };
 
     render(
       MockProvider(
-        <CardList
-          data={mockState}
-          onSearch={mockOnSearch}
-          onUpdateState={mockOnUpdateState}
-        />
+        <PokemonListContext value={context}>
+          <CardList />
+        </PokemonListContext>
       )
     );
 
-    const result = screen.getByText(/No results found/i);
-    expect(result).toBeInTheDocument();
+    expect(useGetPokemonByPageQuery).toBeCalledWith({
+      apiRequest: 'bulbasaur',
+    });
+    expect(useGetPokemonByNameQuery).not.toBeCalled();
   });
 
-  it('renders with results', async () => {
-    mockState.results = mockResults;
+  it('first render should get selectedItems from local storage', () => {
+    selectedItems.push(ivysaur);
+
+    (useLocalStorage as Mock).mockImplementation((key, initialValue) => {
+      if (key === 'tg-last-search') {
+        return [contextStateMock, setContext];
+      }
+      if (key === 'tg-selected-items') {
+        return [selectedItems, setSelectedItems];
+      }
+      return [initialValue, vi.fn()];
+    });
+    (useGetPokemonByPageQuery as Mock).mockReturnValue(() => ({
+      data: bulbasaurResponse,
+      isLoading: false,
+      isFetching: false,
+    }));
+    (useGetPokemonByNameQuery as Mock).mockReturnValue(() => ({
+      data: bulbasaurResponse,
+      isLoading: false,
+      isFetching: false,
+    }));
+    const parseToСsvUrlSpy = vi
+      .spyOn(helpers, 'parseToСsvUrl')
+      .mockImplementation(() => 'url');
+
+    context.currentApiRequest = { apiRequest: 'bulbasaur' };
 
     render(
       MockProvider(
-        <CardList
-          data={mockState}
-          onSearch={mockOnSearch}
-          onUpdateState={mockOnUpdateState}
-        />
+        <PokemonListContext value={context}>
+          <CardList />
+        </PokemonListContext>
       )
     );
 
-    expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
-  });
+    expect(useLocalStorage).toHaveBeenCalledWith('tg-selected-items', []);
+    expect(mockStore.getState().selectedItems).toEqual([ivysaur]);
 
-  it('renders with loading state', async () => {
-    mockState.isLoading = true;
-
-    render(
-      MockProvider(
-        <CardList
-          data={mockState}
-          onSearch={mockOnSearch}
-          onUpdateState={mockOnUpdateState}
-        />
-      )
-    );
-
-    expect(screen.getByText(/Loading data.../)).toBeInTheDocument();
-    expect(screen.queryByText(/Bulbasaur/i)).toBeNull();
-  });
-
-  it('when click on the card, the details should be updated', async () => {
-    mockState.results = mockResults;
-
-    render(
-      MockProvider(
-        <CardList
-          data={mockState}
-          onSearch={mockOnSearch}
-          onUpdateState={mockOnUpdateState}
-        />
-      )
-    );
-
-    await userEvent.click(screen.getAllByTestId('card')[0]);
-
-    expect(mockOnUpdateState).toBeCalledWith({ details: 'bulbasaur' });
+    parseToСsvUrlSpy.mockRestore();
+    selectedItems.length = 0;
   });
 });

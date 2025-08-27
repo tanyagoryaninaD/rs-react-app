@@ -9,12 +9,12 @@ import {
   afterEach,
 } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { removeAll } from '../../utils/store';
 import { Flyout } from '../../components/components/Flyout';
 import * as helpers from '../../utils/helpers';
 import type { MyPokemon } from '../../types/interfaces';
 import { dispatchSpy } from '../mocks/mockFunctions';
 import { MockProvider } from '../mocks/MockProvider';
+import { removeAll } from '../../store/reducers/selectedItems';
 
 describe('Flyout component', () => {
   let parseToСsvUrlSpy: MockInstance<(data: MyPokemon[]) => string>;

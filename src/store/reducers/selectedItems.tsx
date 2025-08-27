@@ -1,9 +1,6 @@
-import {
-  configureStore,
-  createSlice,
-  type PayloadAction,
-} from '@reduxjs/toolkit';
-import type { MyPokemon } from '../types/interfaces';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { MyPokemon } from '../../types/interfaces';
+import type { RootState } from '../../types/types';
 
 export const selectedItemsSlice = createSlice({
   name: 'selectedItems',
@@ -37,13 +34,3 @@ export const { add, remove, removeAll, setState } = selectedItemsSlice.actions;
 export const selectedItems = (state: RootState) => state.selectedItems;
 export const selectedHasItem = (data: MyPokemon) => (state: RootState) =>
   state.selectedItems.some((item) => item.name === data.name);
-
-const store = configureStore({
-  reducer: {
-    selectedItems: selectedItemsSlice.reducer,
-  },
-});
-
-export type RootState = ReturnType<typeof store.getState>;
-
-export default store;

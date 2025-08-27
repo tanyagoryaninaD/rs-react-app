@@ -1,18 +1,29 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { SearchControls } from '../../../components/SearchPanel/Search/SearchControls';
 import userEvent from '@testing-library/user-event';
-import { mockOnChange, mockOnSearch } from '../../mocks/mockFunctions';
+import { PokemonListContext } from '../../../types/contexts';
+import { contextMock } from '../../mocks/data';
+import { MockProvider } from '../../mocks/MockProvider';
+import type { PokemonListContextProps } from '../../../types/interfaces';
 
 describe('SearchControls component', () => {
+  let context: PokemonListContextProps;
+
+  beforeEach(() => {
+    context = { ...contextMock };
+  });
+
   it('renders with form elements', () => {
+    context.query = '';
+    context.loadingButtonSearch = false;
+
     render(
-      <SearchControls
-        query={''}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <SearchControls />
+        </PokemonListContext>
+      )
     );
 
     expect(screen.getByTestId('search-input')).toBeInTheDocument();
@@ -24,13 +35,15 @@ describe('SearchControls component', () => {
   });
 
   it('during loading the button text content should be changed', () => {
+    context.query = '';
+    context.loadingButtonSearch = true;
+
     render(
-      <SearchControls
-        query={''}
-        isLoading={true}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <SearchControls />
+        </PokemonListContext>
+      )
     );
 
     expect(
@@ -41,44 +54,50 @@ describe('SearchControls component', () => {
   });
 
   it('renders input with last query', () => {
+    context.query = 'test';
+    context.loadingButtonSearch = false;
+
     render(
-      <SearchControls
-        query={'test'}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <SearchControls />
+        </PokemonListContext>
+      )
     );
 
     expect(screen.getByDisplayValue('test')).toBeInTheDocument();
   });
 
   it('change input value should call onChange', async () => {
+    context.query = '';
+    context.loadingButtonSearch = false;
+
     render(
-      <SearchControls
-        query={''}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <SearchControls />
+        </PokemonListContext>
+      )
     );
 
     const input = screen.getByTestId('search-input');
 
     await userEvent.type(input, 'query');
 
-    expect(mockOnChange).toHaveBeenCalledTimes(5);
-    expect(mockOnChange).toHaveBeenLastCalledWith('y');
+    expect(context.updateContext).toHaveBeenCalledTimes(5);
+    expect(context.updateContext).toHaveBeenLastCalledWith({ query: 'y' });
   });
 
   it('clicks on button should call onSearch', async () => {
+    context.query = 'test-2';
+    context.loadingButtonSearch = false;
+
     render(
-      <SearchControls
-        query={'test-2'}
-        isLoading={false}
-        onSearch={mockOnSearch}
-        onChange={mockOnChange}
-      />
+      MockProvider(
+        <PokemonListContext value={context}>
+          <SearchControls />
+        </PokemonListContext>
+      )
     );
 
     const button = screen.getByRole('button', {
@@ -87,6 +106,14 @@ describe('SearchControls component', () => {
 
     await userEvent.click(button);
 
-    expect(mockOnSearch).toBeCalledWith({ query: 'test-2' });
+    expect(context.updateContext).toHaveBeenLastCalledWith({
+      loadingButtonSearch: true,
+      currentApiRequest: { apiRequest: 'test-2' },
+      results: [],
+      page: null,
+      pageNext: null,
+      pagePrev: null,
+      error: null,
+    });
   });
 });

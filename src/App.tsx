@@ -7,8 +7,9 @@ import { About } from './components/About/About';
 import { NotFound } from './components/NotFound/NotFound';
 import { Main } from './components/Main';
 import { useEffect } from 'react';
-import { ThemeContext, type Theme } from './types/contexts';
+import { ThemeContext } from './types/contexts';
 import { useLocalStorage } from './utils/localStorage';
+import type { Theme } from './types/types';
 
 export function App(): ReactNode {
   const [theme, setTheme] = useLocalStorage<Theme>('tg-theme', 'light');

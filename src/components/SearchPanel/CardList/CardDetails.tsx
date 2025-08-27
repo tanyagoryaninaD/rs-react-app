@@ -1,44 +1,27 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { getPokemon } from '../../../server/Loader';
-import type {
-  CardDetailsProps,
-  CardDetailsState,
-} from '../../../types/interfaces';
-import { upperFirstLetter } from '../../../utils/helpers';
+import { useContext, useEffect, useState, type ReactNode } from 'react';
+import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { LoadingIndicator } from './LoadingIndicator';
+import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
+import { PokemonListContext } from '../../../types/contexts';
+import type { CardDetailsState } from '../../../types/interfaces';
 
-export function CardDetails(props: CardDetailsProps): ReactNode {
+export function CardDetails(): ReactNode {
+  const { details, updateContext } = useContext(PokemonListContext);
+  const { data, isLoading } = useGetPokemonByNameQuery(details || '');
+
   const [state, setState] = useState<CardDetailsState>({
-    data: null,
-    isLoading: false,
+    data: parsePokemonData(data),
+    isLoading,
   });
-  const updateState = props.onUpdateState;
 
   useEffect(() => {
-    const fetchPokemon = async () => {
-      try {
-        if (props.details) {
-          setState({ data: null, isLoading: true });
-          const results = await getPokemon({ query: props.details });
-          setState({ data: results[0], isLoading: false });
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error('Not found');
-        }
-
-        updateState({ details: null });
-      }
-    };
-
-    fetchPokemon();
-  }, [props.details, updateState]);
+    const parsedData = parsePokemonData(data);
+    setState({ data: parsedData, isLoading: false });
+  }, [data, updateContext]);
 
   const abilities = (): ReactNode | null => {
-    return state.data?.abilities ? (
-      <div className="wrapper-list">
+    return state.data?.abilities?.length ? (
+      <div className="wrapper-list" data-testis="abilities">
         <h3 className="list-title">Abilities</h3>
         <ul>
           {state.data.abilities.map((item) => (
@@ -50,8 +33,8 @@ export function CardDetails(props: CardDetailsProps): ReactNode {
   };
 
   const moves = (): ReactNode | null => {
-    return state.data?.moves ? (
-      <div className="wrapper-list">
+    return state.data?.moves?.length ? (
+      <div className="wrapper-list" data-testis="moves">
         <h3 className="list-title">Moves</h3>
         <ul>
           {state.data.moves.map((item) => (
@@ -63,7 +46,8 @@ export function CardDetails(props: CardDetailsProps): ReactNode {
   };
 
   const handleClick = () => {
-    props.onUpdateState({ details: null });
+    setState((prev) => ({ ...prev, isLoading: true }));
+    updateContext({ details: null });
   };
 
   return (
@@ -74,13 +58,11 @@ export function CardDetails(props: CardDetailsProps): ReactNode {
         ) : (
           <>
             <h2 data-testid="card-details-title">
-              {upperFirstLetter(state.data?.name || '')}
+              {upperFirstLetter(state.data?.name)}
             </h2>
             <div className="wrapper-image">
-              {state.data?.image ? (
+              {state.data?.image && (
                 <img src={state.data?.image} alt={state.data?.name} />
-              ) : (
-                ''
               )}
             </div>
             <div className="wrapper-lists">

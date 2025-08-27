@@ -1,4 +1,9 @@
-import type { SearchPanelState } from '../../types/interfaces';
+import type {
+  MyPokemon,
+  PokemonListContextProps,
+  PokemonListContextState,
+} from '../../types/interfaces';
+import { updateContext } from './mockFunctions';
 
 export type MockPokemon = {
   name: string;
@@ -103,11 +108,21 @@ export const ivysaur = {
 
 export const mockResults = [bulbasaur, ivysaur];
 
-export const mockState: SearchPanelState = {
-  query: 'pikachu',
-  results: mockResults,
+export const contextStateMock: PokemonListContextState = {
+  query: '',
+  currentApiRequest: null,
+  results: [],
+  page: null,
+  pageNext: null,
+  pagePrev: null,
+  details: null,
   error: null,
-  isLoading: false,
-  details: '',
-  page: 1,
+  loadingButtonSearch: false,
 };
+
+export const contextMock: PokemonListContextProps = {
+  ...contextStateMock,
+  updateContext,
+};
+
+export const selectedItems: MyPokemon[] = [];

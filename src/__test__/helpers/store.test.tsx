@@ -1,11 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { add, remove, removeAll, setState } from '../../utils/store';
 import { mockStore } from '../mocks/store';
 import { bulbasaur } from '../mocks/data';
 import { dispatchSpy } from '../mocks/mockFunctions';
 import { MockProvider } from '../mocks/MockProvider';
+import {
+  add,
+  remove,
+  removeAll,
+  setState,
+} from '../../store/reducers/selectedItems';
 
 describe('store:', () => {
   beforeEach(() => {
