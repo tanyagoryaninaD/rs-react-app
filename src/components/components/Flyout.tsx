@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { parseToСsvUrl } from '../../utils/helpers';
-import { removeAll, selectItems } from '../../store/reducers/selectedItems';
+import { removeAll, selectedItems } from '../../store/reducers/selectedItems';
 
 export function Flyout(): ReactNode {
-  const stateItems = useSelector(selectItems);
+  const stateItems = useSelector(selectedItems);
   const dispatch = useDispatch();
 
   const handlerUnselect = () => {

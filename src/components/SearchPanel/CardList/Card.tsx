@@ -1,11 +1,11 @@
 import { useContext, type ReactNode } from 'react';
-import type { CardProps, MyStore } from '../../../types/interfaces';
+import type { CardProps } from '../../../types/interfaces';
 import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   remove,
   add,
-  selectHasItem,
+  selectedHasItem,
 } from '../../../store/reducers/selectedItems';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
 import { PokemonListContext } from '../../../types/contexts';
@@ -16,9 +16,7 @@ export function Card(props: CardProps): ReactNode {
   const parseData = parsePokemonData(data);
 
   const dispatch = useDispatch();
-  const stateHasItem = useSelector((state: MyStore) =>
-    selectHasItem(state, parseData)
-  );
+  const stateHasItem = useSelector(selectedHasItem(parseData));
 
   const handleClick = (event: React.MouseEvent) => {
     if (event.target instanceof HTMLInputElement) {

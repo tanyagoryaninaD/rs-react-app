@@ -47,10 +47,6 @@ export interface GetPokemon {
   page?: number;
 }
 
-export interface MyStore {
-  selectedItems: MyPokemon[];
-}
-
 export interface ThemeContextProps {
   theme: Theme;
   toggleTheme: () => void;

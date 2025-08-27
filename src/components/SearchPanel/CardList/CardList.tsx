@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocalStorage } from '../../../utils/localStorage';
 import { Flyout } from '../../components/Flyout';
-import { selectItems, setState } from '../../../store/reducers/selectedItems';
+import { selectedItems, setState } from '../../../store/reducers/selectedItems';
 
 export function CardList(): ReactNode {
   const { page, results, currentApiRequest, details, updateContext } =
@@ -29,24 +29,23 @@ export function CardList(): ReactNode {
 
   const firstRender = useRef(true);
   const dispatch = useDispatch();
-  const stateItems = useSelector(selectItems);
-  const [selectedItems, setSelectedItems] = useLocalStorage<MyPokemon[]>(
-    'tg-selected-items',
-    []
-  );
+  const stateItems = useSelector(selectedItems);
+  const [stateSelectedItems, setStateSelectedItems] = useLocalStorage<
+    MyPokemon[]
+  >('tg-selected-items', []);
 
   useEffect(() => {
     if (!firstRender.current) {
       return;
     }
 
-    dispatch(setState(selectedItems));
+    dispatch(setState(stateSelectedItems));
     firstRender.current = false;
-  }, [dispatch, selectedItems]);
+  }, [dispatch, stateSelectedItems]);
 
   useEffect(() => {
-    setSelectedItems(stateItems);
-  }, [setSelectedItems, stateItems]);
+    setStateSelectedItems(stateItems);
+  }, [setStateSelectedItems, stateItems]);
 
   useEffect(() => {
     if (error) {
@@ -125,7 +124,7 @@ export function CardList(): ReactNode {
         )}
       </div>
       {details && <CardDetails />}
-      {stateItems.length ? <Flyout /> : ''}
+      {!!stateItems.length && <Flyout />}
     </div>
   );
 }

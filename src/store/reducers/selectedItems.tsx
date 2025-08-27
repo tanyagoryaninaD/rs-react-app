@@ -1,12 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { MyPokemon } from '../../types/interfaces';
+import type { RootState } from '../../types/types';
 
 export const selectedItemsSlice = createSlice({
   name: 'selectedItems',
   initialState: [] as MyPokemon[],
   reducers: {
     add: (state: MyPokemon[], action: PayloadAction<MyPokemon>) => {
-      if (!selectHasItem.unwrapped(state, action.payload)) {
+      if (!state.some((item) => item.name === action.payload.name)) {
         state.push(action.payload);
       }
     },
@@ -26,12 +27,10 @@ export const selectedItemsSlice = createSlice({
       state.push(...action.payload);
     },
   },
-  selectors: {
-    selectItems: (state: MyPokemon[]) => state,
-    selectHasItem: (state: MyPokemon[], data: MyPokemon) =>
-      state.some((item) => item.name === data.name),
-  },
 });
 
 export const { add, remove, removeAll, setState } = selectedItemsSlice.actions;
-export const { selectItems, selectHasItem } = selectedItemsSlice.selectors;
+
+export const selectedItems = (state: RootState) => state.selectedItems;
+export const selectedHasItem = (data: MyPokemon) => (state: RootState) =>
+  state.selectedItems.some((item) => item.name === data.name);

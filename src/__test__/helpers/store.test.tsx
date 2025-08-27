@@ -10,7 +10,6 @@ import {
   remove,
   removeAll,
   setState,
-  selectItems,
 } from '../../store/reducers/selectedItems';
 
 describe('store:', () => {
@@ -39,9 +38,7 @@ describe('store:', () => {
   it('add: should added data to items', async () => {
     await userEvent.click(screen.getByTestId('add'));
 
-    const items = mockStore.getState().selectedItems;
-    expect(items).toEqual([bulbasaur]);
-    expect(selectItems.unwrapped(items)).toEqual([bulbasaur]);
+    expect(mockStore.getState().selectedItems).toEqual([bulbasaur]);
     expect(mockStore.getState().selectedItems.length).toBe(1);
 
     await userEvent.click(screen.getByTestId('add'));
