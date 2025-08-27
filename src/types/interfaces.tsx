@@ -89,3 +89,7 @@ export interface GetPokemon {
 export interface MyStore {
   selectedItems: MyPokemon[];
 }
+
+export interface StoreRootState {
+  selectedItems: MyPokemon[];
+}
