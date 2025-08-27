@@ -1,13 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import {
-  add,
-  remove,
-  removeAll,
-  selectItems,
-  setState,
-} from '../../utils/store';
+import { add, remove, removeAll, setState } from '../../utils/store';
 import { mockStore } from '../mocks/store';
 import { bulbasaur } from '../mocks/data';
 import { dispatchSpy } from '../mocks/mockFunctions';
@@ -39,9 +33,7 @@ describe('store:', () => {
   it('add: should added data to items', async () => {
     await userEvent.click(screen.getByTestId('add'));
 
-    const items = mockStore.getState().selectedItems;
-    expect(items).toEqual([bulbasaur]);
-    expect(selectItems.unwrapped(items)).toEqual([bulbasaur]);
+    expect(mockStore.getState().selectedItems).toEqual([bulbasaur]);
     expect(mockStore.getState().selectedItems.length).toBe(1);
 
     await userEvent.click(screen.getByTestId('add'));

@@ -85,11 +85,3 @@ export interface GetPokemon {
   query?: string;
   page?: number;
 }
-
-export interface MyStore {
-  selectedItems: MyPokemon[];
-}
-
-export interface StoreRootState {
-  selectedItems: MyPokemon[];
-}

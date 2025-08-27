@@ -1,16 +1,14 @@
 import { type ReactNode } from 'react';
-import type { CardProps, MyStore } from '../../../types/interfaces';
+import type { CardProps } from '../../../types/interfaces';
 import { upperFirstLetter } from '../../../utils/helpers';
 import { useSelector, useDispatch } from 'react-redux';
-import { remove, add, selectHasItem } from '../../../utils/store';
+import { remove, add, selectedHasItem } from '../../../utils/store';
 
 export function Card(props: CardProps): ReactNode {
   const { name, image } = props.data;
 
   const dispatch = useDispatch();
-  const stateHasItem = useSelector((state: MyStore) =>
-    selectHasItem(state, props.data)
-  );
+  const stateHasItem = useSelector(selectedHasItem(props.data));
 
   const handleClick = (event: React.MouseEvent) => {
     if (event.target instanceof HTMLInputElement) {

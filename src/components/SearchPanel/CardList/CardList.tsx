@@ -5,7 +5,7 @@ import { LoadingIndicator } from './LoadingIndicator';
 import { NoResults } from './NoResults';
 import { Pagination } from './Pagination';
 import { CardDetails } from './CardDetails';
-import { selectItems, setState } from '../../../utils/store';
+import { setState, selectedItems } from '../../../utils/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocalStorage } from '../../../utils/localStorage';
 import { Flyout } from '../../components/Flyout';
@@ -16,24 +16,23 @@ export function CardList(props: CardListProps): ReactNode {
 
   const firstRender = useRef(true);
   const dispatch = useDispatch();
-  const stateItems = useSelector(selectItems);
-  const [selectedItems, setSelectedItems] = useLocalStorage<MyPokemon[]>(
-    'tg-selected-items',
-    []
-  );
+  const stateItems = useSelector(selectedItems);
+  const [stateSelectedItems, setStateSelectedItems] = useLocalStorage<
+    MyPokemon[]
+  >('tg-selected-items', []);
 
   useEffect(() => {
     if (!firstRender.current) {
       return;
     }
 
-    dispatch(setState(selectedItems));
+    dispatch(setState(stateSelectedItems));
     firstRender.current = false;
-  }, [dispatch, selectedItems]);
+  }, [dispatch, stateSelectedItems]);
 
   useEffect(() => {
-    setSelectedItems(stateItems);
-  }, [setSelectedItems, stateItems]);
+    setStateSelectedItems(stateItems);
+  }, [setStateSelectedItems, stateItems]);
 
   useEffect(() => {
     if (error) {
