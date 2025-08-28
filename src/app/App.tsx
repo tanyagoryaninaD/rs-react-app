@@ -5,9 +5,12 @@ import Main from './components/main/main';
 
 function App() {
   return (
-    <Suspense fallback={<Spinner />}>
-      <Main />
-    </Suspense>
+    <>
+      <h1>Our World in Data</h1>
+      <Suspense fallback={<Spinner />}>
+        <Main />
+      </Suspense>
+    </>
   );
 }
 

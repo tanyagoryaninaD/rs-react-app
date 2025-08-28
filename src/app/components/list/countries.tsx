@@ -4,22 +4,24 @@ import Country from './country';
 
 export default function CountriesList() {
   const context = useContext(CountriesCO2Context);
-  console.log('🚀 ~ CountriesList ~ context:', Object.keys(context || {}));
 
-  if (!context) {
+  if (!context.counties) {
     return;
   }
 
   return (
     <>
-      <h1>Our World in Data</h1>
       <div className="list">
-        {Object.keys(context).map((country) => {
+        {Object.keys(context.counties).map((country) => {
+          if (!context.counties?.[country]) {
+            return;
+          }
+
           return (
             <Country
               key={country}
               country={country}
-              countryData={context[country]}
+              countryData={context.counties[country]}
             />
           );
         })}

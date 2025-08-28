@@ -1,8 +1,12 @@
+import { useContext } from 'react';
 import type { CountryProps } from '../../../types/interface';
+import { CountriesCO2Context } from '../../../utils/context';
 import * as text from '../../../utils/textContent';
+import { getHeadColumn } from '../../../utils/helpers';
 
 export default function Country(props: CountryProps) {
-  console.log('🚀 ~ Country ~ props:');
+  const context = useContext(CountriesCO2Context);
+
   const getLatestPopulation = () => {
     const populations = props.countryData.data.filter(
       (item) => !!item.population
@@ -38,21 +42,23 @@ export default function Country(props: CountryProps) {
           <table>
             <thead>
               <tr>
-                <th>Year</th>
-                <th>Population</th>
-                <th>Co2</th>
-                <th>Co2 per capita</th>
+                {context.viewColumns.map((item) => {
+                  return <th key={item}>{getHeadColumn(item)}</th>;
+                })}
               </tr>
             </thead>
             <tbody>
               {props.countryData.data
-                .map((item) => {
+                .map((countryData) => {
                   return (
-                    <tr key={item.year}>
-                      <td>{item.year ?? text.notAvailable}</td>
-                      <td>{item.population ?? text.notAvailable}</td>
-                      <td>{item.co2 ?? text.notAvailable}</td>
-                      <td>{item.co2_per_capita ?? text.notAvailable}</td>
+                    <tr key={countryData.year}>
+                      {context.viewColumns.map((key) => {
+                        return (
+                          <td key={key}>
+                            {countryData[key] ?? text.notAvailable}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })

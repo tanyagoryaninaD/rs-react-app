@@ -19,7 +19,6 @@ async function fetchData(): Promise<Countries | never> {
     if (!response.ok) {
       throw Error('Fail fetch');
     }
-    console.log('🚀 ~ fetchData ~ response:', response);
 
     const json = await response.json();
 

@@ -1,4 +1,10 @@
-import type { CountryData } from './types';
+import type { CountryData, ViewFields } from './types';
+
+export interface CountriesCO2ContextProps {
+  counties: Countries | null;
+  viewColumns: ViewFields;
+  setViewColumns: (fields: ViewFields) => void;
+}
 
 export interface Countries {
   [country: string]: {

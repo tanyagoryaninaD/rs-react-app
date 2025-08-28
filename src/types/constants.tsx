@@ -1,3 +1,5 @@
+import type { ViewFields } from './types';
+
 export const COUNTRY_DATA_KEYS = [
   'year',
   'cement_co2',
@@ -59,3 +61,10 @@ export const COUNTRY_DATA_KEYS = [
   'total_ghg',
   'total_ghg_excluding_lucf',
 ] as const;
+
+export const DEFAULT_COLUMNS = [
+  'year',
+  'population',
+  'co2',
+  'cement_co2_per_capita',
+] as ViewFields;
