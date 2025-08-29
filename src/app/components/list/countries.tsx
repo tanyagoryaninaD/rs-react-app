@@ -5,25 +5,31 @@ import Menu from '../menu/menu';
 
 export default function CountriesList() {
   const context = useContext(CountriesCO2Context);
+  const {
+    counties,
+    menu: { searchCountry },
+  } = context;
 
-  if (!context.counties) {
+  if (!counties) {
     return;
   }
+
+  const filteredCountries = (): string[] => {
+    return Object.keys(counties).filter((key) =>
+      new RegExp(`^${searchCountry}`, 'i').test(key)
+    );
+  };
 
   return (
     <>
       <Menu />
       <div className="list">
-        {Object.keys(context.counties).map((country) => {
-          if (!context.counties?.[country]) {
-            return;
-          }
-
+        {filteredCountries().map((country) => {
           return (
             <Country
               key={country}
               country={country}
-              countryData={context.counties[country]}
+              countryData={counties[country]}
             />
           );
         })}

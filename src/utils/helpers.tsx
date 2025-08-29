@@ -1,4 +1,5 @@
-import type { Countries } from '../types/interface';
+import { DEFAULT_COLUMNS } from '../types/constants';
+import type { Countries, Menu } from '../types/interface';
 
 export function getHeadColumn(key: string) {
   const parsed = key.split('_').join(' ');
@@ -14,4 +15,17 @@ export function getAllYears(counties: Countries): number[] {
   return years.sort((a, b) => {
     return b - a;
   });
+}
+
+export function createDefaultMenu(data: Countries): Menu {
+  const allYears = getAllYears(data);
+
+  return {
+    years: {
+      selectedYear: allYears[0],
+      allYears,
+    },
+    searchCountry: '',
+    viewColumns: DEFAULT_COLUMNS,
+  };
 }

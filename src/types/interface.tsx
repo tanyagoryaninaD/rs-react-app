@@ -2,10 +2,16 @@ import type { CountryData, ViewFields } from './types';
 
 export interface CountriesCO2ContextProps {
   counties: Countries | null;
-  viewColumns: ViewFields;
-  years: Years;
+  menu: Menu;
   setViewColumns: (fields: ViewFields) => void;
   setSelectedYear: (year: number) => void;
+  setSearchCountry: (query: string) => void;
+}
+
+export interface Menu {
+  years: Years;
+  searchCountry: string;
+  viewColumns: ViewFields;
 }
 
 export interface Years {

@@ -6,10 +6,11 @@ import { getHeadColumn } from '../../../utils/helpers';
 
 export default function Country(props: CountryProps) {
   const context = useContext(CountriesCO2Context);
+  const { years, viewColumns } = context.menu;
 
   const getLatestPopulation = () => {
     const populations = props.countryData.data.filter(
-      (item) => item.year === context.years.selectedYear
+      (item) => item.year === years.selectedYear
     )[0].population;
 
     return populations;
@@ -22,14 +23,14 @@ export default function Country(props: CountryProps) {
           <p className="summary-title">{props.country}</p>
           <div className="summary-desc">
             <p>{`ISO: ${props.countryData.iso_code ?? text.notAvailable}`}</p>
-            <p>{`Population: ${getLatestPopulation() ?? text.notAvailable} (${context.years.selectedYear})`}</p>
+            <p>{`Population: ${getLatestPopulation() ?? text.notAvailable} (${years.selectedYear})`}</p>
           </div>
         </summary>
         <div className="drop">
           <table>
             <thead>
               <tr>
-                {context.viewColumns.map((item) => {
+                {viewColumns.map((item) => {
                   return <th key={item}>{getHeadColumn(item)}</th>;
                 })}
               </tr>
@@ -39,7 +40,7 @@ export default function Country(props: CountryProps) {
                 .map((countryData) => {
                   return (
                     <tr key={countryData.year}>
-                      {context.viewColumns.map((key) => {
+                      {viewColumns.map((key) => {
                         return (
                           <td key={key}>
                             {countryData[key] ?? text.notAvailable}

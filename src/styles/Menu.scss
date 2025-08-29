@@ -1,10 +1,16 @@
 .menu {
-  .common-year-wrapper {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  .menu-field-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    select {
+    select,
+    input {
       border: 1px solid #7ab9e6;
       padding: 0.5rem;
       border-radius: 5px;

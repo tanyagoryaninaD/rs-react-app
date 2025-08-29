@@ -2,33 +2,35 @@ import { use, useState } from 'react';
 import { CountriesCO2Context } from '../../../utils/context';
 import CountriesList from '../list/countries';
 import { getDataPromise } from '../../api/getCO2data';
-import { DEFAULT_COLUMNS } from '../../../types/constants';
-import type { ViewFields } from '../../../types/types';
 import Widget from '../widget';
-import type { Years } from '../../../types/interface';
-import { getAllYears } from '../../../utils/helpers';
+import type { Menu } from '../../../types/interface';
+import { createDefaultMenu } from '../../../utils/helpers';
+import type { ViewFields } from '../../../types/types';
 
 export default function Main() {
   const data = use(getDataPromise());
-  const [viewColumns, setViewColumns] = useState<ViewFields>(DEFAULT_COLUMNS);
-  const allYears = getAllYears(data);
-  const [years, setYears] = useState<Years>({
-    selectedYear: allYears[0],
-    allYears,
-  });
+  const [menu, setMenu] = useState<Menu>(createDefaultMenu(data));
+
+  const setViewColumns = (viewColumns: ViewFields) => {
+    setMenu((prev) => ({ ...prev, viewColumns }));
+  };
 
   const setSelectedYear = (selectedYear: number) => {
-    setYears((prev) => ({ ...prev, selectedYear }));
+    setMenu((prev) => ({ ...prev, years: { ...prev.years, selectedYear } }));
+  };
+
+  const setSearchCountry = (searchCountry: string) => {
+    setMenu((prev) => ({ ...prev, searchCountry }));
   };
 
   return (
     <CountriesCO2Context.Provider
       value={{
         counties: data,
-        viewColumns,
-        years,
+        menu,
         setViewColumns,
         setSelectedYear,
+        setSearchCountry,
       }}
     >
       <CountriesList />

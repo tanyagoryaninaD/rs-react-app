@@ -46,7 +46,7 @@ export default function Widget() {
                     type="checkbox"
                     id={item}
                     name={item}
-                    defaultChecked={context.viewColumns.includes(item)}
+                    defaultChecked={context.menu.viewColumns.includes(item)}
                   />
                   <label htmlFor={item}>{getHeadColumn(item)}</label>
                 </li>
