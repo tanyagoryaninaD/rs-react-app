@@ -9,21 +9,10 @@ export default function Country(props: CountryProps) {
 
   const getLatestPopulation = () => {
     const populations = props.countryData.data.filter(
-      (item) => !!item.population
-    );
+      (item) => item.year === context.years.selectedYear
+    )[0].population;
 
-    if (!populations.length) {
-      return null;
-    }
-
-    const latest = populations.sort((a, b) => {
-      if (b.year && a.year) {
-        return b.year - a.year;
-      }
-      return 0;
-    })[0];
-
-    return latest.population || null;
+    return populations;
   };
 
   return (
@@ -33,9 +22,7 @@ export default function Country(props: CountryProps) {
           <p className="summary-title">{props.country}</p>
           <div className="summary-desc">
             <p>{`ISO: ${props.countryData.iso_code ?? text.notAvailable}`}</p>
-            <p>
-              {`Population: ${getLatestPopulation() ?? text.notAvailable} (latest)`}
-            </p>
+            <p>{`Population: ${getLatestPopulation() ?? text.notAvailable} (${context.years.selectedYear})`}</p>
           </div>
         </summary>
         <div className="drop">

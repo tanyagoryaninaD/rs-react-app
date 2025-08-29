@@ -3,7 +3,14 @@ import type { CountryData, ViewFields } from './types';
 export interface CountriesCO2ContextProps {
   counties: Countries | null;
   viewColumns: ViewFields;
+  years: Years;
   setViewColumns: (fields: ViewFields) => void;
+  setSelectedYear: (year: number) => void;
+}
+
+export interface Years {
+  selectedYear: number;
+  allYears: number[];
 }
 
 export interface Countries {
