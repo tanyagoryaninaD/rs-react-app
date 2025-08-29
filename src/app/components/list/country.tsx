@@ -2,28 +2,27 @@ import { useContext } from 'react';
 import type { CountryProps } from '../../../types/interface';
 import { CountriesCO2Context } from '../../../utils/context';
 import * as text from '../../../utils/textContent';
-import { getHeadColumn } from '../../../utils/helpers';
+import { getHeadColumn, getPopulation } from '../../../utils/helpers';
 
 export default function Country(props: CountryProps) {
   const context = useContext(CountriesCO2Context);
-  const { years, viewColumns } = context.menu;
-
-  const getLatestPopulation = () => {
-    const populations = props.countryData.data.filter(
-      (item) => item.year === years.selectedYear
-    )[0].population;
-
-    return populations;
-  };
+  const {
+    years: { selectedYear },
+    viewColumns,
+  } = context.menu;
+  const {
+    country,
+    countryData: { iso_code, data },
+  } = props;
 
   return (
     <>
       <details className="details">
         <summary className="summary">
-          <p className="summary-title">{props.country}</p>
+          <p className="summary-title">{country}</p>
           <div className="summary-desc">
-            <p>{`ISO: ${props.countryData.iso_code ?? text.notAvailable}`}</p>
-            <p>{`Population: ${getLatestPopulation() ?? text.notAvailable} (${years.selectedYear})`}</p>
+            <p>{`ISO: ${iso_code ?? text.notAvailable}`}</p>
+            <p>{`Population: ${getPopulation(data, selectedYear) ?? text.notAvailable} (${selectedYear})`}</p>
           </div>
         </summary>
         <div className="drop">
@@ -36,7 +35,7 @@ export default function Country(props: CountryProps) {
               </tr>
             </thead>
             <tbody>
-              {props.countryData.data
+              {data
                 .map((countryData) => {
                   return (
                     <tr key={countryData.year}>

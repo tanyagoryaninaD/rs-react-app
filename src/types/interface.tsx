@@ -1,4 +1,4 @@
-import type { CountryData, ViewFields } from './types';
+import type { CountryData, SortCountiesValues, ViewFields } from './types';
 
 export interface CountriesCO2ContextProps {
   counties: Countries | null;
@@ -6,12 +6,14 @@ export interface CountriesCO2ContextProps {
   setViewColumns: (fields: ViewFields) => void;
   setSelectedYear: (year: number) => void;
   setSearchCountry: (query: string) => void;
+  setSortCounties: (value: SortCountiesValues) => void;
 }
 
 export interface Menu {
   years: Years;
   searchCountry: string;
   viewColumns: ViewFields;
+  sortCounties: SortCountiesValues;
 }
 
 export interface Years {

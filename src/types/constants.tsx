@@ -68,3 +68,10 @@ export const DEFAULT_COLUMNS = [
   'co2',
   'cement_co2_per_capita',
 ] as ViewFields;
+
+export const SORT_COUNTIES = [
+  'Country (A-Z)',
+  'Country (Z-A)',
+  'Population (ASD)',
+  'Population (DESC)',
+] as const;

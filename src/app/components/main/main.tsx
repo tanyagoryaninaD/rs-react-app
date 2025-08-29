@@ -5,22 +5,25 @@ import { getDataPromise } from '../../api/getCO2data';
 import Widget from '../widget';
 import type { Menu } from '../../../types/interface';
 import { createDefaultMenu } from '../../../utils/helpers';
-import type { ViewFields } from '../../../types/types';
+import type { SortCountiesValues, ViewFields } from '../../../types/types';
 
 export default function Main() {
   const data = use(getDataPromise());
   const [menu, setMenu] = useState<Menu>(createDefaultMenu(data));
 
-  const setViewColumns = (viewColumns: ViewFields) => {
-    setMenu((prev) => ({ ...prev, viewColumns }));
-  };
-
-  const setSelectedYear = (selectedYear: number) => {
-    setMenu((prev) => ({ ...prev, years: { ...prev.years, selectedYear } }));
-  };
-
-  const setSearchCountry = (searchCountry: string) => {
-    setMenu((prev) => ({ ...prev, searchCountry }));
+  const setMethods = {
+    setViewColumns: (viewColumns: ViewFields) => {
+      setMenu((prev) => ({ ...prev, viewColumns }));
+    },
+    setSelectedYear: (selectedYear: number) => {
+      setMenu((prev) => ({ ...prev, years: { ...prev.years, selectedYear } }));
+    },
+    setSearchCountry: (searchCountry: string) => {
+      setMenu((prev) => ({ ...prev, searchCountry }));
+    },
+    setSortCounties: (sortCounties: SortCountiesValues) => {
+      setMenu((prev) => ({ ...prev, sortCounties }));
+    },
   };
 
   return (
@@ -28,9 +31,7 @@ export default function Main() {
       value={{
         counties: data,
         menu,
-        setViewColumns,
-        setSelectedYear,
-        setSearchCountry,
+        ...setMethods,
       }}
     >
       <CountriesList />
