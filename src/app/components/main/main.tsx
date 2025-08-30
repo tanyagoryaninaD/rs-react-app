@@ -1,14 +1,14 @@
 import { use, useState } from 'react';
 import { CountriesCO2Context } from '../../../utils/context';
 import CountriesList from '../list/countries';
-import { getDataPromise } from '../../api/getCO2data';
+import { dataCountries } from '../../api/getCO2data';
 import Widget from '../widget';
 import type { Menu } from '../../../types/interface';
 import { createDefaultMenu } from '../../../utils/helpers';
 import type { SortCountiesValues, ViewFields } from '../../../types/types';
 
 export default function Main() {
-  const data = use(getDataPromise());
+  const data = use(dataCountries);
   const [menu, setMenu] = useState<Menu>(createDefaultMenu(data));
 
   const setMethods = {

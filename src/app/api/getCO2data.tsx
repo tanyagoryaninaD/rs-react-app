@@ -1,15 +1,5 @@
 import type { Countries } from '../../types/interface';
 
-let dataPromise: Promise<Countries> | null = null;
-
-// prevents a double request
-export function getDataPromise(): Promise<Countries> {
-  if (!dataPromise) {
-    dataPromise = fetchData();
-  }
-  return dataPromise;
-}
-
 async function fetchData(): Promise<Countries | never> {
   try {
     const response = await fetch(
@@ -31,3 +21,5 @@ async function fetchData(): Promise<Countries | never> {
     throw Error('Fail Fetch');
   }
 }
+
+export const dataCountries = fetchData();
