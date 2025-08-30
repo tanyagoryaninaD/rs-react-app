@@ -84,22 +84,22 @@ The application underwent 3 optimization stages:
 ## Flame Graphs and Ranked Charts
 
 1. **Before optimization:**  
-   ![Commit Duration](public/Performance/1/1.1.png){width=200px}  
-   ![Render Duration](public/Performance/1/1.2.png){width=200px}
-   ![Interactions: Search](public/Performance/1/1.3.png){width=200px}
-   ![Interactions: Select](public/Performance/1/1.4.png){width=200px}
-   ![Interactions: Submit](public/Performance/1/1.5.png){width=200px}
+  <img src="public/Performance/1/1.1.png" alt="Commit Duration" width="200" />
+  <img src="public/Performance/1/1.2.png" alt="Render Duration" width="200" /> 
+  <img src="public/Performance/1/1.3.png" alt="Interactions: Search" width="200" /> 
+  <img src="public/Performance/1/1.4.png" alt="Interactions: Select" width="200" /> 
+  <img src="public/Performance/1/1.5.png" alt="Interactions: Submit" width="200" />
 
 2. **After optimizing details:**  
-   ![Commit Duration](public/Performance/2/2.1.png){width=200px}
-   ![Render Duration](public/Performance/2/2.2.png){width=200px}
-   ![Interactions: Search](public/Performance/2/2.3.png){width=200px}
-   ![Interactions: Select](public/Performance/2/2.4.png){width=200px}
-   ![Interactions: Submit](public/Performance/2/2.5.png){width=200px}
+   <img src="public/Performance/2/2.1.png" alt="Commit Duration" width="200" />
+   <img src="public/Performance/2/2.2.png" alt="Render Duration" width="200" /> 
+   <img src="public/Performance/2/2.3.png" alt="Interactions: Search" width="200" /> 
+   <img src="public/Performance/2/2.4.png" alt="Interactions: Select" width="200" /> 
+   <img src="public/Performance/2/2.5.png" alt="Interactions: Submit" width="200" />
 
 3. **After adding memoization:**  
-   ![Commit Duration](public/Performance/3/3.1.png){width=200px}
-   ![Render Duration](public/Performance/3/3.2.png){width=200px}
-   ![Interactions: Search](public/Performance/3/3.3.png){width=200px}
-   ![Interactions: Select](public/Performance/3/3.4.png){width=200px}
-   ![Interactions: Submit](public/Performance/3/3.5.png){width=200px}
+   <img src="public/Performance/3/3.1.png" alt="Commit Duration" width="200" />
+   <img src="public/Performance/3/3.2.png" alt="Render Duration" width="200" /> 
+   <img src="public/Performance/3/3.3.png" alt="Interactions: Search" width="200" /> 
+   <img src="public/Performance/3/3.4.png" alt="Interactions: Select" width="200" /> 
+   <img src="public/Performance/3/3.5.png" alt="Interactions: Submit" width="200" />
