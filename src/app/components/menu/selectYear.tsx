@@ -1,13 +1,29 @@
-import { useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { CountriesCO2Context } from '../../../utils/context';
 
 export default function SelectYear() {
   const context = useContext(CountriesCO2Context);
-  const { years } = context.menu;
+  const {
+    setSelectedYear,
+    menu: { years },
+  } = context;
 
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    context.setSelectedYear(parseInt(event.currentTarget.value));
-  };
+  const onChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedYear(parseInt(event.currentTarget.value));
+    },
+    [setSelectedYear]
+  );
+
+  const Years = useMemo(() => {
+    return years.allYears.map((item) => {
+      return (
+        <option key={`common-year-${item}`} value={item}>
+          {item}
+        </option>
+      );
+    });
+  }, [years.allYears]);
 
   return (
     <div className="menu-field-wrapper">
@@ -18,13 +34,7 @@ export default function SelectYear() {
         defaultValue={years.selectedYear}
         onChange={onChange}
       >
-        {years.allYears.map((item) => {
-          return (
-            <option key={`common-year-${item}`} value={item}>
-              {item}
-            </option>
-          );
-        })}
+        {Years}
       </select>
     </div>
   );

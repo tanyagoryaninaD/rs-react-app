@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { CountriesCO2Context } from '../../../utils/context';
 import { SORT_COUNTIES } from '../../../types/constants';
 import { isSortCounties } from '../../../utils/helpers';
@@ -10,13 +10,16 @@ export default function SortCounties() {
     setSortCounties,
   } = context;
 
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.currentTarget.value;
+  const onChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.currentTarget.value;
 
-    if (isSortCounties(value)) {
-      setSortCounties(value);
-    }
-  };
+      if (isSortCounties(value)) {
+        setSortCounties(value);
+      }
+    },
+    [setSortCounties]
+  );
 
   return (
     <div className="menu-field-wrapper">

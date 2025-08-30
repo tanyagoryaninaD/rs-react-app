@@ -1,13 +1,16 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { CountriesCO2Context } from '../../../utils/context';
 
 export default function SearchCountry() {
   const context = useContext(CountriesCO2Context);
   const { setSearchCountry } = context;
 
-  const onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchCountry(event.currentTarget.value);
-  };
+  const onInput = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchCountry(event.currentTarget.value);
+    },
+    [setSearchCountry]
+  );
 
   return (
     <div className="menu-field-wrapper">
