@@ -1,10 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { Pagination } from '../../../components/SearchPanel/CardList/Pagination';
 import userEvent from '@testing-library/user-event';
-
-const mockOnUpdateState = vi.fn();
-const mockOnSearch = vi.fn();
+import { mockOnSearch, mockOnUpdateState } from '../../mocks/mockFunctions';
 
 describe('Pagination component', () => {
   it('renders with button and page', async () => {

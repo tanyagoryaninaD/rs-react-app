@@ -24,3 +24,29 @@ export function upperFirstLetter(value: string): string {
 
   return value[0].toUpperCase() + value.slice(1);
 }
+
+export function parseToСsvUrl(data: MyPokemon[]): string {
+  if (!data.length) {
+    return '';
+  }
+
+  const headers = Object.keys(data[0]).join(',');
+
+  const rows = Object.values(data)
+    .map((item) => {
+      const abilities = item.abilities?.join(', ');
+      const moves = item.moves?.join(', ');
+
+      return [item.name, item.id, item.image, abilities, moves]
+        .map((value) => `"${String(value).replace(/"/g, '""')}"`)
+        .join(',');
+    })
+    .join('\n');
+
+  const blob = new Blob([`${headers}\n${rows}`], {
+    type: 'text/csv;charset=utf-8;',
+  });
+  const url = URL.createObjectURL(blob);
+
+  return url;
+}

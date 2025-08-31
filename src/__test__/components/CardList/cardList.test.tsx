@@ -1,44 +1,35 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import { CardList } from '../../../components/SearchPanel/CardList/CardList';
 import userEvent from '@testing-library/user-event';
-import type { SearchPanelState } from '../../../types/interfaces';
-
-const mockResults = [
-  {
-    name: 'pikachu',
-    id: 1,
-    abilities: [''],
-    image: '',
-    moves: [''],
-  },
-];
-const mockOnUpdateState = vi.fn();
-const mockOnSearch = vi.fn();
+import { mockResults, mockState } from '../../mocks/data';
+import { mockOnSearch, mockOnUpdateState } from '../../mocks/mockFunctions';
+import { MockProvider } from '../../mocks/MockProvider';
 
 describe('CardList component', () => {
-  let mockDataState: SearchPanelState;
-
   beforeEach(() => {
-    mockDataState = {
-      query: '',
-      results: [],
-      isLoading: false,
-      error: null,
-      page: 1,
-      details: null,
-    };
+    mockState.results = [];
+    mockState.error = null;
+    mockState.isLoading = false;
+  });
+
+  afterEach(() => {
+    mockState.results = [];
+    mockState.error = null;
+    mockState.isLoading = false;
   });
 
   it('renders without results', async () => {
-    mockDataState.error = 'No results found';
+    mockState.error = 'No results found';
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      MockProvider(
+        <CardList
+          data={mockState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      )
     );
 
     const result = screen.getByText(/No results found/i);
@@ -46,47 +37,53 @@ describe('CardList component', () => {
   });
 
   it('renders with results', async () => {
-    mockDataState.results = mockResults;
+    mockState.results = mockResults;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      MockProvider(
+        <CardList
+          data={mockState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      )
     );
 
-    expect(screen.getByText('Pikachu')).toBeInTheDocument();
+    expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
   });
 
   it('renders with loading state', async () => {
-    mockDataState.isLoading = true;
+    mockState.isLoading = true;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      MockProvider(
+        <CardList
+          data={mockState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      )
     );
 
     expect(screen.getByText(/Loading data.../)).toBeInTheDocument();
-    expect(screen.queryByText(/Pokemon/)).toBeNull();
+    expect(screen.queryByText(/Bulbasaur/i)).toBeNull();
   });
 
   it('when click on the card, the details should be updated', async () => {
-    mockDataState.results = mockResults;
+    mockState.results = mockResults;
 
     render(
-      <CardList
-        data={mockDataState}
-        onSearch={mockOnSearch}
-        onUpdateState={mockOnUpdateState}
-      />
+      MockProvider(
+        <CardList
+          data={mockState}
+          onSearch={mockOnSearch}
+          onUpdateState={mockOnUpdateState}
+        />
+      )
     );
 
-    await userEvent.click(screen.getByTestId('card'));
+    await userEvent.click(screen.getAllByTestId('card')[0]);
 
-    expect(mockOnUpdateState).toBeCalledWith({ details: 'pikachu' });
+    expect(mockOnUpdateState).toBeCalledWith({ details: 'bulbasaur' });
   });
 });

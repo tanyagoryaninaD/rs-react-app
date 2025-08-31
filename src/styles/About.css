@@ -40,14 +40,14 @@
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 black;
+    box-shadow: 0 0 0 0 var(--color-pulse-shadow);
   }
 
   50% {
-    box-shadow: 0 0 10px 0 black;
+    box-shadow: 0 0 10px 0 var(--color-pulse-shadow);
   }
 
   100% {
-    box-shadow: 0 0 0 0 black;
+    box-shadow: 0 0 0 0 var(--color-pulse-shadow);
   }
 }

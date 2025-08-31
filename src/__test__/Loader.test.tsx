@@ -1,48 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getPokemon } from '../server/Loader';
-
-const mockPokemon1 = {
-  name: 'ivysaur',
-  id: 2,
-  sprites: {
-    front_default: 'https://example.com/front_default.png',
-    other: {
-      dream_world: {
-        front_default: 'https://example.com/dream_world.png',
-      },
-    },
-  },
-  abilities: [{ ability: { name: 'ability-1' } }],
-  moves: [{ move: { name: 'move-1' } }],
-};
-
-const mockPokemon2 = {
-  name: 'venusaur',
-  id: 3,
-  sprites: {
-    front_default: 'https://example.com/front_default.png',
-    other: {
-      dream_world: {
-        front_default: 'https://example.com/dream_world.png',
-      },
-    },
-  },
-  abilities: [{ ability: { name: 'ability-1' } }],
-  moves: [{ move: { name: 'move-1' } }],
-};
+import { bulbasaurResponse, ivysaurResponse } from './mocks/data';
 
 describe('getPokemon', () => {
   it('should call fetch with query', async () => {
     const mockFetch = vi.spyOn(window, 'fetch').mockResolvedValue({
       ok: true,
       status: 200,
-      json: async () => mockPokemon1,
+      json: async () => bulbasaurResponse,
     } as Response);
 
-    await getPokemon({ query: 'ivysaur' });
+    await getPokemon({ query: 'bulbasaur' });
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://pokeapi.co/api/v2/pokemon/ivysaur'
+      'https://pokeapi.co/api/v2/pokemon/bulbasaur'
     );
 
     mockFetch.mockRestore();
@@ -55,18 +26,18 @@ describe('getPokemon', () => {
         ok: true,
         status: 200,
         json: async () => ({
-          results: [{ name: 'ivysaur' }, { name: 'venusaur' }],
+          results: [{ name: 'bulbasaur' }, { name: 'ivysaur' }],
         }),
       } as Response)
       .mockResolvedValueOnce({
         ok: true,
         status: 200,
-        json: async () => mockPokemon1,
+        json: async () => bulbasaurResponse,
       } as Response)
       .mockResolvedValueOnce({
         ok: true,
         status: 200,
-        json: async () => mockPokemon2,
+        json: async () => ivysaurResponse,
       } as Response);
 
     await getPokemon({ query: '' });
@@ -77,11 +48,11 @@ describe('getPokemon', () => {
     );
     expect(fetch).toHaveBeenNthCalledWith(
       2,
-      'https://pokeapi.co/api/v2/pokemon/ivysaur'
+      'https://pokeapi.co/api/v2/pokemon/bulbasaur'
     );
     expect(fetch).toHaveBeenNthCalledWith(
       3,
-      'https://pokeapi.co/api/v2/pokemon/venusaur'
+      'https://pokeapi.co/api/v2/pokemon/ivysaur'
     );
 
     mockFetch.mockRestore();
