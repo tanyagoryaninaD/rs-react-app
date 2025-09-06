@@ -1,11 +1,9 @@
 import { useContext, useMemo } from 'react';
 import { CountriesCO2Context } from '../../../utils/context';
-import Country from './country';
-import Menu from '../menu/menu';
+import Country from './country/country';
 import { getCountiesByMenuFilters } from '../../../utils/helpers';
 
 export default function CountriesList() {
-  const context = useContext(CountriesCO2Context);
   const {
     counties,
     menu: {
@@ -13,7 +11,7 @@ export default function CountriesList() {
       sortCounties,
       years: { selectedYear },
     },
-  } = context;
+  } = useContext(CountriesCO2Context);
 
   const filteredCountries = useMemo(() => {
     if (!counties) {
@@ -37,17 +35,13 @@ export default function CountriesList() {
       return (
         <Country
           key={country}
-          country={country}
-          countryData={counties[country]}
+          name={country}
+          data={counties[country]}
+          selectedYear={selectedYear}
         />
       );
     });
-  }, [counties, filteredCountries]);
+  }, [counties, filteredCountries, selectedYear]);
 
-  return (
-    <>
-      <Menu />
-      <div className="list">{createCounties}</div>
-    </>
-  );
+  return <div className="list">{createCounties}</div>;
 }

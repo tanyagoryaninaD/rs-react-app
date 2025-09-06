@@ -1,18 +1,15 @@
-import { useCallback, useContext } from 'react';
-import { CountriesCO2Context } from '../../../utils/context';
+import React, { useCallback } from 'react';
 import { SORT_COUNTIES } from '../../../types/constants';
+import type { SortProps } from '../../../types/interface';
+import SelectWrapper from './selectWrapper';
 import { isSortCounties } from '../../../utils/helpers';
 
-export default function SortCounties() {
-  const context = useContext(CountriesCO2Context);
-  const {
-    menu: { sortCounties },
-    setSortCounties,
-  } = context;
+export default React.memo(function SortCounties(props: SortProps) {
+  const { sortCounties, setSortCounties } = props;
 
-  const onChange = useCallback(
+  const handleChangeCounties = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = event.currentTarget.value;
+      const value = event.target.value;
 
       if (isSortCounties(value)) {
         setSortCounties(value);
@@ -22,22 +19,20 @@ export default function SortCounties() {
   );
 
   return (
-    <div className="menu-field-wrapper">
-      <label htmlFor="sort-counties">Sort</label>
-      <select
-        name="sort-counties"
-        id="sort-counties"
-        defaultValue={sortCounties}
-        onChange={onChange}
-      >
-        {SORT_COUNTIES.map((value) => {
-          return (
-            <option key={`sort-${value}`} value={value}>
-              {value}
-            </option>
-          );
-        })}
-      </select>
-    </div>
+    <SelectWrapper
+      label={'Sort'}
+      value={sortCounties}
+      onChange={handleChangeCounties}
+      name={'sort-counties'}
+      id={'sort-counties'}
+    >
+      {SORT_COUNTIES.map((value) => {
+        return (
+          <option key={`sort-${value}`} value={value}>
+            {value}
+          </option>
+        );
+      })}
+    </SelectWrapper>
   );
-}
+});

@@ -1,41 +1,33 @@
-import { useCallback, useContext, useMemo } from 'react';
-import { CountriesCO2Context } from '../../../utils/context';
+import { useCallback } from 'react';
+import type { SelectYearProps } from '../../../types/interface';
+import SelectWrapper from './selectWrapper';
+import React from 'react';
 
-export default function SelectYear() {
-  const context = useContext(CountriesCO2Context);
-  const {
-    setSelectedYear,
-    menu: { years },
-  } = context;
+export default React.memo(function SelectYear(props: SelectYearProps) {
+  const { selectedYear, setSelectedYear, allYears } = props;
 
-  const onChange = useCallback(
+  const handleChangeYear = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedYear(parseInt(event.currentTarget.value));
+      setSelectedYear(parseInt(event.target.value));
     },
     [setSelectedYear]
   );
 
-  const Years = useMemo(() => {
-    return years.allYears.map((item) => {
-      return (
-        <option key={`common-year-${item}`} value={item}>
-          {item}
-        </option>
-      );
-    });
-  }, [years.allYears]);
-
   return (
-    <div className="menu-field-wrapper">
-      <label htmlFor="common-year">Select year</label>
-      <select
-        name="common-year"
-        id="common-year"
-        defaultValue={years.selectedYear}
-        onChange={onChange}
-      >
-        {Years}
-      </select>
-    </div>
+    <SelectWrapper
+      label={'Select year'}
+      value={selectedYear}
+      onChange={handleChangeYear}
+      name={'common-year'}
+      id={'common-year'}
+    >
+      {allYears.map((item) => {
+        return (
+          <option key={`common-year-${item}`} value={item}>
+            {item}
+          </option>
+        );
+      })}
+    </SelectWrapper>
   );
-}
+});

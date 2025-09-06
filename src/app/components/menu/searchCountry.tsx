@@ -1,16 +1,12 @@
-import { useCallback, useContext } from 'react';
-import { CountriesCO2Context } from '../../../utils/context';
+import React from 'react';
+import type { SearchCountryProps } from '../../../types/interface';
 
-export default function SearchCountry() {
-  const context = useContext(CountriesCO2Context);
-  const { setSearchCountry } = context;
+export default React.memo(function SearchCountry(props: SearchCountryProps) {
+  const { setSearchCountry } = props;
 
-  const onInput = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchCountry(event.currentTarget.value);
-    },
-    [setSearchCountry]
-  );
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchCountry(event.target.value);
+  };
 
   return (
     <div className="menu-field-wrapper">
@@ -19,8 +15,8 @@ export default function SearchCountry() {
         type="text"
         name="search-country"
         id="search-country"
-        onInput={onInput}
+        onInput={handleInput}
       />
     </div>
   );
-}
+});

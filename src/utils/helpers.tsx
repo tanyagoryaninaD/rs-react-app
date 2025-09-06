@@ -1,5 +1,5 @@
-import { DEFAULT_COLUMNS, SORT_COUNTIES } from '../types/constants';
-import type { Countries, Menu } from '../types/interface';
+import { SORT_COUNTIES } from '../types/constants';
+import type { Countries, MenuProps } from '../types/interface';
 import type { CountryData, SortCountiesValues } from '../types/types';
 
 export function getHeadColumn(key: string) {
@@ -25,7 +25,7 @@ export function getPopulation(data: CountryData[], selectedYear: number) {
   return populations;
 }
 
-export function createDefaultMenu(data?: Countries): Menu {
+export function createDefaultMenu(data?: Countries): MenuProps {
   if (!data) {
     return {
       years: {
@@ -34,7 +34,6 @@ export function createDefaultMenu(data?: Countries): Menu {
       },
       searchCountry: '',
       sortCounties: SORT_COUNTIES[0],
-      viewColumns: DEFAULT_COLUMNS,
     };
   }
 
@@ -47,7 +46,6 @@ export function createDefaultMenu(data?: Countries): Menu {
     },
     searchCountry: '',
     sortCounties: SORT_COUNTIES[0],
-    viewColumns: DEFAULT_COLUMNS,
   };
 }
 
