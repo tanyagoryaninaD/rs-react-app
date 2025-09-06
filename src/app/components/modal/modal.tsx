@@ -1,7 +1,7 @@
 import { useEffect, type JSX } from 'react';
 import '../../../style/modal.scss';
 import { createPortal } from 'react-dom';
-import type { ModalProps } from '../../../types/common';
+import type { ModalProps } from '../../../types/modal';
 
 export default function Modal(props: ModalProps): JSX.Element {
   const { isOpen, onClose, children } = props;

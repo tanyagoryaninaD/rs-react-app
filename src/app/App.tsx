@@ -3,7 +3,7 @@ import '../style/App.scss';
 import Form from './components/forms/form';
 import Modal from './components/modal/modal';
 import FormWithReactHook from './components/forms/formWithReactHook';
-import type { ModalState } from '../types/common';
+import type { ModalState } from '../types/modal';
 import { useFormStore } from './store/useFormStore';
 import Profile from './components/profile/Profile';
 

@@ -14,7 +14,7 @@ import { GenderField } from '../fields/gender';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formScheme } from '../../../utils/zod';
-import type { FormProps } from '../../../types/common';
+import type { FormProps } from '../../../types/form';
 import { convertToBase64 } from '../../../utils/helpers';
 
 export default function FormWithReactHook(props: FormProps): JSX.Element {

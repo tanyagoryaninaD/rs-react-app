@@ -13,8 +13,8 @@ import { CountryField } from '../fields/country';
 import { formScheme } from '../../../utils/zod';
 import { useState } from 'react';
 import z from 'zod';
-import type { FormProps } from '../../../types/common';
 import { convertToBase64 } from '../../../utils/helpers';
+import type { FormProps } from '../../../types/form';
 
 export default function Form(props: FormProps) {
   const { setSuccessData } = useFormStore((state) => state);

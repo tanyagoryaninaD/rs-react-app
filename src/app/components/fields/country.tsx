@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 import { useFormStore } from '../../store/useFormStore';
-import type { InputField } from '../../../types/common';
+import type { InputField } from '../../../types/form';
 import { getError } from '../../../utils/helpers';
 
 export function CountryField(props: InputField): JSX.Element {

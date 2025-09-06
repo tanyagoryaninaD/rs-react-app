@@ -1,4 +1,4 @@
-import type { Error } from '../types/common';
+import type { Error } from '../types/profile';
 
 export async function convertToBase64(file: File): Promise<string> {
   return new Promise((res, rej) => {

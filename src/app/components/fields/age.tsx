@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { InputField } from '../../../types/common';
+import type { InputField } from '../../../types/form';
 import { getError } from '../../../utils/helpers';
 
 export function AgeField(props: InputField): JSX.Element {

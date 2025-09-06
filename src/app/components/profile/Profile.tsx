@@ -1,5 +1,5 @@
 import '../../../style/profile.scss';
-import type { ProfileProps } from '../../../types/common';
+import type { ProfileProps } from '../../../types/profile';
 
 export default function Profile(props: ProfileProps) {
   return (
