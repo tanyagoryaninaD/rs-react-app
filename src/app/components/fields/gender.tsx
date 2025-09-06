@@ -1,10 +1,11 @@
 import { type JSX } from 'react';
 import type { InputField } from '../../../types/form';
 import { getError } from '../../../utils/helpers';
+import { FORM_KEYS } from '../../../constants/constants';
 
 export function GenderField(props: InputField): JSX.Element {
   const errorMessage = getError({
-    key: 'gender',
+    key: FORM_KEYS.GENDER,
     formState: props.formState,
     errors: props.errors,
   });
@@ -18,10 +19,10 @@ export function GenderField(props: InputField): JSX.Element {
         <input
           id="male"
           type="radio"
-          name="gender"
-          data-testid="gender-man"
+          name={FORM_KEYS.GENDER}
+          data-testid={`${FORM_KEYS.GENDER}-man`}
           value="male"
-          {...props.register?.('gender', {})}
+          {...props.register?.(FORM_KEYS.GENDER, {})}
         />
         <label htmlFor="man">Male</label>
       </div>
@@ -29,15 +30,15 @@ export function GenderField(props: InputField): JSX.Element {
         <input
           id="female"
           type="radio"
-          name="gender"
+          name={FORM_KEYS.GENDER}
           value="female"
-          data-testid="gender-woman"
-          {...props.register?.('gender', {})}
+          data-testid={`${FORM_KEYS.GENDER}-woman`}
+          {...props.register?.(FORM_KEYS.GENDER, {})}
         />
         <label htmlFor="woman">Female</label>
       </div>
       {!!errorMessage && (
-        <p className="validation" data-testid="gender-error">
+        <p className="validation" data-testid={`${FORM_KEYS.GENDER}-error`}>
           {errorMessage}
         </p>
       )}
