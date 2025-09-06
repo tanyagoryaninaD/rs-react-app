@@ -3,9 +3,10 @@ import type {
   PokemonListContextProps,
   ThemeContextProps,
 } from '../types/interfaces';
+import { THEMES } from './constants';
 
 export const ThemeContext = React.createContext<ThemeContextProps>({
-  theme: 'light',
+  theme: THEMES.LIGHT,
   toggleTheme: () => {},
 });
 
