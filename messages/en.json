@@ -1,0 +1,72 @@
+{
+  "common": {
+    "loading": "Loading data..."
+  },
+  "header": {
+    "title": "Search Pokémon",
+    "nav": {
+      "home": "Home",
+      "about": "About us"
+    },
+    "languages": {
+      "title": "Choose a language",
+      "en": "English",
+      "ru": "Русский"
+    }
+  },
+  "homePage": {
+    "search": {
+      "placeholder": "Enter your search query"
+    },
+    "details": {
+      "abilities": "Abilities",
+      "moves": "Moves"
+    },
+    "errors": {
+      "results": "No found results"
+    },
+    "generateError": {
+      "title": "Don't worry it's a mock error",
+      "description": "You have successfully generated an error."
+    },
+    "buttons": {
+      "close": "Close",
+      "prev": "Prev",
+      "next": "Next",
+      "back": "Back",
+      "generateError": "Generate an error",
+      "search": "Search",
+      "searching": "Searching...",
+      "resets": {
+        "page": "Reset Cache Page",
+        "allPokemons": "Reset Cache All Pokemons"
+      }
+    }
+  },
+  "aboutPage": {
+    "title": "About us",
+    "about": {
+      "title": "What is this?",
+      "description": "This website uses a RESTful API interface to highly detailed objects built from thousands of lines of data related to Pokémon. Using this website, you can consume information on Pokémon, their moves, abilities and much, much more."
+    },
+    "school": {
+      "title": "School",
+      "description": "This project is a training course on React. I study at The Rolling Scopes School. This is a great school where you can master all the skills you need to work as a Frontend developer."
+    },
+    "develop": {
+      "title": "Developer",
+      "name": "Tatsiana Haranina",
+      "description": "From Mink, Belarus"
+    }
+  },
+  "flyout": {
+    "selectedOne": "item is selected",
+    "selectedSome": "items are selected",
+    "unselect": "Unselect all",
+    "download": "Download"
+  },
+  "notFound": {
+    "title": "Oops! I didn&apos;t find anything at this URL.",
+    "backButton": "Back to Home"
+  }
+}
