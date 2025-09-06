@@ -24,6 +24,7 @@ export const formScheme = z.object({
       /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/,
       'Password must contain at least one special character'
     )
+    .min(12, 'Password must contain at least 12 symbols')
     .refine((value) => {
       password = value;
       return true;
