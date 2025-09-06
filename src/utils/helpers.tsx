@@ -1,5 +1,5 @@
 import type { NamedApiResourceList, Pokemon } from 'pokeapi-typescript';
-import type { MyPokemon } from '../types/interfaces';
+import type { MyPokemon } from '../types/pokemon-components';
 
 export function parsePokemonPageData(
   data?: NamedApiResourceList<Pokemon>

@@ -1,5 +1,4 @@
 import { useContext, type ReactNode } from 'react';
-import type { CardProps, MyStore } from '../../../types/interfaces';
 import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -9,6 +8,8 @@ import {
 } from '../../../store/reducers/selectedItems';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
 import { PokemonListContext } from '../../../utils/contexts';
+import { CardProps } from '../../../types/pokemon-components';
+import { MyStore } from '../../../types/store';
 
 export function Card(props: CardProps): ReactNode {
   const { updateContext } = useContext(PokemonListContext);

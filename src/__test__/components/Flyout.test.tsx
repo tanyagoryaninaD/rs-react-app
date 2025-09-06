@@ -11,7 +11,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Flyout } from '../../components/components/Flyout';
 import * as helpers from '../../utils/helpers';
-import type { MyPokemon } from '../../types/interfaces';
+import type { MyPokemon } from '../../types/pokemon-components';
 import { dispatchSpy } from '../mocks/mocks';
 import { MockProvider } from '../mocks/MockProvider';
 import { removeAll } from '../../store/reducers/selectedItems';

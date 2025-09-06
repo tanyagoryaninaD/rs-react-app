@@ -1,10 +1,10 @@
 'use client';
 
 import { useLocalStorage } from '../../../utils/localStorage';
-import { Theme } from '../../../types/types';
 import { JSX, useEffect } from 'react';
 import { ThemeContext } from '../../../utils/contexts';
 import { THEMES } from '../../../utils/constants';
+import { Theme } from '../../../types/context';
 
 export default function ThemeProvider({ children }: { children: JSX.Element }) {
   const [theme, setTheme] = useLocalStorage<Theme>('tg-theme', THEMES.LIGHT);

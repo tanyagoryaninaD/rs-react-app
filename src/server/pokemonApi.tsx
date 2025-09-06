@@ -1,8 +1,7 @@
 import type { Pokemon } from 'pokeapi-typescript';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { GetPokemonByPage } from '../types/types';
-import type { ApiRequest } from '../types/interfaces';
 import { isListPokemon } from '../utils/helpers';
+import { ApiRequest, GetPokemonByPage } from '../types/api';
 
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',

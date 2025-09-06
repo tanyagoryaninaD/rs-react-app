@@ -1,10 +1,10 @@
 'use client';
 
 import React, { type ErrorInfo } from 'react';
-import type {
+import {
   ErrorBoundaryProps,
   ErrorBoundaryState,
-} from '../../../types/interfaces';
+} from '../../../types/error-boundary';
 
 class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,

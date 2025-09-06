@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { MyPokemon } from '../../types/interfaces';
+import type { MyPokemon } from '../../types/pokemon-components';
 
 export const selectedItemsSlice = createSlice({
   name: 'selectedItems',

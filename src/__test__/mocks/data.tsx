@@ -2,7 +2,7 @@ import type {
   MyPokemon,
   PokemonListContextProps,
   PokemonListContextState,
-} from '../../types/interfaces';
+} from '../../types/pokemon-components';
 import { updateContext } from './mocks';
 
 type MockPokemon = {

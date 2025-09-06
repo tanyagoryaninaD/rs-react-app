@@ -3,7 +3,7 @@ import { parsePokemonData, upperFirstLetter } from '../../../utils/helpers';
 import { LoadingIndicator } from './LoadingIndicator';
 import { useGetPokemonByNameQuery } from '../../../server/pokemonApi';
 import { PokemonListContext } from '../../../utils/contexts';
-import type { CardDetailsState } from '../../../types/interfaces';
+import type { CardDetailsState } from '../../../types/pokemon-components';
 import { useTranslations } from 'next-intl';
 
 export function CardDetails(): ReactNode {

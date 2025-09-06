@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import type { ErrorState } from '../../../types/interfaces';
 import { useTranslations } from 'next-intl';
+import { ErrorState } from '../../../types/error-boundary';
 
 export function GenerateError(): ReactNode {
   const t = useTranslations('homePage');

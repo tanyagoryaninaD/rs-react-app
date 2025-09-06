@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, type ReactNode } from 'react';
-import type { MyPokemon } from '../../../types/interfaces';
+import type { MyPokemon } from '../../../types/pokemon-components';
 import { Card } from './Card';
 import { LoadingIndicator } from './LoadingIndicator';
 import { NoResults } from './NoResults';

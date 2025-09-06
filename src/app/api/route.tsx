@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { MyPokemon } from '../../types/interfaces';
+import { MyPokemon } from '../../types/pokemon-components';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const data: MyPokemon[] = await request.json();

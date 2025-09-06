@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { SearchControls } from './Search/SearchControls';
 import { CardList } from './CardList/CardList';
-import type { PokemonListContextState } from '../../types/interfaces';
 import { GenerateError } from './Error/GenerateError';
 import { useLocalStorage } from '../../utils/localStorage';
 import { PokemonListContext } from '../../utils/contexts';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ResetCache } from '../components/ResetCache';
+import { PokemonListContextState } from '../../types/context';
 
 export function SearchPanel() {
   const router = useRouter();

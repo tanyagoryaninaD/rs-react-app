@@ -2,8 +2,8 @@ import '../../styles/index.css';
 import '../../styles/App.css';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { routing } from '../../i18n/routing';
-import { RootLayoutProps } from '../../types/interfaces';
 import { notFound } from 'next/navigation';
+import { RootLayoutProps } from '../../types/layout';
 
 export default async function RootLayout({
   children,
